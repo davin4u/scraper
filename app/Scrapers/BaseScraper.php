@@ -38,7 +38,7 @@ abstract class BaseScraper
      * @param string $url
      * @return bool
      */
-    public static function isRelatedToUrl(string $url) : bool
+    public static function canHandle(string $url) : bool
     {
         return strpos($url, static::$domain) !== false;
     }

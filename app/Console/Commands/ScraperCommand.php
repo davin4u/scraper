@@ -17,7 +17,7 @@ class ScraperCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'scraper:process';
+    protected $signature = 'scraper:process {--url=}';
 
     /**
      * The console command description.
@@ -41,20 +41,26 @@ class ScraperCommand extends Command
      */
     public function handle()
     {
-        $category = ScraperCategory::query()->orderBy('last_visiting_at')->first();
+        $url = $this->option('url');
 
-        $category->update([
-            'last_visiting_at' => Carbon::now()->toDateTimeString()
-        ]);
+        if (!$url) {
+            $category = ScraperCategory::query()->orderBy('last_visiting_at')->first();
+
+            $category->update([
+                'last_visiting_at' => Carbon::now()->toDateTimeString()
+            ]);
+
+            $url = $category->url;
+        }
 
         try {
             /** @var BaseScraper $scraper */
-            $scraper = ScraperFactory::get($category->url);
+            $scraper = (new ScraperFactory())->get($url);
 
-            $scraper->handle($category->url);
+            $scraper->handle($url);
         }
         catch (ScraperNotFoundException $e) {
-            Log::error("Scraper NOT FOUND: $category->url");
+            Log::error("Scraper NOT FOUND: $url");
 
             throw new \Exception("Scraper not found.");
         }
