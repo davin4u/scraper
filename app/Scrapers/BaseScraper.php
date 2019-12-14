@@ -27,6 +27,11 @@ abstract class BaseScraper
     protected $delay = 5;
 
     /**
+     * @var string
+     */
+    protected $doNotStrip = '<html><head><title><meta><body><div><p><span><ol><ul><li><a><label><table><tr><td><img><section><footer>';
+
+    /**
      * BaseScraper constructor.
      */
     public function __construct()
@@ -57,7 +62,7 @@ abstract class BaseScraper
     {
         Storage::disk('local')->put(
             $this->getSourcesDirectory() . DIRECTORY_SEPARATOR . $this->convertUrlToHashName($url),
-            $content
+            $this->clearDocument($content)
         );
     }
 
@@ -76,5 +81,39 @@ abstract class BaseScraper
     protected function convertUrlToHashName($url)
     {
         return md5($url) . '.html';
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    protected function clearDocument(string $content)
+    {
+        $content = str_replace('<!DOCTYPE html>', '', $content);
+        $content = $this->removeJavascript($content);
+        $content = $this->removeSpaces($content);
+
+        return trim(strip_tags($content, $this->doNotStrip));
+    }
+
+    /**
+     * @param string $content
+     * @return string|string[]|null
+     */
+    private function removeJavascript(string $content)
+    {
+        return preg_replace('/\<script(.+)\<\/script\>/siU', '', $content);
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    private function removeSpaces(string $content)
+    {
+        $content = str_replace("\n", "", $content);
+        $content = preg_replace('/\s\s+/', ' ', $content);
+
+        return $content;
     }
 }
