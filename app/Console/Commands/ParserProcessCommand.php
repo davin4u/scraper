@@ -64,7 +64,7 @@ class ParserProcessCommand extends Command
                 /** @var BaseParser $parser */
                 $parser = (new ParserFactory)->get($domain);
 
-                $parser->handle($document->getContent());
+                $results = $parser->handle($document->getContent());
             }
             catch (ParserNotFoundException $e) {
                 Log::error("Parser NOT FOUND: $domain");

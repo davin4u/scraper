@@ -29,7 +29,7 @@ abstract class BaseScraper
     /**
      * @var string
      */
-    protected $doNotStrip = '<html><head><title><meta><body><div><p><span><ol><ul><li><a><label><table><tr><td><img><section><footer>';
+    protected $doNotStrip = '<html><head><title><meta><body><div><p><span><ol><ul><li><a><label><table><tr><td><img><section><footer><h1><h2><h3><h4><h5>';
 
     /**
      * BaseScraper constructor.
