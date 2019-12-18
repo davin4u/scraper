@@ -3,11 +3,12 @@
 namespace App\Parsers;
 
 use App\Exceptions\DocumentNotFoundException;
+use App\Exceptions\DocumentNotReadableException;
 
 class Document
 {
     /**
-     * @var \SplFileInfo
+     * @var \SplFileObject
      */
     protected $file;
 
@@ -18,7 +19,7 @@ class Document
      */
     public function __construct(string $path)
     {
-        $this->file = new \SplFileInfo(storage_path($path));
+        $this->file = new \SplFileObject(storage_path($path));
 
         if (! $this->file->isFile()) {
             throw new DocumentNotFoundException("Document {$this->file->getPath()} does not exist");
@@ -26,19 +27,34 @@ class Document
     }
 
     /**
+     * @param bool $unlock
      * @return string
+     * @throws DocumentNotReadableException
      */
-    public function getContent()
+    public function getContent($unlock = true)
     {
+        if (!$this->file->isReadable()) {
+            throw new DocumentNotReadableException("Document {$this->file->getPath()} seems to be locked.");
+        }
+
+        $this->file->flock(LOCK_EX);
+
         $content = '';
 
-        $o = $this->file->openFile();
+        while (!$this->file->eof()) {
+            $content .= $this->file->fread(1000);
+        }
 
-        while (!$o->eof()) {
-            $content .= $o->fread(1000);
+        if ($unlock) {
+            $this->unlock();
         }
 
         return $content;
+    }
+
+    public function unlock()
+    {
+        $this->file->flock(LOCK_UN);
     }
 
     /**

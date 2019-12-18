@@ -2,11 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\DocumentNotReadableException;
+use App\Exceptions\DomainNotFoundException;
 use App\Exceptions\ParserNotFoundException;
 use App\Parsers\BaseParser;
 use App\Parsers\Document;
 use App\Parsers\DocumentsRepository;
 use App\Parsers\ParserFactory;
+use App\Repositories\ProductsRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -26,6 +29,9 @@ class ParserProcessCommand extends Command
      */
     protected $description = 'Process scraped files.';
 
+    /**
+     * @var DocumentsRepository
+     */
     protected $files;
 
     /**
@@ -64,12 +70,22 @@ class ParserProcessCommand extends Command
                 /** @var BaseParser $parser */
                 $parser = (new ParserFactory)->get($domain);
 
-                $results = $parser->handle($document->getContent());
+                $results = $parser->handle($document->getContent(false));
+
+                (new ProductsRepository())->domain($domain)->bulkCreateOrUpdate($results);
+
+                $document->unlock();
             }
             catch (ParserNotFoundException $e) {
                 Log::error("Parser NOT FOUND: $domain");
 
                 throw new \Exception("Parser not found.");
+            }
+            catch (DomainNotFoundException $e) {
+                Log::error($e->getMessage());
+            }
+            catch (DocumentNotReadableException $e) {
+                Log::error($e->getMessage());
             }
         }
     }

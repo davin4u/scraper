@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->string('sku')->index();
             $table->string('url');
-            $table->float('store_rating');
+            $table->float('store_rating')->default(0);
             $table->timestamps();
         });
     }
