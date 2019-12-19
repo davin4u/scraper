@@ -14,22 +14,9 @@ use Illuminate\Support\Arr;
 class ProductsRepository
 {
     /**
-     * @var Product
-     */
-    protected $query;
-
-    /**
      * @var null
      */
     protected $domain = null;
-
-    /**
-     * ProductsRepository constructor.
-     */
-    public function __construct()
-    {
-        $this->query = Product::query();
-    }
 
     /**
      * @param $sku
@@ -37,7 +24,13 @@ class ProductsRepository
      */
     public function find($sku)
     {
-        $product = $this->query->where('sku', $sku)->get();
+        $query = Product::query();
+
+        if (!is_null($this->domain)) {
+            $query->where('domain_id', $this->domain);
+        }
+
+        $product = $query->where('sku', $sku)->get();
 
         if (!is_null($this->domain) && $product->count() > 1) {
             // @TODO in case if several products were found with the same SKU for the same domain - notify admin
@@ -55,12 +48,17 @@ class ProductsRepository
         if ($product = $this->find(Arr::get($data, 'sku', null))) {
             /** @var Product $product */
 
-            $product->update(Arr::except($data, ['price', 'domain_id']));
+            $product->update(Arr::except($data, ['price', 'domain_id', 'currency', 'old_price', 'city_id', 'store_id']));
+
+            $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
 
             return true;
         }
 
-        Product::create(Arr::except($data, ['price']));
+        /** @var Product $product */
+        $product = Product::create(Arr::except($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
+
+        $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
 
         return true;
     }
@@ -80,8 +78,6 @@ class ProductsRepository
     public function domain($nameOrId)
     {
         if (is_integer($nameOrId)) {
-            $this->query = $this->query->where('domain_id', $nameOrId);
-
             $this->domain = $nameOrId;
 
             return $this;
@@ -91,8 +87,6 @@ class ProductsRepository
             $domain = Domain::where('name', $nameOrId)->first();
 
             if (!is_null($domain)) {
-                $this->query = $this->query->where('domain_id', $domain->id);
-
                 $this->domain = $domain->id;
 
                 return $this;

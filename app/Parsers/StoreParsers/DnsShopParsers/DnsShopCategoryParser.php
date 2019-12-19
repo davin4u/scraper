@@ -63,6 +63,7 @@ class DnsShopCategoryParser extends BaseParser
 
             if ($price) {
                 $item['price'] = (float)preg_replace('/[^0-9]/', '', trim(strip_tags($price->html())));
+                $item['currency'] = 'RUB';
             }
 
             $rating = $product->filter('.product-info__rating')->first();
