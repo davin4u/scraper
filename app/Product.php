@@ -2,8 +2,10 @@
 
 namespace App;
 
+use App\Events\ProductPriceUpdatingEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class Product extends Model
@@ -52,6 +54,15 @@ class Product extends Model
                 'store_id'  => Arr::get($data, 'store_id', null)
             ]);
 
+            $this->pricesHistory()->create([
+                'price'      => Arr::get($data, 'price'),
+                'currency'   => Arr::get($data, 'currency'),
+                'old_price'  => Arr::get($data, 'old_price', null),
+                'city_id'    => Arr::get($data, 'city_id', null),
+                'store_id'   => Arr::get($data, 'store_id', null),
+                'price_date' => Carbon::now()->toDateTimeString()
+            ]);
+
             return;
         }
 
@@ -79,6 +90,8 @@ class Product extends Model
 
         /** @var ProductPrice $price */
         $price = $prices->first();
+
+        event(new ProductPriceUpdatingEvent($this, $price, Arr::only($data, ['price', 'old_price'])));
 
         $price->update(Arr::only($data, ['price', 'old_price']));
     }

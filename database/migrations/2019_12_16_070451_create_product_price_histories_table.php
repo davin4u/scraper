@@ -16,10 +16,13 @@ class CreateProductPriceHistoriesTable extends Migration
         Schema::create('product_price_histories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('product_id')->index();
+            $table->integer('city_id')->nullable();
+            $table->bigInteger('store_id')->nullable();
             $table->float('price');
             $table->float('usd_price')->nullable();
             $table->float('old_price')->nullable();
-            $table->dateTime('scraped_at');
+            $table->string('currency');
+            $table->dateTime('price_date');
             $table->timestamps();
         });
     }

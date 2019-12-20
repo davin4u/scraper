@@ -14,6 +14,9 @@ class ProductPriceHistory extends Model
         'price',
         'usd_price',
         'old_price',
-        'scraped_at'
+        'price_date',
+        'city_id',
+        'store_id',
+        'currency'
     ];
 }
