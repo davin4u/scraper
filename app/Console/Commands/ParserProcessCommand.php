@@ -11,6 +11,7 @@ use App\Parsers\DocumentsRepository;
 use App\Parsers\ParserFactory;
 use App\Repositories\ProductsRepository;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ParserProcessCommand extends Command
@@ -20,7 +21,7 @@ class ParserProcessCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'parser:process {--domain=}';
+    protected $signature = 'parser:process {--domain=} {--date=}';
 
     /**
      * The console command description.
@@ -53,6 +54,13 @@ class ParserProcessCommand extends Command
     {
         if ($this->option('domain')) {
             $this->files->domain($this->option('domain'));
+        }
+
+        if ($this->option('domain') && $this->option('date')) {
+            $this->files->date(Carbon::parse($this->option('date')));
+        }
+        else {
+            $this->files->date(Carbon::now());
         }
 
         $documents = $this->files->get();

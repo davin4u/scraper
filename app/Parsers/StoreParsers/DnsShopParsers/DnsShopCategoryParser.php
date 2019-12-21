@@ -53,7 +53,7 @@ class DnsShopCategoryParser extends BaseParser
                 $item['sku'] = isset($matches[1]) ? $matches[1] : null;
             }
 
-            $brand = $product->filter('i[data-product-param]')->first();
+            $brand = $product->filter('i[data-product-param="brand"]')->first();
 
             if ($brand) {
                 $item['brand_id'] = BrandMatcher::match($brand->attr('data-value'));

@@ -29,7 +29,7 @@ abstract class BaseScraper
     /**
      * @var string
      */
-    protected $doNotStrip = '<html><head><title><meta><body><div><p><span><ol><ul><li><a><label><table><tr><td><img><section><footer><h1><h2><h3><h4><h5>';
+    protected $doNotStrip = '<html><head><title><meta><body><div><p><span><i><ol><ul><li><a><label><table><tr><td><img><section><footer><h1><h2><h3><h4><h5>';
 
     /**
      * BaseScraper constructor.
@@ -91,6 +91,7 @@ abstract class BaseScraper
     {
         $content = str_replace('<!DOCTYPE html>', '', $content);
         $content = $this->removeJavascript($content);
+        $content = $this->removeCss($content);
         $content = $this->removeSpaces($content);
 
         return trim(strip_tags($content, $this->doNotStrip));
@@ -103,6 +104,15 @@ abstract class BaseScraper
     private function removeJavascript(string $content)
     {
         return preg_replace('/\<script(.+)\<\/script\>/siU', '', $content);
+    }
+
+    /**
+     * @param string $content
+     * @return string|string[]|null
+     */
+    private function removeCss(string $content)
+    {
+        return preg_replace('/\<style(.+)\<\/style\>/siU', '', $content);
     }
 
     /**

@@ -4,6 +4,8 @@ namespace App\Parsers;
 
 use App\Exceptions\DocumentNotFoundException;
 use App\Exceptions\DocumentNotReadableException;
+use App\Exceptions\MethodNotFoundException;
+use Illuminate\Support\Carbon;
 
 class Document
 {
@@ -11,6 +13,11 @@ class Document
      * @var \SplFileObject
      */
     protected $file;
+
+    /**
+     * @var Carbon
+     */
+    protected $created_at;
 
     /**
      * Document constructor.
@@ -24,6 +31,8 @@ class Document
         if (! $this->file->isFile()) {
             throw new DocumentNotFoundException("Document {$this->file->getPath()} does not exist");
         }
+
+        $this->created_at = Carbon::createFromTimestamp($this->file->getMTime());
     }
 
     /**
@@ -65,5 +74,28 @@ class Document
         $path = explode('/', $this->file->getPath());
 
         return $path[count($path) - 2];
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     * @throws MethodNotFoundException
+     */
+    public function __call($name, $arguments)
+    {
+        if (!method_exists($this->file, $name)) {
+            throw new MethodNotFoundException("Method '$name' does not exists.");
+        }
+
+        return !empty($arguments) ? $this->file->{$name}(...$arguments) : $this->file->{$name}();
     }
 }

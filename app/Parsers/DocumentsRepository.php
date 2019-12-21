@@ -18,7 +18,7 @@ class DocumentsRepository
     protected $domain = null;
 
     /**
-     * @var string
+     * @var Carbon
      */
     protected $date = null;
 
@@ -57,7 +57,7 @@ class DocumentsRepository
      */
     public function date(Carbon $date)
     {
-        $this->date = $date->format('Y.m.d');
+        $this->date = $date;
 
         return $this;
     }
@@ -84,13 +84,21 @@ class DocumentsRepository
             return strpos($file, '.html') !== false;
         }));
 
-        if (!is_null($this->limit)) {
-            $files = array_slice($files, 0, $this->limit);
-        }
-
         $files = array_map(function ($path) {
             return new Document($this->documentPath($path));
         }, $files);
+
+        if (!is_null($this->date)) {
+            $files = array_filter($files, function ($file) {
+                /** @var Document $file */
+
+                return $file->getCreatedAt()->gt($this->date->startOfDay()) && $file->getCreatedAt()->lt($this->date->endOfDay());
+            });
+        }
+
+        if (!is_null($this->limit)) {
+            $files = array_slice($files, 0, $this->limit);
+        }
 
         return array_values($files);
     }
@@ -101,10 +109,6 @@ class DocumentsRepository
 
         if (!is_null($this->domain)) {
             $dir .= DIRECTORY_SEPARATOR . $this->domain;
-        }
-
-        if (!is_null($this->date)) {
-            $dir .= DIRECTORY_SEPARATOR . $this->date;
         }
 
         $this->directory = $dir;
