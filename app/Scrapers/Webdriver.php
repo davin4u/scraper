@@ -1,7 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Scrapers;
 
+use App\Exceptions\ScrapingTerminatedException;
+use App\Exceptions\WebdriverPageNotReachableException;
 use Illuminate\Support\Facades\Log;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -42,10 +44,22 @@ class Webdriver
 
     /**
      * @return $this
+     * @throws \Exception
      */
     public function init()
     {
-        $this->driver = RemoteWebDriver::create($this->nodes[0], $this->getCapabilities(), 5000, 999999);
+        try {
+            $this->driver = RemoteWebDriver::create(
+                $this->nodes[0], $this->getCapabilities(),
+                config('selenium.connection_timeout'),
+                config('selenium.request_timeout')
+            );
+        }
+        catch (\Exception $e) {
+            Log::error("[SCRAPER] Webdriver init error: " . $e->getMessage());
+
+            throw new \Exception($e->getMessage());
+        }
 
         return $this;
     }
@@ -70,7 +84,7 @@ class Webdriver
      */
     public function waitFor($condition, $time = 1)
     {
-        // TODO: wait for some action, for example, title is 'Hello i'm a title'
+        // @TODO: wait for some action, for example, title is 'Hello i'm a title'
 
         return $this;
     }
@@ -78,7 +92,7 @@ class Webdriver
     /**
      * @param null $url
      * @return $this
-     * @throws \Exception
+     * @throws ScrapingTerminatedException
      */
     public function open($url = null)
     {
@@ -90,26 +104,43 @@ class Webdriver
             $this->driver->get($url);
         }
         catch (\Exception $e) {
-            $this->close();
+            Log::error("[WEBDRIVER] Page $url is not reachable: " . $e->getMessage());
 
-            throw new \Exception("Webdriver open() exception.");
+            $this->close(3);
+
+            throw new ScrapingTerminatedException("Webdriver open() exception.");
         }
 
         return $this;
     }
 
     /**
+     * @param int $maxRecursive
      * @return $this
+     * @throws ScrapingTerminatedException
      */
-    public function close()
+    public function close($maxRecursive = 1)
     {
+        if ($maxRecursive <= 0) {
+            return $this;
+        }
+
         if (! is_null($this->driver)) {
             try {
                 $this->driver->close();
 
                 $this->driver->quit();
             }
-            catch (\Exception $e) {}
+            catch (\Exception $e) {
+                Log::error("[WEBDRIVER] can't close a session: " . $e->getMessage());
+
+                if ($maxRecursive > 1) {
+                    $this->close(--$maxRecursive);
+                }
+                else {
+                    throw new ScrapingTerminatedException($e->getMessage());
+                }
+            }
         }
 
         return $this;

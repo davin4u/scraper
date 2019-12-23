@@ -14,12 +14,13 @@ class ScraperCategory extends Model
     /**
      * @var array
      */
-    protected $fillable = ['url', 'user_id', 'last_visiting_at'];
+    protected $fillable = ['url', 'user_id', 'scraping_started_at', 'scraping_finished_at'];
 
     /**
      * @var array
      */
     protected $casts = [
-        'last_visiting_at' => 'datetime'
+        'scraping_started_at'  => 'datetime',
+        'scraping_finished_at' => 'datetime'
     ];
 }

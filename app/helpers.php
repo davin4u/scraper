@@ -2,6 +2,6 @@
 
 if (! function_exists("webdriver")) {
     function webdriver() {
-        return resolve('App\Webdriver');
+        return resolve('App\Scrapers\Webdriver');
     }
 }

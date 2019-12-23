@@ -17,7 +17,8 @@ class CreateScraperCategoriesTable extends Migration
             $table->bigIncrements('id');
             $table->text('url');
             $table->bigInteger('user_id');
-            $table->dateTime('last_visiting_at')->nullable();
+            $table->dateTime('scraping_started_at')->nullable();
+            $table->dateTime('scraping_finished_at')->nullable();
             $table->timestamps();
         });
     }

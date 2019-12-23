@@ -2,6 +2,7 @@
 
 namespace App\Scrapers\StoreScrapers\DnsShopScrapers;
 
+use App\Exceptions\WebdriverPageNotReachableException;
 use App\Scrapers\BaseScraper;
 
 /**
@@ -23,7 +24,7 @@ class DnsShopCategoryScraper extends BaseScraper
     /**
      * @param string $url
      * @return mixed|void
-     * @throws \Exception
+     * @throws WebdriverPageNotReachableException
      */
     public function handle(string $url)
     {
@@ -33,10 +34,11 @@ class DnsShopCategoryScraper extends BaseScraper
         while (true) {
             $url = $preparedUrl . '?p=' . $page;
 
+            //@TODO check if we have to execute webdriver's close() method after each iteration
             $content = $this->webdriver->open($url)
-                                       ->wait(rand(3, 5))
-                                       ->screenshot(storage_path('app/scraper/screenshots'))
-                                       ->getPageSource();
+                ->wait(rand(3, 5))
+                ->screenshot(storage_path('app/scraper/screenshots'))
+                ->getPageSource();
 
             if (! $this->containProducts($content)) {
                 break;
