@@ -1,20 +1,16 @@
 <?php
 
-namespace App\Scrapers\StoreScrapers\DnsShopScrapers;
+namespace App\Scrapers\StoreScrapers\EldoradoScrapers;
 
 use App\Scrapers\BaseScraper;
 use App\Scrapers\Webdriver;
 
-/**
- * Class DnsShopCategoryScraper
- * @package App\Scrapers\StoreScrapers\DnsShopScrapers
- */
-class DnsShopCategoryScraper extends BaseScraper
+class EldoradoCategoryScraper extends BaseScraper
 {
     /**
      * @var string
      */
-    protected static $domain = 'dns-shop.ru';
+    protected static $domain = 'eldorado.ru';
 
     /**
      * @var int
@@ -35,7 +31,7 @@ class DnsShopCategoryScraper extends BaseScraper
             /** @var Webdriver $driver */
             $driver = webdriver()->init();
 
-            $url = $preparedUrl . '?p=' . $page;
+            $url = $preparedUrl . '?page=' . $page;
 
             //@TODO check if we have to execute webdriver's close() method after each iteration
             $content = $driver->open($url)
@@ -58,7 +54,7 @@ class DnsShopCategoryScraper extends BaseScraper
     }
 
     /**
-     * @param string $content
+     * @param $content
      * @return bool
      */
     private function containProducts($content)
@@ -67,6 +63,6 @@ class DnsShopCategoryScraper extends BaseScraper
             return false;
         }
 
-        return strpos($content, 'n-catalog-product__main') !== false;
+        return strpos($content, 'listing-container') !== false;
     }
 }

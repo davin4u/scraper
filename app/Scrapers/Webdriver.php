@@ -4,6 +4,7 @@ namespace App\Scrapers;
 
 use App\Exceptions\ScrapingTerminatedException;
 use App\Exceptions\WebdriverPageNotReachableException;
+use Facebook\WebDriver\Chrome\ChromeOptions;
 use Illuminate\Support\Facades\Log;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -54,6 +55,8 @@ class Webdriver
                 config('selenium.connection_timeout'),
                 config('selenium.request_timeout')
             );
+
+            Log::debug("[NEW SESSION ID]: " . $this->driver->getSessionID());
         }
         catch (\Exception $e) {
             Log::error("[SCRAPER] Webdriver init error: " . $e->getMessage());
@@ -100,13 +103,19 @@ class Webdriver
             throw new \InvalidArgumentException("Url can't be null.");
         }
 
+        Log::debug("Open url: $url");
+        Log::debug("With session: " . $this->driver->getSessionID());
+
         try {
             $this->driver->get($url);
         }
         catch (\Exception $e) {
+            Log::error("[WEBDRIVER] Page $url is not reachable: " . $this->driver->getSessionID());
             Log::error("[WEBDRIVER] Page $url is not reachable: " . $e->getMessage());
 
-            $this->close(3);
+            //$this->close(3);
+
+            $this->quit();
 
             throw new ScrapingTerminatedException("Webdriver open() exception.");
         }
@@ -129,7 +138,7 @@ class Webdriver
             try {
                 $this->driver->close();
 
-                $this->driver->quit();
+                // $this->driver->quit();
             }
             catch (\Exception $e) {
                 Log::error("[WEBDRIVER] can't close a session: " . $e->getMessage());
@@ -140,6 +149,25 @@ class Webdriver
                 else {
                     throw new ScrapingTerminatedException($e->getMessage());
                 }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function quit()
+    {
+        if (! is_null($this->driver)) {
+            Log::debug("Quit session: " . $this->driver->getSessionID());
+
+            try {
+                $this->driver->quit();
+            }
+            catch (\Exception $e) {
+                Log::error("[WEBDRIVER] can't quit a browser: " . $e->getMessage());
             }
         }
 
@@ -209,6 +237,8 @@ class Webdriver
      */
     public function getPageSource()
     {
+        Log::debug("Get page source with session id: " . $this->driver->getSessionID());
+
         return $this->driver->getPageSource();
     }
 
@@ -467,6 +497,11 @@ EON;
     private function getCapabilities()
     {
         $capabilities = DesiredCapabilities::chrome();
+
+        $options = new ChromeOptions();
+        $options->addArguments(['--no-sandbox']);
+
+        $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
 
         /*
         if ($this->use_proxy && $this->proxy) {

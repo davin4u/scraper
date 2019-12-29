@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Exceptions\ScraperNotFoundException;
 use App\Exceptions\ScrapingTerminatedException;
-use App\Exceptions\WebdriverPageNotReachableException;
 use App\Scrapers\BaseScraper;
 use App\Scrapers\ScraperCategory;
 use App\Scrapers\ScraperFactory;
@@ -47,6 +46,10 @@ class ScraperProcessCommand extends Command
 
         if (!$url) {
             $category = ScraperCategory::query()->orderBy('scraping_started_at')->first();
+
+            if (!$category) {
+                return;
+            }
 
             $initialStartedDate = $category->scraping_started_at;
 

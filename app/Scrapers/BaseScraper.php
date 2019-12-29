@@ -32,14 +32,6 @@ abstract class BaseScraper
     protected $doNotStrip = '<html><head><title><meta><body><div><p><span><i><ol><ul><li><a><label><table><tr><td><img><section><footer><h1><h2><h3><h4><h5>';
 
     /**
-     * BaseScraper constructor.
-     */
-    public function __construct()
-    {
-        $this->webdriver = webdriver()->init();
-    }
-
-    /**
      * @param string $url
      * @return bool
      */
@@ -125,5 +117,14 @@ abstract class BaseScraper
         $content = preg_replace('/\s\s+/', ' ', $content);
 
         return $content;
+    }
+
+    /**
+     * @param $url
+     * @return string
+     */
+    protected function getBaseUrl($url)
+    {
+        return parse_url($url, PHP_URL_SCHEME) . '://' . parse_url($url, PHP_URL_HOST) . parse_url($url, PHP_URL_PATH);
     }
 }
