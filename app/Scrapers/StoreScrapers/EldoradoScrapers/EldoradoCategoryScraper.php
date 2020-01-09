@@ -3,9 +3,10 @@
 namespace App\Scrapers\StoreScrapers\EldoradoScrapers;
 
 use App\Scrapers\BaseScraper;
+use App\Scrapers\ScraperInterface;
 use App\Scrapers\Webdriver;
 
-class EldoradoCategoryScraper extends BaseScraper
+class EldoradoCategoryScraper extends BaseScraper implements ScraperInterface
 {
     /**
      * @var string
@@ -64,5 +65,14 @@ class EldoradoCategoryScraper extends BaseScraper
         }
 
         return strpos($content, 'listing-container') !== false;
+    }
+
+    /**
+     * @param string $url
+     * @return bool
+     */
+    public static function canHandle(string $url): bool
+    {
+        return strpos($url, static::$domain) !== false && strpos($url, '/product/') === false;
     }
 }

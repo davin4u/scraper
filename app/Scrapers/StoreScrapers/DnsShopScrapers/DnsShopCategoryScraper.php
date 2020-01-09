@@ -3,13 +3,14 @@
 namespace App\Scrapers\StoreScrapers\DnsShopScrapers;
 
 use App\Scrapers\BaseScraper;
+use App\Scrapers\ScraperInterface;
 use App\Scrapers\Webdriver;
 
 /**
  * Class DnsShopCategoryScraper
  * @package App\Scrapers\StoreScrapers\DnsShopScrapers
  */
-class DnsShopCategoryScraper extends BaseScraper
+class DnsShopCategoryScraper extends BaseScraper implements ScraperInterface
 {
     /**
      * @var string
@@ -55,6 +56,15 @@ class DnsShopCategoryScraper extends BaseScraper
 
             sleep(rand($this->delay - 3, $this->delay + 5));
         }
+    }
+
+    /**
+     * @param string $url
+     * @return bool
+     */
+    public static function canHandle(string $url): bool
+    {
+        return strpos($url, static::$domain) !== false && strpos($url, '/product/') === false;
     }
 
     /**

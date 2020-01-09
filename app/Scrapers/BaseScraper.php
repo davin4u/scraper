@@ -2,24 +2,18 @@
 
 namespace App\Scrapers;
 
-use App\Webdriver;
 use Illuminate\Support\Facades\Storage;
 
 /**
  * Class BaseScraper
  * @package App\Scrapers
  */
-abstract class BaseScraper
+class BaseScraper
 {
     /**
      * @var string
      */
     protected static $domain = '';
-
-    /**
-     * @var Webdriver
-     */
-    protected $webdriver = null;
 
     /**
      * @var int
@@ -30,21 +24,6 @@ abstract class BaseScraper
      * @var string
      */
     protected $doNotStrip = '<html><head><title><meta><body><div><p><span><i><ol><ul><li><a><label><table><tr><td><img><section><footer><h1><h2><h3><h4><h5>';
-
-    /**
-     * @param string $url
-     * @return bool
-     */
-    public static function canHandle(string $url) : bool
-    {
-        return strpos($url, static::$domain) !== false;
-    }
-
-    /**
-     * @param string $url
-     * @return mixed
-     */
-    abstract public function handle(string $url);
 
     /**
      * @param $url
