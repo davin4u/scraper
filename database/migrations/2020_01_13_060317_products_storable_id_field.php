@@ -14,7 +14,7 @@ class ProductsStorableIdField extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->string('storable_id')->after('store_rating');
+            $table->string('storable_id')->after('store_rating')->nullable();
         });
     }
 
