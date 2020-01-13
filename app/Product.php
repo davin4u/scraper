@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Events\ProductPriceUpdatingEvent;
+use App\Traits\Storable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -10,6 +11,8 @@ use Illuminate\Support\Collection;
 
 class Product extends Model
 {
+    use Storable;
+
     /**
      * @var array
      */
@@ -20,7 +23,8 @@ class Product extends Model
         'name',
         'sku',
         'url',
-        'store_rating'
+        'store_rating',
+        'storable_id'
     ];
 
     /**
