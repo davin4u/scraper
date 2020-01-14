@@ -2,18 +2,24 @@
 
 namespace App\Parsers\StoreParsers\DnsShopParsers;
 
-use App\Parsers\BaseParser;
+use App\Parsers\Document;
 use App\Parsers\Helpers\BrandMatcher;
 use App\Parsers\Helpers\CategoryMatcher;
+use App\Parsers\ParserInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use App\Domain;
 
-class DnsShopCategoryParser extends BaseParser
+class DnsShopCategoryParser implements ParserInterface
 {
     /**
      * @var string
      */
     protected static $domain = 'dns-shop.ru';
+
+    /**
+     * @var bool
+     */
+    protected $singlePageParser = false;
 
     /**
      * @param $content
@@ -76,5 +82,31 @@ class DnsShopCategoryParser extends BaseParser
         });
 
         return $results;
+    }
+
+    /**
+     * @param Document $document
+     * @return bool
+     * @throws \App\Exceptions\DocumentNotReadableException
+     */
+    public static function canHandle(Document $document): bool
+    {
+        $domain = $document->getDocumentDomain();
+
+        if (strpos(static::$domain, $domain) !== false) {
+            $content = $document->getContent();
+
+            return strpos($content, 'products-page__list') !== false;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSinglePageParser(): bool
+    {
+        return $this->singlePageParser;
     }
 }

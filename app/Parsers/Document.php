@@ -19,6 +19,9 @@ class Document
      */
     protected $created_at;
 
+    /** @var string */
+    protected $content;
+
     /**
      * Document constructor.
      * @param string $path
@@ -42,6 +45,10 @@ class Document
      */
     public function getContent($unlock = true)
     {
+        if (!empty($this->content)) {
+            return $this->content;
+        }
+
         if (!$this->file->isReadable()) {
             throw new DocumentNotReadableException("Document {$this->file->getPath()} seems to be locked.");
         }
@@ -57,6 +64,8 @@ class Document
         if ($unlock) {
             $this->unlock();
         }
+
+        $this->content = $content;
 
         return $content;
     }

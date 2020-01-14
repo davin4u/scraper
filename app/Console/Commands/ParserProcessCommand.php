@@ -5,10 +5,10 @@ namespace App\Console\Commands;
 use App\Exceptions\DocumentNotReadableException;
 use App\Exceptions\DomainNotFoundException;
 use App\Exceptions\ParserNotFoundException;
-use App\Parsers\BaseParser;
 use App\Parsers\Document;
 use App\Parsers\DocumentsRepository;
 use App\Parsers\ParserFactory;
+use App\Parsers\ParserInterface;
 use App\Repositories\ProductsRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -75,12 +75,17 @@ class ParserProcessCommand extends Command
             $domain = $document->getDocumentDomain();
 
             try {
-                /** @var BaseParser $parser */
-                $parser = (new ParserFactory)->get($domain);
+                /** @var ParserInterface $parser */
+                $parser = (new ParserFactory)->get($document);
 
                 $results = $parser->handle($document->getContent(false));
 
-                (new ProductsRepository())->domain($domain)->bulkCreateOrUpdate($results);
+                if ($parser->isSinglePageParser()) {
+                    (new ProductsRepository())->domain($domain)->createOrUpdate($results);
+                }
+                else {
+                    (new ProductsRepository())->domain($domain)->bulkCreateOrUpdate($results);
+                }
 
                 $document->unlock();
             }

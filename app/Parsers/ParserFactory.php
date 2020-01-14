@@ -13,16 +13,16 @@ class ParserFactory extends ClassesFactory
     protected static $directory = __DIR__ . DIRECTORY_SEPARATOR . 'StoreParsers';
 
     /**
-     * @param string $domain
-     * @return mixed
+     * @param Document $document
+     * @return ParserInterface
      * @throws ParserNotFoundException
      */
-    public static function get(string $domain)
+    public static function get(Document $document) : ParserInterface
     {
         foreach (static::$classes as $parser) {
-            /** @var BaseParser $parser */
+            /** @var ParserInterface $parser */
 
-            if (class_exists($parser) && $parser::canHandle($domain)) {
+            if (class_exists($parser) && $parser::canHandle($document)) {
                 return new $parser;
             }
         }

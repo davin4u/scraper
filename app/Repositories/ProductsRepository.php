@@ -42,6 +42,7 @@ class ProductsRepository
     /**
      * @param $data
      * @return bool
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function createOrUpdate($data)
     {
@@ -52,6 +53,10 @@ class ProductsRepository
 
             $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
 
+            if ($attributes = Arr::get($data, 'attributes', null)) {
+                $product->saveStorableAttributes($attributes);
+            }
+
             return true;
         }
 
@@ -60,9 +65,17 @@ class ProductsRepository
 
         $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
 
+        if ($attributes = Arr::get($data, 'attributes', null)) {
+            $product->saveStorableAttributes($attributes);
+        }
+
         return true;
     }
 
+    /**
+     * @param iterable $products
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     public function bulkCreateOrUpdate(iterable $products)
     {
         foreach ($products as $product) {
