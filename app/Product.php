@@ -99,4 +99,16 @@ class Product extends Model
 
         $price->update(Arr::only($data, ['price', 'old_price']));
     }
+
+    /**
+     * @return array
+     */
+    public function toStorableDocument()
+    {
+        return [
+            'name' => $this->name,
+            'brand_id' => $this->brand_id,
+            'category_id' => $this->category_id
+        ];
+    }
 }

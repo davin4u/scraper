@@ -76,4 +76,15 @@ class Document implements DocumentInterface
 
         return $attributes;
     }
+
+    /**
+     * @return string
+     */
+    public function getDocumentId() : string
+    {
+        /** @var \MongoDB\BSON\ObjectId $objectId */
+        $objectId = $this->doc->_id;
+
+        return (string) $objectId;
+    }
 }

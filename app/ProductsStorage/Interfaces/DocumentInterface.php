@@ -18,4 +18,9 @@ interface DocumentInterface
      * @return array
      */
     public function getAttributes() : array;
+
+    /**
+     * @return mixed
+     */
+    public function getDocumentId() : string;
 }

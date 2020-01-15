@@ -47,17 +47,26 @@ trait Storable
      * @param $attributes
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function saveStorableAttributes($attributes)
+    public function saveStorableDocument($attributes = [])
     {
         if (is_null(static::$storage)) {
             static::$storage = app()->make(ProductsStorageInterface::class);
         }
 
-        if (is_null($this->storable_id)) {
-            static::$storage->create($attributes);
+        $data = array_merge($this->toStorableDocument(), ['attributes' => $attributes]);
+
+        $storableKey = property_exists($this, 'storableKey') ? $this->{$storableKey} : 'storable_id';
+
+        if (is_null($this->{$storableKey})) {
+            /** @var DocumentInterface $doc */
+            $doc = static::$storage->create($data);
+
+            $this->update([
+                $storableKey => $doc->getDocumentId()
+            ]);
         }
         else {
-            static::$storage->update($this->storable_id, $attributes);
+            static::$storage->update($this->{$storableKey}, $data);
         }
     }
 }

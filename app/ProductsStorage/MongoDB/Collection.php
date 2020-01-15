@@ -85,7 +85,7 @@ class Collection implements MongoDBCollectionInterface
             ['$set' => $attributes]
         );
 
-        if ($result->getModifiedCount() <= 0) {
+        if ($result->getMatchedCount() <= 0) {
             throw new ProductNotFoundException("No product found for given criteria.");
         }
 

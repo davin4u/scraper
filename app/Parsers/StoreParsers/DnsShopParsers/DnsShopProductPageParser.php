@@ -2,6 +2,7 @@
 
 namespace App\Parsers\StoreParsers\DnsShopParsers;
 
+use App\Parsers\BaseParser;
 use App\Parsers\Document;
 use App\Parsers\ParserInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -10,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * Class DnsShopProductPageParser
  * @package App\Parsers\StoreParsers\DnsShopParsers
  */
-class DnsShopProductPageParser implements ParserInterface
+class DnsShopProductPageParser extends BaseParser implements ParserInterface
 {
     /**
      * @var string
@@ -78,7 +79,10 @@ class DnsShopProductPageParser implements ParserInterface
                 }
             }
 
-            $data[$propName] = $value;
+            /* @TODO recognize product category dynamically */
+            $attribute = $this->attributes->recognizeAttribute($propName, 1);
+
+            $data[$attribute->attribute_key] = $value;
         });
 
         $product['attributes'] = $data;
