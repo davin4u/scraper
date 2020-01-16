@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Parsers\Helpers\SimpleCategoryMatcher;
+use App\Parsers\Helpers\CategoryMatcher;
 use App\ProductsStorage\Interfaces\MongoDBClientInterface;
 use App\ProductsStorage\Interfaces\ProductsStorageInterface;
 use App\ProductsStorage\MongoDB\Mongo;
@@ -23,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(ProductsStorageInterface::class, function ($app) {
             return new MongoDBProductsStorage($app->make(MongoDBClientInterface::class));
+        });
+
+        $this->app->singleton(CategoryMatcher::class, function ($app) {
+            return $app->make(SimpleCategoryMatcher::class);
         });
     }
 

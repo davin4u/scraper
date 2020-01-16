@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Create new product category</div>
+                    <div class="card-header">Edit product category</div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -23,19 +23,20 @@
                         @endif
 
                         <div>
-                            <form method="POST" action="{{ route('categories.store') }}">
+                            <form method="POST" action="{{ route('categories.update', [$category]) }}">
+                                <input type="hidden" name="_method" value="PUT" />
                                 @csrf
 
                                 <div class="form-group">
                                     <label for="name">Category Name</label>
 
-                                    <input type="text" name="name" class="form-control" id="name" placeholder="Category Name" />
+                                    <input type="text" name="name" class="form-control" id="name" placeholder="Category Name" value="{{ $category->name }}" />
                                 </div>
 
                                 <div class="form-group">
                                     <label for="map">Mapping</label>
 
-                                    <input type="text" name="map" class="form-control" id="map" placeholder="Mapping" />
+                                    <input type="text" name="map" class="form-control" id="map" placeholder="Mapping" value="{{ $category->mapAsString(',') }}" />
 
                                     <small class="form-text text-muted">Comma separated different variants of category name for matching with different stores.</small>
                                 </div>

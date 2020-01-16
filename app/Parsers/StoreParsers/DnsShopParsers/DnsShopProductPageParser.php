@@ -4,6 +4,7 @@ namespace App\Parsers\StoreParsers\DnsShopParsers;
 
 use App\Parsers\BaseParser;
 use App\Parsers\Document;
+use App\Parsers\Helpers\CategoryMatcher;
 use App\Parsers\ParserInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -34,6 +35,7 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
 
         $page = (new Crawler($content));
 
+        // SKU
         $sku = $page->filter('.price-item-code')->first();
 
         if ($sku) {
@@ -42,19 +44,47 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
             $product['sku'] = isset($matches[1]) ? $matches[1] : null;
         }
 
+        // Rating
         $rating = $page->filter('.product-item-rating')->first();
 
         if ($rating) {
             $product['store_rating'] = $rating->attr('data-rating');
         }
 
+        // Votes count
         $votes = $page->filter("[itemprop='ratingCount']")->first();
 
         if ($votes) {
             $product['votes_count'] = trim(strip_tags($votes->html()));
         }
 
-        (new Crawler($content))->filter('#main-characteristics table tr')->each(function (Crawler $tr) use (&$data) {
+        // Category
+        $categoryName = null;
+
+        $breadcrumbs = $page->filter(".breadcrumb")->first();
+
+        if ($breadcrumbs) {
+            $breadcrumbs = $breadcrumbs->filter('li');
+
+            if ($breadcrumbs && $breadcrumbs->count()) {
+                $categoryName = $breadcrumbs->eq($breadcrumbs->count() - 2)->html();
+
+                preg_match('/\<span.+\>(.+)\<\/span\>/siU', $categoryName, $matches);
+                if (isset($matches[1])) {
+                    $categoryName = trim($matches[1]);
+                }
+                unset($matches);
+            }
+        }
+
+        $categoryId = app()->make(CategoryMatcher::class)->match($categoryName);
+
+        if ($categoryId) {
+            $product['category_id'] = $categoryId;
+        }
+
+        // Product attributes
+        (new Crawler($content))->filter('#main-characteristics table tr')->each(function (Crawler $tr) use (&$data, $categoryId) {
             $td = $tr->filter('td');
 
             if ($td->count() < 2) {
@@ -79,8 +109,7 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
                 }
             }
 
-            /* @TODO recognize product category dynamically */
-            $attribute = $this->attributes->recognizeAttribute($propName, 1);
+            $attribute = $this->attributes->recognizeAttribute($propName, $categoryId);
 
             $data[$attribute->attribute_key] = $value;
         });

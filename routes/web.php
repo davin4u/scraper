@@ -19,6 +19,14 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('categories', 'ScraperCategoryController')->only([
-    'index', 'create', 'store'
-])->middleware(['auth']);
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('scraper')->name('scraper.')->group(function () {
+        Route::resource('categories', 'ScraperCategoryController')->only([
+            'index', 'create', 'store'
+        ]);
+    });
+
+    Route::resource('categories', 'CategoriesController')->only([
+        'index', 'create', 'store', 'edit', 'update'
+    ]);
+});

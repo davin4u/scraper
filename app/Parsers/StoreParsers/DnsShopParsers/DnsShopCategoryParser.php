@@ -22,8 +22,9 @@ class DnsShopCategoryParser implements ParserInterface
     protected $singlePageParser = false;
 
     /**
-     * @param $content
-     * @return mixed
+     * @param string $content
+     * @return array|mixed
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function handle($content)
     {
@@ -33,7 +34,7 @@ class DnsShopCategoryParser implements ParserInterface
 
         $category = (new Crawler($content))->filter('h1.title')->first();
 
-        $categoryId = $category ? CategoryMatcher::match(trim($category->text())) : null;
+        $categoryId = $category ? app()->make(CategoryMatcher::class)->match(trim($category->text())) : null;
 
         (new Crawler($content))->filter('div.catalog-item')->each(function (Crawler $product) use (&$results, $domain, $categoryId) {
             $item = [];

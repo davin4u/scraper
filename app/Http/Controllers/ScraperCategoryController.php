@@ -14,7 +14,7 @@ class ScraperCategoryController extends Controller
      */
     public function index()
     {
-        return view('categories.index', [
+        return view('scraper_categories.index', [
             'categories' => ScraperCategory::all()
         ]);
     }
@@ -26,7 +26,7 @@ class ScraperCategoryController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        return view('scraper_categories.create');
     }
 
     /**
@@ -38,7 +38,7 @@ class ScraperCategoryController extends Controller
     public function store(Request $request)
     {
         if (! $request->get('url')) {
-            return redirect(route('categories.create'))->with([
+            return redirect(route('scraper_categories.create'))->with([
                 'error' => 'Url required.'
             ]);
         }
@@ -48,7 +48,7 @@ class ScraperCategoryController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        return redirect(route('categories.index'))->with([
+        return redirect(route('scraper_categories.index'))->with([
             'status' => 'Category successfully created.'
         ]);
     }

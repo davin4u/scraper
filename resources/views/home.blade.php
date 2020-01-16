@@ -15,7 +15,9 @@
                     @endif
 
                     <div>
-                        <a class="btn btn-primary" href="{{ route('categories.index') }}">Scraping categories</a>
+                        <a class="btn btn-primary" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
+
+                        <a class="btn btn-primary" href="{{ route('categories.index') }}">Products categories</a>
                     </div>
                 </div>
             </div>
