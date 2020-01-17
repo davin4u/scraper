@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Http\Requests\CreateCategoryRequest;
+use App\Brand;
+use App\Http\Requests\CreateBrandRequest;
 
 /**
- * Class CategoriesController
+ * Class BrandsController
  * @package App\Http\Controllers
  */
-class CategoriesController extends Controller
+class BrandsController extends Controller
 {
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $categories = Category::all();
+        $brands = Brand::all();
 
-        return view('categories.index', compact('categories'));
+        return view('brands.index', compact('brands'));
     }
 
     /**
@@ -26,14 +26,14 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        return view('brands.create');
     }
 
     /**
-     * @param CreateCategoryRequest $request
+     * @param CreateBrandRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(CreateCategoryRequest $request)
+    public function store(CreateBrandRequest $request)
     {
         $name = $request->get('name');
         $map  = $request->get('map') ? explode(',', $request->get('map')) : [];
@@ -42,29 +42,29 @@ class CategoriesController extends Controller
             return trim($item);
         }, $map);
 
-        $category = Category::create([
+        $brand = Brand::create([
             'name' => $name,
             'map'  => $map
         ]);
 
-        return redirect(route('categories.index'))->with(['status' => 'Category has been created.']);
+        return redirect(route('brands.index'))->with(['status' => 'Brand has been created.']);
     }
 
     /**
-     * @param Category $category
+     * @param Brand $brand
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Category $category)
+    public function edit(Brand $brand)
     {
-        return view('categories.edit', compact('category'));
+        return view('brands.edit', compact('brand'));
     }
 
     /**
-     * @param Category $category
-     * @param CreateCategoryRequest $request
+     * @param Brand $brand
+     * @param CreateBrandRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update(Category $category, CreateCategoryRequest $request)
+    public function update(Brand $brand, CreateBrandRequest $request)
     {
         $name = $request->get('name');
         $map  = $request->get('map') ? explode(',', $request->get('map')) : [];
@@ -73,11 +73,11 @@ class CategoriesController extends Controller
             return trim($item);
         }, $map);
 
-        $category->update([
+        $brand->update([
             'name' => $name,
             'map'  => $map
         ]);
 
-        return redirect(route('categories.index'))->with(['status' => 'Category has been updated.']);
+        return redirect(route('brands.index'))->with(['status' => 'Brand has been updated.']);
     }
 }

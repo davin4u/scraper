@@ -3,13 +3,14 @@
 namespace App\Parsers\Helpers;
 
 /**
- * Class BrandMatcher
+ * Interface BrandMatcher
  * @package App\Parsers\Helpers
  */
-class BrandMatcher
+interface BrandMatcher
 {
-    public static function match($name)
-    {
-        return null;
-    }
+    /**
+     * @param string $name
+     * @return int
+     */
+    public function match(string $name) : int;
 }

@@ -17,7 +17,9 @@
                     <div>
                         <a class="btn btn-primary" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
 
-                        <a class="btn btn-primary" href="{{ route('categories.index') }}">Products categories</a>
+                        <a class="btn btn-primary" href="{{ route('categories.index') }}">Product categories</a>
+
+                        <a class="btn btn-primary" href="{{ route('brands.index') }}">Product brands</a>
                     </div>
                 </div>
             </div>

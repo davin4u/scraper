@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Parsers\Helpers\BrandMatcher;
+use App\Parsers\Helpers\SimpleBrandMatcher;
 use App\Parsers\Helpers\SimpleCategoryMatcher;
 use App\Parsers\Helpers\CategoryMatcher;
 use App\ProductsStorage\Interfaces\MongoDBClientInterface;
@@ -29,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(CategoryMatcher::class, function ($app) {
             return $app->make(SimpleCategoryMatcher::class);
+        });
+
+        $this->app->singleton(BrandMatcher::class, function ($app) {
+            return $app->make(SimpleBrandMatcher::class);
         });
     }
 

@@ -29,4 +29,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('categories', 'CategoriesController')->only([
         'index', 'create', 'store', 'edit', 'update'
     ]);
+
+    Route::resource('brands', 'BrandsController')->only([
+        'index', 'create', 'store', 'edit', 'update'
+    ]);
 });

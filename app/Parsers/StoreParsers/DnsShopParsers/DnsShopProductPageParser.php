@@ -4,6 +4,7 @@ namespace App\Parsers\StoreParsers\DnsShopParsers;
 
 use App\Parsers\BaseParser;
 use App\Parsers\Document;
+use App\Parsers\Helpers\BrandMatcher;
 use App\Parsers\Helpers\CategoryMatcher;
 use App\Parsers\ParserInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -25,8 +26,9 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
     protected $singlePageParser = true;
 
     /**
-     * @param $content
-     * @return mixed
+     * @param string $content
+     * @return array|mixed
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function handle($content)
     {
@@ -59,28 +61,27 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
         }
 
         // Category
-        $categoryName = null;
+        $categoryId = null;
 
-        $breadcrumbs = $page->filter(".breadcrumb")->first();
+        $category = $page->filter('[data-product-param="category"]');
 
-        if ($breadcrumbs) {
-            $breadcrumbs = $breadcrumbs->filter('li');
+        if ($category) {
+            $categoryId = app()->make(CategoryMatcher::class)->match(
+                trim($category->attr('data-value'))
+            );
 
-            if ($breadcrumbs && $breadcrumbs->count()) {
-                $categoryName = $breadcrumbs->eq($breadcrumbs->count() - 2)->html();
-
-                preg_match('/\<span.+\>(.+)\<\/span\>/siU', $categoryName, $matches);
-                if (isset($matches[1])) {
-                    $categoryName = trim($matches[1]);
-                }
-                unset($matches);
-            }
+            $product['category_id'] = $categoryId;
         }
 
-        $categoryId = app()->make(CategoryMatcher::class)->match($categoryName);
+        // Brand
+        $brand = $page->filter('[data-product-param="brand"]');
 
-        if ($categoryId) {
-            $product['category_id'] = $categoryId;
+        if ($brand) {
+            $brandId = app()->make(BrandMatcher::class)->match(
+                trim($brand->attr('data-value'))
+            );
+
+            $product['brand_id'] = $brandId;
         }
 
         // Product attributes

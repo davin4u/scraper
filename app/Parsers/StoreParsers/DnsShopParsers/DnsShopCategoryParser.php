@@ -4,6 +4,7 @@ namespace App\Parsers\StoreParsers\DnsShopParsers;
 
 use App\Parsers\Document;
 use App\Parsers\Helpers\BrandMatcher;
+use App\Parsers\Helpers\SimpleBrandMatcher;
 use App\Parsers\Helpers\CategoryMatcher;
 use App\Parsers\ParserInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -63,7 +64,9 @@ class DnsShopCategoryParser implements ParserInterface
             $brand = $product->filter('i[data-product-param="brand"]')->first();
 
             if ($brand) {
-                $item['brand_id'] = BrandMatcher::match($brand->attr('data-value'));
+                $item['brand_id'] = app()->make(BrandMatcher::class)->match(
+                    $brand->attr('data-value')
+                );
             }
 
             $price = $product->filter('.product-price__current')->first();
