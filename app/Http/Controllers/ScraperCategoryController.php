@@ -38,7 +38,7 @@ class ScraperCategoryController extends Controller
     public function store(Request $request)
     {
         if (! $request->get('url')) {
-            return redirect(route('scraper_categories.create'))->with([
+            return redirect(route('scraper.categories.create'))->with([
                 'error' => 'Url required.'
             ]);
         }
@@ -48,7 +48,7 @@ class ScraperCategoryController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        return redirect(route('scraper_categories.index'))->with([
+        return redirect(route('scraper.categories.index'))->with([
             'status' => 'Category successfully created.'
         ]);
     }

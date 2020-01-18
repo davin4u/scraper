@@ -30,6 +30,8 @@ class Product extends Model
         'url',
         'store_rating',
         'votes_count',
+        'meta_title',
+        'meta_description',
         'storable_id',
         'scraped_at'
     ];

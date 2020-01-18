@@ -107,6 +107,20 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
             $product['brand_id'] = $brandId;
         }
 
+        // Meta title
+        $title = $page->filter('meta[property="og:title"]');
+
+        if ($title && $title->count()) {
+            $product['meta_title'] = trim($title->attr('content'));
+        }
+
+        // Meta description
+        $description = $page->filter('meta[name="description"]');
+
+        if ($description && $description->count()) {
+            $product['meta_description'] = trim($description->attr('content'));
+        }
+
         // Product attributes
         (new Crawler($content))->filter('#main-characteristics table tr')->each(function (Crawler $tr) use (&$data, $categoryId) {
             $td = $tr->filter('td');
