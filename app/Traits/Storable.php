@@ -25,7 +25,9 @@ trait Storable
             return $this->storable;
         }
 
-        if (is_null($this->storable_id)) {
+        $storableKey = property_exists($this, 'storableKey') ? $this->storableKey : 'storable_id';
+
+        if (is_null($this->{$storableKey})) {
             return [];
         }
 
@@ -34,7 +36,7 @@ trait Storable
         }
 
         /** @var DocumentInterface $doc */
-        $doc = static::$storage->find($this->storable_id);
+        $doc = static::$storage->find($this->{$storableKey});
 
         if (!is_null($doc)) {
             $this->storable = $doc->getAttributes();
@@ -55,7 +57,7 @@ trait Storable
 
         $data = array_merge($this->toStorableDocument(), ['attributes' => $attributes]);
 
-        $storableKey = property_exists($this, 'storableKey') ? $this->{$storableKey} : 'storable_id';
+        $storableKey = property_exists($this, 'storableKey') ? $this->storableKey : 'storable_id';
 
         if (is_null($this->{$storableKey})) {
             /** @var DocumentInterface $doc */

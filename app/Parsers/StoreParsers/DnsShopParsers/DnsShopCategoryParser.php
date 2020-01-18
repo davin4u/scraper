@@ -4,7 +4,6 @@ namespace App\Parsers\StoreParsers\DnsShopParsers;
 
 use App\Parsers\Document;
 use App\Parsers\Helpers\BrandMatcher;
-use App\Parsers\Helpers\SimpleBrandMatcher;
 use App\Parsers\Helpers\CategoryMatcher;
 use App\Parsers\ParserInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -50,7 +49,7 @@ class DnsShopCategoryParser implements ParserInterface
 
             if ($link) {
                 $item['name'] = $link->text();
-                $item['url'] = $link->attr('href');
+                $item['url'] = 'https://www.dns-shop.ru' . $link->attr('href');
             }
 
             $sku = $product->filter('.product-info__code')->first();

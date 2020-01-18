@@ -11,5 +11,5 @@ class SimpleCategoryMatcher extends SimpleMatcher implements CategoryMatcher
     /**
      * @var string
      */
-    protected static $model = \App\Category::class;
+    protected $model = \App\Category::class;
 }

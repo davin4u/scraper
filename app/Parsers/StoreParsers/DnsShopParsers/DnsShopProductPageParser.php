@@ -2,6 +2,7 @@
 
 namespace App\Parsers\StoreParsers\DnsShopParsers;
 
+use App\Domain;
 use App\Parsers\BaseParser;
 use App\Parsers\Document;
 use App\Parsers\Helpers\BrandMatcher;
@@ -37,46 +38,68 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
 
         $page = (new Crawler($content));
 
+        $product['domain_id'] = Domain::where('name', static::$domain)->first()->id;
+
         // SKU
         $sku = $page->filter('.price-item-code')->first();
 
-        if ($sku) {
+        if ($sku && $sku->count()) {
             preg_match('/.+(\d+?).+/siU', $sku->html(), $matches);
 
             $product['sku'] = isset($matches[1]) ? $matches[1] : null;
         }
 
-        // Rating
-        $rating = $page->filter('.product-item-rating')->first();
+        $name = $page->filter('h1.page-title')->first();
 
-        if ($rating) {
+        if ($name) {
+            $product['name'] = trim($name->html());
+        }
+
+        // Rating
+        $rating = $page->filter('.product-item-rating');
+
+        if ($rating && $rating->count()) {
+            $rating = $rating->first();
+
             $product['store_rating'] = $rating->attr('data-rating');
         }
 
         // Votes count
-        $votes = $page->filter("[itemprop='ratingCount']")->first();
+        $votes = $page->filter("[itemprop='ratingCount']");
 
-        if ($votes) {
+        if ($votes && $votes->count()) {
+            $votes = $votes->first();
+
             $product['votes_count'] = trim(strip_tags($votes->html()));
         }
 
         // Category
         $categoryId = null;
 
-        $category = $page->filter('[data-product-param="category"]');
+        $breadcrumbs = $page->filter(".breadcrumb")->first();
 
-        if ($category) {
-            $categoryId = app()->make(CategoryMatcher::class)->match(
-                trim($category->attr('data-value'))
-            );
+        if ($breadcrumbs) {
+            $breadcrumbs = $breadcrumbs->filter('li');
 
+            if ($breadcrumbs && $breadcrumbs->count()) {
+                $categoryName = $breadcrumbs->eq($breadcrumbs->count() - 2)->html();
+
+                preg_match('/\<span.+\>(.+)\<\/span\>/siU', $categoryName, $matches);
+                if (isset($matches[1])) {
+                    $categoryId = app()->make(CategoryMatcher::class)->match(trim($matches[1]));
+                }
+                unset($matches);
+            }
+        }
+
+        if (!is_null($categoryId)) {
             $product['category_id'] = $categoryId;
         }
 
         // Brand
         $brand = $page->filter('[data-product-param="brand"]');
 
-        if ($brand) {
+        if ($brand && $brand->count()) {
             $brandId = app()->make(BrandMatcher::class)->match(
                 trim($brand->attr('data-value'))
             );

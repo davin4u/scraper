@@ -14,6 +14,11 @@ class Product extends Model
     use Storable;
 
     /**
+     * @var string
+     */
+    protected $storableKey = 'storable_id';
+
+    /**
      * @var array
      */
     protected $fillable = [
@@ -24,7 +29,9 @@ class Product extends Model
         'sku',
         'url',
         'store_rating',
-        'storable_id'
+        'votes_count',
+        'storable_id',
+        'scraped_at'
     ];
 
     /**

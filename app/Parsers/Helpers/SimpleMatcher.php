@@ -2,8 +2,6 @@
 
 namespace App\Parsers\Helpers;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * Class SimpleMatcher
  * @package App\Parsers\Helpers
@@ -13,14 +11,14 @@ class SimpleMatcher
     /**
      * @var array
      */
-    protected static $map;
+    protected $map;
 
     /**
      * SimpleCategoryMatcher constructor.
      */
     public function __construct()
     {
-        static::loadMapping();
+        $this->loadMapping();
     }
 
     /**
@@ -30,36 +28,43 @@ class SimpleMatcher
      */
     public function match(string $name) : int
     {
-        foreach (static::$map as $categoryId => $map) {
-            if (in_array($name, $map) || in_array(mb_strtolower($name), $map)) {
-                return (int)$categoryId;
+        foreach ($this->map as $entityId => $map) {
+            if (is_array($map) && count($map) > 0) {
+                foreach ($map as $pattern) {
+                    if (
+                        (strcasecmp($pattern, $name) === 0)
+                        || (strcmp(mb_strtolower($pattern), mb_strtolower($name)) === 0)
+                    ) {
+                        return (int)$entityId;
+                    }
+                }
             }
         }
 
         // create entity if not found
         // @TODO remove or change below logic after initial scraping
-        $created = static::$model::create([
+        $created = $this->model::create([
             'name' => $name,
             'map' => [$name]
         ]);
 
-        static::loadMapping();
+        $this->loadMapping();
 
         return $created->id;
     }
 
-    protected static function loadMapping()
+    protected function loadMapping()
     {
-        static::$map = [];
+        $this->map = [];
 
-        if (!static::$model) {
+        if (!$this->model) {
             throw new \Exception("Property model should be set in child matcher class.");
         }
 
-        $categories = (new static::$model)->query()->get();
+        $entities = (new $this->model)->query()->get();
 
-        foreach ($categories as $category) {
-            static::$map[$category->id] = $category->map;
+        foreach ($entities as $entity) {
+            $this->map[$entity->id] = $entity->map;
         }
     }
 }

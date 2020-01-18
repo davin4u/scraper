@@ -11,5 +11,5 @@ class SimpleBrandMatcher extends SimpleMatcher implements BrandMatcher
     /**
      * @var string
      */
-    protected static $model = \App\Brand::class;
+    protected $model = \App\Brand::class;
 }

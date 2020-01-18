@@ -7,6 +7,7 @@ use App\Exceptions\ScrapingTerminatedException;
 use App\Scrapers\BaseScraper;
 use App\Scrapers\ScraperCategory;
 use App\Scrapers\ScraperFactory;
+use App\Scrapers\ScraperInterface;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +19,7 @@ class ScraperProcessCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'scraper:process {--url=}';
+    protected $signature = 'scraper:process {--url=} {--products} {--take=}';
 
     /**
      * The console command description.
@@ -42,6 +43,12 @@ class ScraperProcessCommand extends Command
      */
     public function handle()
     {
+        if ($this->option('products')) {
+            $this->handleProductsScraping($this->option('take') ? (int)$this->option('take') : 100);
+
+            return;
+        }
+
         $url = $this->option('url');
 
         if (!$url) {
@@ -61,7 +68,7 @@ class ScraperProcessCommand extends Command
         }
 
         try {
-            /** @var BaseScraper $scraper */
+            /** @var ScraperInterface $scraper */
             $scraper = (new ScraperFactory())->get($url);
 
             $scraper->handle($url);
@@ -82,6 +89,32 @@ class ScraperProcessCommand extends Command
                 $category->update([
                     'scraping_started_at' => $initialStartedDate
                 ]);
+            }
+        }
+    }
+
+    public function handleProductsScraping($take = 100)
+    {
+        $products = \App\Product::query()->orderBy('scraped_at')->orderBy('id')->take($take)->get();
+
+        foreach ($products as $product) {
+            try {
+                /** @var ScraperInterface $scraper */
+                $scraper = (new ScraperFactory())->get($product->url);
+
+                $scraper->handle($product->url);
+
+                $product->update([
+                    'scraped_at' => Carbon::now()->toDateTimeString()
+                ]);
+            }
+            catch (ScraperNotFoundException $e) {
+                Log::error("[SCRAPER] Scraper for $product->url was not found.");
+
+                throw new \Exception("Scraper not found.");
+            }
+            catch (ScrapingTerminatedException $e) {
+
             }
         }
     }
