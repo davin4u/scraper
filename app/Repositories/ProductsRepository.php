@@ -53,7 +53,7 @@ class ProductsRepository
 
             $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
 
-            $product->saveStorableDocument(Arr::get($data, 'attributes', []));
+            $product->saveStorableDocument(Arr::only($data, ['attributes', 'images'], []));
 
             return true;
         }
@@ -63,7 +63,7 @@ class ProductsRepository
 
         $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
 
-        $product->saveStorableDocument(Arr::get($data, 'attributes', []));
+        $product->saveStorableDocument(Arr::only($data, ['attributes', 'images'], []));
 
         return true;
     }

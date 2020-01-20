@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\ProductsStorage\Interfaces\DocumentInterface;
 use App\ProductsStorage\Interfaces\ProductsStorageInterface;
+use Illuminate\Support\Arr;
 
 trait Storable
 {
@@ -46,29 +47,32 @@ trait Storable
     }
 
     /**
-     * @param $attributes
+     * @param array $data
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function saveStorableDocument($attributes = [])
+    public function saveStorableDocument(array $data)
     {
         if (is_null(static::$storage)) {
             static::$storage = app()->make(ProductsStorageInterface::class);
         }
 
-        $data = array_merge($this->toStorableDocument(), ['attributes' => $attributes]);
+        $attributes = Arr::get($data, 'attributes', []);
+        $images     = Arr::get($data, 'images', []);
+
+        $storableObject = array_merge($this->toStorableDocument(), ['attributes' => $attributes], ['images' => $images]);
 
         $storableKey = property_exists($this, 'storableKey') ? $this->storableKey : 'storable_id';
 
         if (is_null($this->{$storableKey})) {
             /** @var DocumentInterface $doc */
-            $doc = static::$storage->create($data);
+            $doc = static::$storage->create($storableObject);
 
             $this->update([
                 $storableKey => $doc->getDocumentId()
             ]);
         }
         else {
-            static::$storage->update($this->{$storableKey}, $data);
+            static::$storage->update($this->{$storableKey}, $storableObject);
         }
     }
 }

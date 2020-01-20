@@ -121,6 +121,23 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
             $product['meta_description'] = trim($description->attr('content'));
         }
 
+        // Image
+        $images = $page->filter('.owl-wrapper .owl-item');
+
+        try {
+            if ($images && $images->count()) {
+                $image = $images->first();
+
+                $img = $image->filter('img');
+                if ($img) {
+                    $product['images'] = [$img->attr('src')];
+                }
+            }
+        }
+        catch(\InvalidArgumentException $e) {
+            $product['images'] = [];
+        }
+
         // Product attributes
         (new Crawler($content))->filter('#main-characteristics table tr')->each(function (Crawler $tr) use (&$data, $categoryId) {
             $td = $tr->filter('td');

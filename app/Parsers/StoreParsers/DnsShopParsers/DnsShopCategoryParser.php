@@ -70,15 +70,26 @@ class DnsShopCategoryParser implements ParserInterface
 
             $price = $product->filter('.product-price__current')->first();
 
-            if ($price) {
-                $item['price'] = (float)preg_replace('/[^0-9]/', '', trim(strip_tags($price->html())));
-                $item['currency'] = 'RUB';
+            try {
+                if ($price) {
+                    $item['price'] = (float)preg_replace('/[^0-9]/', '', trim(strip_tags($price->html())));
+                }
             }
+            catch (\InvalidArgumentException $e) {
+                $item['price'] = 0;
+            }
+
+            $item['currency'] = 'RUB';
 
             $rating = $product->filter('.product-info__rating')->first();
 
-            if ($rating) {
-                $item['store_rating'] = (float)$rating->attr('data-rating');
+            try {
+                if ($rating) {
+                    $item['store_rating'] = (float)$rating->attr('data-rating');
+                }
+            }
+            catch (\InvalidArgumentException $e) {
+                $item['store_rating'] = 0;
             }
 
             $results[] = $item;
