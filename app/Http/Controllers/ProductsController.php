@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Exceptions\BrandNotFoundException;
 use App\Exceptions\CategoryNotFoundException;
 use App\Exceptions\DomainNotFoundException;
-use App\Product;
 use App\Repositories\ProductsRepository;
 use Illuminate\Http\Request;
 
@@ -96,16 +95,6 @@ class ProductsController extends Controller
         return view('products.index', [
             'products' => $paginator
         ]);
-    }
-
-    public function create()
-    {
-
-    }
-
-    public function store()
-    {
-
     }
 
     public function edit()
