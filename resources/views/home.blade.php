@@ -20,6 +20,8 @@
                         <a class="btn btn-primary" href="{{ route('categories.index') }}">Product categories</a>
 
                         <a class="btn btn-primary" href="{{ route('brands.index') }}">Product brands</a>
+
+                        <a class="btn btn-primary" href="{{ route('products.index') }}">Products</a>
                     </div>
                 </div>
             </div>

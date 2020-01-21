@@ -53,6 +53,30 @@ class Product extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function domain()
+    {
+        return $this->belongsTo(Domain::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    /**
      * @param array $data
      */
     public function syncPrice(array $data)

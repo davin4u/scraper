@@ -33,4 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('brands', 'BrandsController')->only([
         'index', 'create', 'store', 'edit', 'update'
     ]);
+
+    Route::resource('products', 'ProductsController')->only([
+        'index', 'create', 'store', 'edit', 'update'
+    ]);
 });
