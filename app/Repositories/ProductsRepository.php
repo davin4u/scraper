@@ -10,7 +10,6 @@ use App\Exceptions\CategoryNotFoundException;
 use App\Exceptions\DomainNotFoundException;
 use App\Product;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 /**
@@ -20,9 +19,12 @@ use Illuminate\Support\Arr;
 class ProductsRepository extends EloquentRepository
 {
     /**
-     * @var string|Model
+     * @return string
      */
-    protected $model = Product::class;
+    public function model() : string
+    {
+        return Product::class;
+    }
 
     /**
      * @param $sku

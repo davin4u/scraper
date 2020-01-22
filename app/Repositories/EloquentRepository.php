@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class EloquentRepository
  * @package App\Repositories
  */
-class EloquentRepository implements EloquentRepositoryInterface
+abstract class EloquentRepository implements EloquentRepositoryInterface
 {
     /**
      * @var int
@@ -45,12 +45,15 @@ class EloquentRepository implements EloquentRepositoryInterface
      */
     public function __construct()
     {
-        if (!property_exists($this, 'model') || !$this->model) {
-            throw new \Exception("Property model must be set in child repository class.");
-        }
+        $class = $this->model();
 
-        $this->model = new $this->model;
+        $this->model = new $class;
     }
+
+    /**
+     * @return string
+     */
+    abstract public function model() : string;
 
     /**
      * @param $field
@@ -122,6 +125,8 @@ class EloquentRepository implements EloquentRepositoryInterface
     {
         $query = $this->buildQuery();
 
+        $this->flush();
+
         return $query->get();
     }
 
@@ -131,6 +136,8 @@ class EloquentRepository implements EloquentRepositoryInterface
     public function paginate() : LengthAwarePaginator
     {
         $query = $this->buildQuery();
+
+        $this->flush();
 
         return $query->paginate();
     }
@@ -168,5 +175,14 @@ class EloquentRepository implements EloquentRepositoryInterface
         }
 
         return $query;
+    }
+
+    private function flush()
+    {
+        $this->whereClause      = [];
+        $this->whereLikeClause  = [];
+        $this->orderBy          = 'id';
+        $this->offset           = 0;
+        $this->take             = 10;
     }
 }

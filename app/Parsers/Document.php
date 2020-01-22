@@ -94,6 +94,14 @@ class Document
     }
 
     /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->file->getPath() . DIRECTORY_SEPARATOR . $this->file->getFilename();
+    }
+
+    /**
      * @param $name
      * @param $arguments
      * @return mixed

@@ -90,7 +90,7 @@ class ParserProcessCommand extends Command
                 $document->unlock();
             }
             catch (ParserNotFoundException $e) {
-                Log::error("Parser NOT FOUND: $domain");
+                Log::error("Parser NOT FOUND: " . $document->getPath());
 
                 throw new \Exception("Parser not found.");
             }

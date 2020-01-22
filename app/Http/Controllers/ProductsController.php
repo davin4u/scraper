@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Brand;
+use App\Category;
+use App\Domain;
 use App\Exceptions\BrandNotFoundException;
 use App\Exceptions\CategoryNotFoundException;
 use App\Exceptions\DomainNotFoundException;
+use App\Product;
 use App\Repositories\ProductsRepository;
 use Illuminate\Http\Request;
 
@@ -97,9 +101,17 @@ class ProductsController extends Controller
         ]);
     }
 
-    public function edit()
+    /**
+     * @param Product $product
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function edit(Product $product)
     {
+        $domains = Domain::all();
+        $categories = Category::all();
+        $brands = Brand::all();
 
+        return view('products.edit', compact('product', 'domains', 'categories', 'brands'));
     }
 
     public function update()
