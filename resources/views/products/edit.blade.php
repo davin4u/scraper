@@ -83,6 +83,21 @@
                                     <textarea name="meta_description" class="form-control" id="meta_description" placeholder="Meta description">{{ $product->meta_description }}</textarea>
                                 </div>
 
+                                <div class="card border-light mb-3">
+                                    <div class="card-header">Product characteristics</div>
+
+                                    <div class="card-body">
+                                        @foreach($product->getStorableAttributes() as $attribute)
+                                            <div class="form-group row">
+                                                <label class="col-sm-4 col-form-label">{{ $attribute['name'] }}</label>
+
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="attributes[{{ $attribute['attribute_key'] }}]" class="form-control" placeholder="{{ $attribute['name'] }}" value="{{ $attribute['value'] ?: '' }}" />
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
 
                                 <button type="submit" class="btn btn-primary">Save</button>
                                 <a href="{{ route('products.index') }}" class="btn btn-danger">Cancel</a>

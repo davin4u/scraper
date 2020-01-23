@@ -52,4 +52,29 @@ class ProductAttributesRepository
 
         return $model;
     }
+
+    /**
+     * @param int $categoryId
+     * @param array $fillValues
+     * @return array
+     */
+    public function getCategoryAttributes(int $categoryId, $fillValues = [])
+    {
+        $prepared = [];
+
+        /** @var \Illuminate\Database\Eloquent\Collection $attributes */
+        $attributes = ProductAttributes::where('category_id', $categoryId)->get();
+
+        if ($attributes->count()) {
+            foreach ($attributes as $attr) {
+                $prepared[] = [
+                    'attribute_key' => $attr->attribute_key,
+                    'name' => $attr->name,
+                    'value' => isset($fillValues[$attr->attribute_key]) ? $fillValues[$attr->attribute_key] : null
+                ];
+            }
+        }
+
+        return $prepared;
+    }
 }

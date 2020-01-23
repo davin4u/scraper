@@ -51,30 +51,28 @@ class Document implements DocumentInterface
      */
     public function getAttributes(): array
     {
-        return $this->prepareAttributes((array) $this->doc);
+        $doc = $this->getDoc(true);
+
+        return isset($doc['attributes']) ? $doc['attributes'] : [];
     }
 
     /**
-     * @return \MongoDB\Model\BSONDocument
+     * @param bool $asArray
+     * @return array|mixed|\MongoDB\Model\BSONDocument
      */
-    public function getDoc()
+    public function getDoc($asArray = false)
     {
-        return $this->doc;
+        return $asArray ? $this->toArray() : $this->doc;
     }
 
     /**
-     * @param $attributes
-     * @return mixed
+     * @return array
      */
-    private function prepareAttributes($attributes)
+    public function getImages() : array
     {
-        foreach ($attributes as $key => $attr) {
-            if ($attr instanceof \MongoDB\Model\BSONArray) {
-                $attributes[$key] = $this->prepareAttributes((array) $attr);
-            }
-        }
+        $doc = $this->getDoc(true);
 
-        return $attributes;
+        return isset($doc['images']) ? $doc['images'] : [];
     }
 
     /**
@@ -86,5 +84,23 @@ class Document implements DocumentInterface
         $objectId = $this->doc->_id;
 
         return (string) $objectId;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    private function toArray()
+    {
+        $handler = function (array $properties, callable $handler) {
+            foreach ($properties as $key => $prop) {
+                if (is_iterable($prop)) {
+                    $properties[$key] = $handler((array)$prop, $handler);
+                }
+            }
+
+            return $properties;
+        };
+
+        return $handler((array) $this->doc, $handler);
     }
 }

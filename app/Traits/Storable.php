@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\ProductsStorage\Interfaces\DocumentInterface;
 use App\ProductsStorage\Interfaces\ProductsStorageInterface;
+use App\Repositories\ProductAttributesRepository;
 use Illuminate\Support\Arr;
 
 trait Storable
@@ -17,10 +18,10 @@ trait Storable
     protected static $storage;
 
     /**
-     * @return array
+     * @return array|mixed|\MongoDB\Model\BSONDocument
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function getStorableAttributes()
+    public function getStorableDocument()
     {
         if (!empty($this->storable)) {
             return $this->storable;
@@ -40,10 +41,43 @@ trait Storable
         $doc = static::$storage->find($this->{$storableKey});
 
         if (!is_null($doc)) {
-            $this->storable = $doc->getAttributes();
+            $this->storable = $doc->getDoc(true);
         }
 
         return $this->storable;
+    }
+
+    /**
+     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getStorableAttributes()
+    {
+        if (is_null($this->category_id)) {
+            return [];
+        }
+
+        if (empty($this->storable)) {
+            $this->getStorableDocument();
+        }
+
+        /** @var ProductAttributesRepository $attributes */
+        $attributes = app()->make(ProductAttributesRepository::class);
+
+        return $attributes->getCategoryAttributes($this->category_id, Arr::get($this->storable, 'attributes', []));
+    }
+
+    /**
+     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getStorableImages()
+    {
+        if (empty($this->storable)) {
+            $this->getStorableDocument();
+        }
+
+        return Arr::get($this->storable, 'images', []);
     }
 
     /**

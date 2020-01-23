@@ -8,6 +8,7 @@ use App\Domain;
 use App\Exceptions\BrandNotFoundException;
 use App\Exceptions\CategoryNotFoundException;
 use App\Exceptions\DomainNotFoundException;
+use App\Http\Requests\UpdateProductRequest;
 use App\Product;
 use App\Repositories\ProductsRepository;
 use Illuminate\Http\Request;
@@ -114,8 +115,30 @@ class ProductsController extends Controller
         return view('products.edit', compact('product', 'domains', 'categories', 'brands'));
     }
 
-    public function update()
+    /**
+     * @param Product $product
+     * @param UpdateProductRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function update(Product $product, UpdateProductRequest $request)
     {
+        $product->update($request->only([
+            'name',
+            'sku',
+            'domain_id',
+            'category_id',
+            'brand_id',
+            'meta_title',
+            'meta_description'
+        ]));
 
+        $product->saveStorableDocument([
+            'attributes' => $request->get('attributes', [])
+        ]);
+
+        return redirect(route('products.edit', [$product]))->with([
+            'status' => 'Product successfully saved.'
+        ]);
     }
 }

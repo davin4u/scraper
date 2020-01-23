@@ -23,4 +23,15 @@ interface DocumentInterface
      * @return mixed
      */
     public function getDocumentId() : string;
+
+    /**
+     * @param bool $asArray
+     * @return array|mixed|\MongoDB\Model\BSONDocument
+     */
+    public function getDoc(bool $asArray = false);
+
+    /**
+     * @return array
+     */
+    public function getImages() : array;
 }
