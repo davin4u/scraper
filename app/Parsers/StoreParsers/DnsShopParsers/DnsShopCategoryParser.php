@@ -26,7 +26,7 @@ class DnsShopCategoryParser implements ParserInterface
      * @return array|mixed
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function handle($content)
+    public function handle(string $content)
     {
         $results = [];
 
