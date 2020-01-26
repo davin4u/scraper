@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -145,5 +146,21 @@ class Product extends Model
             'brand_id' => $this->brand_id,
             'category_id' => $this->category_id
         ];
+    }
+
+    /**
+     * @return array|Collection
+     */
+    public function matches()
+    {
+        $matches = DB::table('product_matches')->where('product_id', $this->id)->get();
+
+        if ($matches->count() > 0) {
+            return $matches->map(function ($match) {
+                return Product::query()->find($match->possible_match_id);
+            });
+        }
+
+        return collect([]);
     }
 }

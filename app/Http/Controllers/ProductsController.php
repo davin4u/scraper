@@ -108,11 +108,12 @@ class ProductsController extends Controller
      */
     public function edit(Product $product)
     {
-        $domains = Domain::all();
+        $domains    = Domain::all();
         $categories = Category::all();
-        $brands = Brand::all();
+        $brands     = Brand::all();
+        $matches    = $product->matches();
 
-        return view('products.edit', compact('product', 'domains', 'categories', 'brands'));
+        return view('products.edit', compact('product', 'domains', 'categories', 'brands', 'matches'));
     }
 
     /**

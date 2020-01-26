@@ -4,6 +4,37 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
+                @if ($matches->count() > 0)
+                    <div class="card mb-5">
+                        <div class="card-header bg-danger text-white">Product possible matches</div>
+
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <th>ID</th>
+                                    <th>Domain</th>
+                                    <th>Name</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                    @foreach ($matches as $match)
+                                        <tr>
+                                            <td>{{ $match->id }}</td>
+                                            <td>{{ $match->domain->name }}</td>
+                                            <td>
+                                                <a href="{{ route('products.edit', $match) }}">{{ $match->name }}</a>
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="#" class="btn btn-primary btn-sm">Merge</a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="card">
                     <div class="card-header">Edit product</div>
 
