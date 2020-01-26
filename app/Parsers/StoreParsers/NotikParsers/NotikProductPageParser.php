@@ -5,6 +5,7 @@ namespace App\Parsers\StoreParsers\NotikParsers;
 use App\Parsers\BaseParser;
 use App\Parsers\Document;
 use App\Parsers\ParserInterface;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class NotikProductPageParser
@@ -28,8 +29,41 @@ class NotikProductPageParser extends BaseParser implements ParserInterface
      */
     public function handle(string $content)
     {
-        // @TODO currently we don't really need to process a product page because we are focused on prices. Maybe later.
-        return [];
+        $product = [];
+
+        $page = new Crawler($content);
+
+        // Meta title
+        try {
+            $title = $page->filter('title')->first();
+
+            if ($title) {
+                $product['meta_title'] = trim($title->html());
+            }
+        }
+        catch (\InvalidArgumentException $e) {}
+
+        // Meta description
+        try {
+            $description = $page->filter('meta[name="description"]');
+
+            if ($description && $description->count()) {
+                $product['meta_description'] = trim($description->attr('content'));
+            }
+        }
+        catch (\InvalidArgumentException $e) {}
+
+        // Meta keywords
+        try {
+            $keywords = $page->filter('meta[name="keywords"]');
+
+            if ($keywords && $keywords->count()) {
+                $product['meta_keywords'] = trim($keywords->attr('content'));
+            }
+        }
+        catch (\InvalidArgumentException $e) {}
+
+        return $product;
     }
 
     /**

@@ -27,6 +27,16 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
     protected $singlePageParser = true;
 
     /**
+     * Mapping for manufacturer id property
+     * category ID => Attribute Key
+     * @var array
+     */
+    protected $manufacturerAttributeMapping = [
+        1 => 'attr_5',
+        2 => 'attr_79'
+    ];
+
+    /**
      * @param string $content
      * @return array|mixed
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
@@ -170,6 +180,15 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
         });
 
         $product['attributes'] = $data;
+
+        // manufacturer id
+        if (
+            !is_null($categoryId)
+            && isset($this->manufacturerAttributeMapping[$categoryId])
+            && !empty($product['attributes'][$this->manufacturerAttributeMapping[$categoryId]])
+        ) {
+            $product['manufacturer_id'] = $product['attributes'][$this->manufacturerAttributeMapping[$categoryId]];
+        }
 
         return $product;
     }
