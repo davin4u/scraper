@@ -80,11 +80,13 @@ class ParserProcessCommand extends Command
 
                 $results = $parser->handle($document->getContent(false));
 
-                if ($parser->isSinglePageParser()) {
-                    (new ProductsRepository())->domain($domain)->createOrUpdate($results);
-                }
-                else {
-                    (new ProductsRepository())->domain($domain)->bulkCreateOrUpdate($results);
+                if (!empty($results)) {
+                    if ($parser->isSinglePageParser()) {
+                        (new ProductsRepository())->domain($domain)->createOrUpdate($results);
+                    }
+                    else {
+                        (new ProductsRepository())->domain($domain)->bulkCreateOrUpdate($results);
+                    }
                 }
 
                 $document->unlock();
