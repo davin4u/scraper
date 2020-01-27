@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Product;
 use App\ProductsStorage\Interfaces\DocumentInterface;
 use App\ProductsStorage\Interfaces\ProductsStorageInterface;
 use App\Repositories\ProductAttributesRepository;
@@ -108,5 +109,35 @@ trait Storable
         else {
             static::$storage->update($this->{$storableKey}, $storableObject);
         }
+    }
+
+    /**
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function deleteStorableDocument()
+    {
+        if (is_null(static::$storage)) {
+            static::$storage = app()->make(ProductsStorageInterface::class);
+        }
+
+        $storableKey = property_exists($this, 'storableKey') ? $this->storableKey : 'storable_id';
+
+        if (!is_null($this->{$storableKey})) {
+            return static::$storage->delete($this->{$storableKey});
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Product $product
+     */
+    public function attachStorableDocument(Product $product)
+    {
+        $storableKey = property_exists($this, 'storableKey') ? $this->storableKey : 'storable_id';
+
+        $this->update([
+            $storableKey => $product->{$storableKey}
+        ]);
     }
 }

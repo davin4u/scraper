@@ -25,7 +25,7 @@
                                                 <a href="{{ route('products.edit', $match) }}">{{ $match->name }}</a>
                                             </td>
                                             <td class="text-right">
-                                                <a href="#" class="btn btn-primary btn-sm">Merge</a>
+                                                <a href="{{ route('products.resolve', [$product, $match]) }}" class="btn btn-primary btn-sm">Merge</a>
                                             </td>
                                         </tr>
                                     @endforeach

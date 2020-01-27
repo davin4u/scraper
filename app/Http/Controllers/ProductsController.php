@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Product;
 use App\Repositories\ProductsRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ProductsController
@@ -140,6 +141,49 @@ class ProductsController extends Controller
 
         return redirect(route('products.edit', [$product]))->with([
             'status' => 'Product successfully saved.'
+        ]);
+    }
+
+    /**
+     * @param Product $source
+     * @param Product $match
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function resolve(Product $source, Product $match)
+    {
+        return view('products.resolve', compact('source', 'match'));
+    }
+
+    /**
+     * @param Product $source
+     * @param Product $match
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function merge(Product $source, Product $match)
+    {
+        $source->saveStorableDocument([
+            'attributes' => $this->request->get('attributes', [])
+        ]);
+
+        if ($match->deleteStorableDocument()) {
+            $match->attachStorableDocument($source);
+
+            // @TODO extract this and all related stuff to separate class
+            DB::table('product_matches')->where(function ($query) use ($source, $match) {
+                return $query->where('product_id', $source->id)->where('possible_match_id', $match->id);
+            })->orWhere(function ($query) use ($source, $match) {
+                return $query->where('product_id', $match->id)->where('possible_match_id', $source->id);
+            })->update(['resolved' => 1]);
+        }
+        else {
+            return redirect(route('products.resolve', [$source, $match]))->withErrors([
+                'error' => 'Can not merge the products.'
+            ]);
+        }
+
+        return redirect(route('products.index'))->with([
+            'status' => 'The products were successfully merged.'
         ]);
     }
 }

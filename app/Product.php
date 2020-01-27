@@ -153,7 +153,7 @@ class Product extends Model
      */
     public function matches()
     {
-        $matches = DB::table('product_matches')->where('product_id', $this->id)->get();
+        $matches = DB::table('product_matches')->where('product_id', $this->id)->where('resolved', 0)->get();
 
         if ($matches->count() > 0) {
             return $matches->map(function ($match) {

@@ -26,15 +26,23 @@ Route::middleware(['auth'])->group(function () {
         ]);
     });
 
+    // Categories
     Route::resource('categories', 'CategoriesController')->only([
         'index', 'create', 'store', 'edit', 'update'
     ]);
 
+    // Brands
     Route::resource('brands', 'BrandsController')->only([
         'index', 'create', 'store', 'edit', 'update'
     ]);
 
+    // Products
     Route::resource('products', 'ProductsController')->only([
         'index', 'edit', 'update'
     ]);
+
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('resolve/{source}/{match}', 'ProductsController@resolve')->name('resolve');
+        Route::post('merge/{source}/{match}', 'ProductsController@merge')->name('merge');
+    });
 });
