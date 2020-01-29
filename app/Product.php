@@ -149,18 +149,10 @@ class Product extends Model
     }
 
     /**
-     * @return array|Collection
+     * @return mixed
      */
     public function matches()
     {
-        $matches = DB::table('product_matches')->where('product_id', $this->id)->where('resolved', 0)->get();
-
-        if ($matches->count() > 0) {
-            return $matches->map(function ($match) {
-                return Product::query()->find($match->possible_match_id);
-            });
-        }
-
-        return collect([]);
+        return $this->hasMany(ProductMatch::class)->notResolved();
     }
 }

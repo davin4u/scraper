@@ -3,8 +3,7 @@
 namespace App\Matcher;
 
 use App\Product;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\ProductMatch;
 
 /**
  * Class ProductsMatcher
@@ -44,9 +43,7 @@ class ProductsMatcher
             }
         }
 
-        $existing = DB::table('product_matches')->where('product_id', $product->id)->get()->map(function ($row) {
-            return $row->possible_match_id;
-        })->toArray();
+        $existing = ProductMatch::relatedTo($product->id)->get()->pluck('possible_match_id')->toArray();
 
         return array_filter(array_unique($matches), function ($match) use ($existing) {
             return !in_array($match, $existing);
@@ -60,11 +57,9 @@ class ProductsMatcher
     public function logMatches(Product $product, array $matches)
     {
         foreach ($matches as $match) {
-            DB::table('product_matches')->insert([
+            ProductMatch::log([
                 'product_id' => $product->id,
-                'possible_match_id' => $match,
-                'created_at' => Carbon::now()->toDateTimeString(),
-                'updated_at' => Carbon::now()->toDateTimeString()
+                'possible_match_id' => $match
             ]);
         }
     }

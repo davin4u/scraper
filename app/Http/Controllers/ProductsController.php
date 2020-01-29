@@ -10,9 +10,9 @@ use App\Exceptions\CategoryNotFoundException;
 use App\Exceptions\DomainNotFoundException;
 use App\Http\Requests\UpdateProductRequest;
 use App\Product;
+use App\ProductMatch;
 use App\Repositories\ProductsRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class ProductsController
@@ -169,12 +169,7 @@ class ProductsController extends Controller
         if ($match->deleteStorableDocument()) {
             $match->attachStorableDocument($source);
 
-            // @TODO extract this and all related stuff to separate class
-            DB::table('product_matches')->where(function ($query) use ($source, $match) {
-                return $query->where('product_id', $source->id)->where('possible_match_id', $match->id);
-            })->orWhere(function ($query) use ($source, $match) {
-                return $query->where('product_id', $match->id)->where('possible_match_id', $source->id);
-            })->update(['resolved' => 1]);
+            ProductMatch::resolve($source->id, $match->id);
         }
         else {
             return redirect(route('products.resolve', [$source, $match]))->withErrors([
