@@ -112,7 +112,7 @@ class ProductsController extends Controller
         $domains    = Domain::all();
         $categories = Category::all();
         $brands     = Brand::all();
-        $matches    = $product->matches();
+        $matches    = $product->matches;
 
         return view('products.edit', compact('product', 'domains', 'categories', 'brands', 'matches'));
     }

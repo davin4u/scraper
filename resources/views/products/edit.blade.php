@@ -19,13 +19,13 @@
                                 <tbody>
                                     @foreach ($matches as $match)
                                         <tr>
-                                            <td>{{ $match->id }}</td>
-                                            <td>{{ $match->domain->name }}</td>
+                                            <td>{{ $match->match->id }}</td>
+                                            <td>{{ $match->match->domain->name }}</td>
                                             <td>
-                                                <a href="{{ route('products.edit', $match) }}">{{ $match->name }}</a>
+                                                <a href="{{ route('products.edit', $match->match) }}">{{ $match->match->name }}</a>
                                             </td>
                                             <td class="text-right">
-                                                <a href="{{ route('products.resolve', [$product, $match]) }}" class="btn btn-primary btn-sm">Merge</a>
+                                                <a href="{{ route('products.resolve', [$product, $match->match]) }}" class="btn btn-primary btn-sm">Merge</a>
                                             </td>
                                         </tr>
                                     @endforeach
