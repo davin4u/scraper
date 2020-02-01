@@ -23,7 +23,7 @@
 
                         <a class="btn btn-primary" href="{{ route('products.index') }}">Products</a>
 
-                        <a class="btn btn-primary" href="{{ route('matches.index') }}">Matches</a>
+                        <a class="btn btn-primary" href="{{ route('matches.index') }}">Matches ({{ $matchesCount }})</a>
                     </div>
                 </div>
             </div>

@@ -48,6 +48,8 @@
                             @endempty
                             </tbody>
                         </table>
+
+                        {{ $matches->links() }}
                     </div>
                 </div>
             </div>

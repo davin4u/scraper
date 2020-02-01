@@ -33,7 +33,25 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
+                        </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('categories.index') }}">Product categories</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('brands.index') }}">Product brands</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('products.index') }}">Products</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('matches.index') }}">Matches ({{ $matchesCount }})</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
