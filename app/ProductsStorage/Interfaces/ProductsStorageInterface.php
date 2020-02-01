@@ -2,6 +2,8 @@
 
 namespace App\ProductsStorage\Interfaces;
 
+use Illuminate\Support\Collection;
+
 /**
  * Interface ProductsStorageInterface
  * @package App\ProductsStorage\Interfaces
@@ -15,10 +17,11 @@ interface ProductsStorageInterface
     public function find($id);
 
     /**
-     * @param mixed ...$arguments
-     * @return mixed
+     * @param array $filter
+     * @param array $options
+     * @return array
      */
-    public function where(...$arguments);
+    public function where($filter = [], array $options = []) : array;
 
     /**
      * @param $id

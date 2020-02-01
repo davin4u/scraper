@@ -72,6 +72,24 @@ class Collection implements MongoDBCollectionInterface
     }
 
     /**
+     * @param array $filter
+     * @param array $options
+     * @return array
+     */
+    public function where($filter = [], array $options = []) : array
+    {
+        $docs = $this->collection->find($filter, $options)->toArray();
+
+        if (!empty($docs)) {
+            $docs = array_map(function ($doc) {
+                return new Document($doc);
+            }, $docs);
+        }
+
+        return $docs;
+    }
+
+    /**
      * @param $id
      * @param array $attributes
      * @return DocumentInterface

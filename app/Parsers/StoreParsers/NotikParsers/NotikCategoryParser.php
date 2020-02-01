@@ -51,6 +51,8 @@ class NotikCategoryParser extends BaseParser implements ParserInterface
             $category = null;
         }
 
+        $categoryName = $category ? trim(strip_tags($category->html())) : null;
+
         $categoryId = $category
                             ? app()->make(CategoryMatcher::class)->match(
                                     trim(strip_tags($category->html()))
@@ -128,7 +130,7 @@ class NotikCategoryParser extends BaseParser implements ParserInterface
             $results[$trI] = $item;
         });
 
-        $page->filter('.goods-list-grouped-table tr.goods-list-table')->each(function(Crawler $tr, $trI) use (&$results) {
+        $page->filter('.goods-list-grouped-table tr.goods-list-table')->each(function(Crawler $tr, $trI) use (&$results, $categoryName, $categoryId) {
             $td = $tr->filter('td.gltc-cart');
 
             if ($td) {
@@ -142,7 +144,25 @@ class NotikCategoryParser extends BaseParser implements ParserInterface
                     $results[$trI]['currency'] = 'RUB';
 
                     // brand
-                    $results[$trI]['brand_id'] = app()->make(BrandMatcher::class)->match(trim($a->attr('ecbrand')));
+                    try {
+                        $brandName = trim($a->attr('ecbrand'));
+                        $results[$trI]['brand_id'] = app()->make(BrandMatcher::class)->match($brandName);
+                    }
+                    catch (\InvalidArgumentException $e) {}
+
+                    // model
+                    if (!is_null($categoryId) && !is_null($categoryName) && !empty($results[$trI]['name']) && isset($brandName)) {
+                        $attr = $this->attributes->recognizeAttribute('Модель', $categoryId);
+
+                        if (!is_null($attr)) {
+                            $model = trim(str_replace($categoryName, '', $results[$trI]['name']));
+                            $model = trim(str_replace($brandName, '', $model));
+
+                            $results[$trI]['attributes'] = [
+                                $attr->attribute_key => $model
+                            ];
+                        }
+                    }
                 }
             }
         });

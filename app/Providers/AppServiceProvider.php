@@ -10,6 +10,7 @@ use App\ProductsStorage\Interfaces\MongoDBClientInterface;
 use App\ProductsStorage\Interfaces\ProductsStorageInterface;
 use App\ProductsStorage\MongoDB\Mongo;
 use App\ProductsStorage\MongoDBProductsStorage;
+use App\Repositories\ProductAttributesRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(BrandMatcher::class, function ($app) {
             return $app->make(SimpleBrandMatcher::class);
+        });
+
+        $this->app->singleton(ProductAttributesRepository::class, function ($app) {
+            return new ProductAttributesRepository();
         });
     }
 

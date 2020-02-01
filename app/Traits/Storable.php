@@ -140,4 +140,33 @@ trait Storable
             $storableKey => $product->{$storableKey}
         ]);
     }
+
+    /**
+     * @return string
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getStorableDocumentId()
+    {
+        if (is_null(static::$storage)) {
+            static::$storage = app()->make(ProductsStorageInterface::class);
+        }
+
+        if (empty($this->storable)) {
+            $this->getStorableDocument();
+        }
+
+        return (string) $this->storable['_id'];
+    }
+
+    /**
+     * @param $query
+     * @param $storableId
+     * @return mixed
+     */
+    public function scopeWhereStorable($query, $storableId)
+    {
+        $storableKey = property_exists($this, 'storableKey') ? $this->storableKey : 'storable_id';
+
+        return $query->whereIn($storableKey, is_array($storableId) ? $storableId : [$storableId]);
+    }
 }

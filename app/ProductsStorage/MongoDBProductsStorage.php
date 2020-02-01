@@ -5,6 +5,7 @@ namespace App\ProductsStorage;
 use App\Exceptions\ProductNotFoundException;
 use App\ProductsStorage\Interfaces\MongoDBClientInterface;
 use App\ProductsStorage\Interfaces\ProductsStorageInterface;
+use Illuminate\Support\Collection;
 
 /**
  * Class MongoDBProductsStorage
@@ -41,12 +42,13 @@ class MongoDBProductsStorage implements ProductsStorageInterface
     }
 
     /**
-     * @param mixed ...$arguments
-     * @return mixed
+     * @param array $filter
+     * @param array $options
+     * @return array
      */
-    public function where(...$arguments)
+    public function where($filter = [], array $options = []) : array
     {
-        // TODO: Implement where() method.
+        return $this->client->collection(env('MONGODB_PRODUCTS_COLLECTION'))->where($filter, $options);
     }
 
     /**

@@ -46,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('merge/{source}/{match}', 'ProductsController@merge')->name('merge');
     });
 
+    // Matches
     Route::resource('matches', 'ProductMatchesController')->only([
         'index'
     ]);

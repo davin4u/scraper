@@ -21,6 +21,13 @@ interface MongoDBCollectionInterface
     public function find($id) : DocumentInterface;
 
     /**
+     * @param array $filter
+     * @param array $options
+     * @return array
+     */
+    public function where($filter = [], array $options = []) : array;
+
+    /**
      * @param $id
      * @param array $attributes
      * @return DocumentInterface

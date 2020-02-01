@@ -22,6 +22,8 @@
                         <a class="btn btn-primary" href="{{ route('brands.index') }}">Product brands</a>
 
                         <a class="btn btn-primary" href="{{ route('products.index') }}">Products</a>
+
+                        <a class="btn btn-primary" href="{{ route('matches.index') }}">Matches</a>
                     </div>
                 </div>
             </div>
