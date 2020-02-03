@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\ApiCRUDProvider;
+use App\Brand;
+use App\Category;
+use App\Observers\BrandObserver;
+use App\Observers\CategoryObserver;
 use App\Parsers\Helpers\BrandMatcher;
 use App\Parsers\Helpers\SimpleBrandMatcher;
 use App\Parsers\Helpers\SimpleCategoryMatcher;
@@ -41,6 +46,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ProductAttributesRepository::class, function ($app) {
             return new ProductAttributesRepository();
         });
+
+        $this->app->singleton(ApiCRUDProvider::class, function ($app) {
+            return new ApiCRUDProvider();
+        });
     }
 
     /**
@@ -50,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Brand::observe(BrandObserver::class);
+        Category::observe(CategoryObserver::class);
     }
 }
