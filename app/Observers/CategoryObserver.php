@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Category;
+use Illuminate\Support\Facades\Log;
 
 class CategoryObserver
 {
@@ -14,9 +15,14 @@ class CategoryObserver
      */
     public function created(Category $category)
     {
-        api()->store('categories', [
-            'name' => $category->name
-        ]);
+        try {
+            api()->store('categories', [
+                'name' => $category->name
+            ]);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 
     /**
@@ -27,7 +33,14 @@ class CategoryObserver
      */
     public function updated(Category $category)
     {
-        //
+        try {
+            api()->update('categories', $category->id, [
+                'name' => $category->name
+            ]);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 
     /**
@@ -38,7 +51,12 @@ class CategoryObserver
      */
     public function deleted(Category $category)
     {
-        //
+        try {
+            api()->destroy('categories', $category->id);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 
     /**
@@ -60,6 +78,11 @@ class CategoryObserver
      */
     public function forceDeleted(Category $category)
     {
-        //
+        try {
+            api()->destroy('categories', $category->id);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 }

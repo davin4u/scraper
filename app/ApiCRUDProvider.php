@@ -37,6 +37,12 @@ class ApiCRUDProvider
         }
     }
 
+    /**
+     * @param $entity
+     * @param array $data
+     * @return ApiResponse|null
+     * @throws \Exception
+     */
     public function index($entity, $data = [])
     {
         $endpoint = $this->getEndpoint($entity);
@@ -48,82 +54,101 @@ class ApiCRUDProvider
         return $this->request('GET', $endpoint);
     }
 
+    /**
+     * @param $entity
+     * @param int $id
+     * @return ApiResponse|null
+     * @throws \Exception
+     */
     public function show($entity, int $id)
     {
-
+        return $this->request('GET', $this->getEndpoint($entity, $id));
     }
 
+    /**
+     * @param $entity
+     * @param array $data
+     * @return ApiResponse|null
+     * @throws \Exception
+     */
     public function store($entity, $data = [])
     {
-        $endpoint = $this->getEndpoint($entity, 'POST');
-
-        return $this->request('POST', $endpoint, $data);
+        return $this->request('POST', $this->getEndpoint($entity), $data);
     }
 
+    /**
+     * @param $entity
+     * @param int $id
+     * @param array $data
+     * @return ApiResponse|null
+     * @throws \Exception
+     */
     public function update($entity, int $id, $data = [])
     {
-
+        return $this->request('PUT', $this->getEndpoint($entity, $id), $data);
     }
 
+    /**
+     * @param $entity
+     * @param int $id
+     * @return ApiResponse|null
+     * @throws \Exception
+     */
     public function destroy($entity, int $id)
     {
-
+        return $this->request('DELETE', $this->getEndpoint($entity, $id));
     }
 
+    /**
+     * @param $method
+     * @param $url
+     * @param array $data
+     * @return ApiResponse|null
+     */
     protected function request($method, $url, $data = [])
     {
         $client = new Client();
 
-        if (strtoupper($method) === 'GET') {
-            try {
-                $response = $client->request(strtoupper($method), $url, [
-                    'headers' => [
-                        'Accept' => 'application/json'
-                    ]
-                ]);
+        $options = [
+            'headers' => [
+                'Accept' => 'application/json'
+            ]
+        ];
 
-                return new ApiResponse($response);
-            }
-            catch (\Exception $e) {
-                Log::error($e->getMessage());
-
-                return null;
-            }
+        if (!empty($data)) {
+            $options['form_params'] = $data;
         }
 
-        if (strtoupper($method) === 'POST') {
-            try {
-                $response = $client->request(strtoupper($method), $url, [
-                    'form_params' => $data,
-                    'headers' => [
-                        'Accept' => 'application/json'
-                    ]
-                ]);
+        try {
+            $response = $client->request($method, $url, $options);
 
-                return new ApiResponse($response);
-            }
-            catch (\Exception $e) {
-                Log::error($e->getMessage());
+            return new ApiResponse($response);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
 
-                return null;
-            }
+            return null;
         }
     }
 
     /**
      * @param $entity
-     * @param string $method
+     * @param null $id
      * @return string
      * @throws \Exception
      */
-    protected function getEndpoint($entity, $method = 'GET')
+    protected function getEndpoint($entity, $id = null)
     {
         if (!isset($this->endpoints[$entity])) {
             throw new \Exception("Api endpoint not found.");
         }
 
-        switch ($method) {
-            case 'GET': case 'POST' : return $this->endpoints[$entity] . '?api_token=' . $this->api_token;
+        $endpoint = $this->endpoints[$entity];
+
+        if (!is_null($id)) {
+            $endpoint .= '/' . $id;
         }
+
+        return $endpoint . '?api_token=' . $this->api_token;
     }
 }

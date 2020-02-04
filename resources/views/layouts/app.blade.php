@@ -32,6 +32,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
+                    @if(\Illuminate\Support\Facades\Auth::user())
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
@@ -53,6 +54,7 @@
                             <a class="nav-link" href="{{ route('matches.index') }}">Matches ({{ $matchesCount }})</a>
                         </li>
                     </ul>
+                    @endif
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">

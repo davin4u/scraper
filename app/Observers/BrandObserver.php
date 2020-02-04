@@ -3,42 +3,51 @@
 namespace App\Observers;
 
 use App\Brand;
+use Illuminate\Support\Facades\Log;
 
 class BrandObserver
 {
     /**
-     * Handle the brand "created" event.
-     *
-     * @param  \App\Brand  $brand
-     * @return void
+     * @param Brand $brand
      */
     public function created(Brand $brand)
     {
-        api()->store('brands', [
-            'name' => $brand->name
-        ]);
+        try {
+            api()->store('brands', [
+                'name' => $brand->name
+            ]);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 
     /**
-     * Handle the brand "updated" event.
-     *
-     * @param  \App\Brand  $brand
-     * @return void
+     * @param Brand $brand
      */
     public function updated(Brand $brand)
     {
-        //
+        try {
+            api()->update('brands', $brand->id, [
+                'name' => $brand->name
+            ]);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 
     /**
-     * Handle the brand "deleted" event.
-     *
-     * @param  \App\Brand  $brand
-     * @return void
+     * @param Brand $brand
      */
     public function deleted(Brand $brand)
     {
-        //
+        try {
+            api()->destroy('brands', $brand->id);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 
     /**
@@ -60,6 +69,11 @@ class BrandObserver
      */
     public function forceDeleted(Brand $brand)
     {
-        //
+        try {
+            api()->destroy('brands', $brand->id);
+        }
+        catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 }
