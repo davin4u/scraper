@@ -80,4 +80,16 @@ class CategoriesController extends Controller
 
         return redirect(route('categories.index'))->with(['status' => 'Category has been updated.']);
     }
+
+    /**
+     * @param Category $category
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
+     */
+    public function destroy(Category $category)
+    {
+        $category->delete();
+
+        return redirect(route('categories.index'))->with(['status' => 'Category has been deleted.']);
+    }
 }

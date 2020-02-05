@@ -6,8 +6,8 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header clearfix">
-                        <span>Brands</span>
-                        <a class="btn btn-primary float-right" href="{{ route('brands.create') }}">Create</a></div>
+                        <span>Domains</span>
+                        <a class="btn btn-primary float-right" href="{{ route('domains.create') }}">Create</a></div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -20,20 +20,18 @@
                             <thead>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Map</th>
                                 <th></th>
                             </thead>
 
                             <tbody>
-                            @foreach($brands as $brand)
+                            @foreach($domains as $domain)
                                 <tr>
-                                    <td>{{ $brand->id }}</td>
-                                    <td>{{ $brand->name }}</td>
-                                    <td>{{ $brand->mapAsString() }}</td>
+                                    <td>{{ $domain->id }}</td>
+                                    <td>{{ $domain->name }}</td>
                                     <td class="text-right">
-                                        <a href="{{ route('brands.edit', [$brand]) }}" class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="{{ route('domains.edit', [$domain]) }}" class="btn btn-primary btn-sm">Edit</a>
                                         @if (auth()->user()->isAdmin())
-                                            <form method="POST" action="{{ route('brands.destroy', [$brand]) }}" class="d-inline">
+                                            <form method="POST" action="{{ route('domains.destroy', [$domain]) }}" class="d-inline">
                                                 @csrf
                                                 <input type="hidden" name="_method" value="DELETE" />
 
@@ -43,8 +41,8 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            @empty($brands)
-                                <tr><td colspan="3">No brands added</td></tr>
+                            @empty($domains)
+                                <tr><td colspan="3">No domains added</td></tr>
                             @endempty
                             </tbody>
                         </table>

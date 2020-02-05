@@ -30,7 +30,9 @@ class ApiCRUDProvider
     {
         $this->endpoints = config('api.endpoints', []);
 
-        $this->api_token = Arr::get(config('api.tokens'), Auth::user()->id, null);
+        if (Auth::user()) {
+            $this->api_token = Arr::get(config('api.tokens'), Auth::user()->id, null);
+        }
 
         if (is_null($this->api_token)) {
             throw new \Exception("Forbidden.", 403);

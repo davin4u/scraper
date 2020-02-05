@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\ApiCRUDProvider;
 use App\Brand;
 use App\Category;
+use App\Domain;
 use App\Observers\BrandObserver;
 use App\Observers\CategoryObserver;
+use App\Observers\DomainObserver;
 use App\Parsers\Helpers\BrandMatcher;
 use App\Parsers\Helpers\SimpleBrandMatcher;
 use App\Parsers\Helpers\SimpleCategoryMatcher;
@@ -61,5 +63,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Brand::observe(BrandObserver::class);
         Category::observe(CategoryObserver::class);
+        Domain::observe(DomainObserver::class);
     }
 }

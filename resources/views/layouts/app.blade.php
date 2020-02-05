@@ -35,7 +35,7 @@
                     @if(\Illuminate\Support\Facades\Auth::user())
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
+                            <a class="nav-link" href="{{ route('domains.index') }}">Domains</a>
                         </li>
 
                         <li class="nav-item">
@@ -48,6 +48,12 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('products.index') }}">Products</a>
+                        </li>
+
+                        <li class="nav-item"><a class="nav-link">|</a></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
                         </li>
 
                         <li class="nav-item">

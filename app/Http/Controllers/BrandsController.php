@@ -80,4 +80,16 @@ class BrandsController extends Controller
 
         return redirect(route('brands.index'))->with(['status' => 'Brand has been updated.']);
     }
+
+    /**
+     * @param Brand $brand
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
+     */
+    public function destroy(Brand $brand)
+    {
+        $brand->delete();
+
+        return redirect(route('brands.index'))->with(['status' => 'Brand has been deleted']);
+    }
 }

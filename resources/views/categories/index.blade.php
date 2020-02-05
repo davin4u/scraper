@@ -30,8 +30,16 @@
                                         <td>{{ $category->id }}</td>
                                         <td>{{ $category->name }}</td>
                                         <td>{{ $category->mapAsString() }}</td>
-                                        <td>
+                                        <td class="text-right">
                                             <a href="{{ route('categories.edit', [$category]) }}" class="btn btn-primary btn-sm">Edit</a>
+                                            @if (auth()->user()->isAdmin())
+                                                <form method="POST" action="{{ route('categories.destroy', [$category]) }}" class="d-inline">
+                                                    @csrf
+                                                    <input type="hidden" name="_method" value="DELETE" />
+
+                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
