@@ -56,7 +56,8 @@ class ProductsRepository extends EloquentRepository
 
             $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
 
-            $product->saveStorableDocument(Arr::only($data, ['attributes', 'images'], []));
+            $product->fillStorableDocument(Arr::only($data, ['attributes', 'images'], []))
+                    ->saveStorableDocument();
 
             return true;
         }
@@ -66,7 +67,8 @@ class ProductsRepository extends EloquentRepository
 
         $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
 
-        $product->saveStorableDocument(Arr::only($data, ['attributes', 'images'], []));
+        $product->fillStorableDocument(Arr::only($data, ['attributes', 'images'], []))
+                ->saveStorableDocument();
 
         return true;
     }

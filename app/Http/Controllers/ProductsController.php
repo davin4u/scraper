@@ -135,9 +135,9 @@ class ProductsController extends Controller
             'meta_description'
         ]));
 
-        $product->saveStorableDocument([
+        $product->fillStorableDocument([
             'attributes' => $request->get('attributes', [])
-        ]);
+        ])->saveStorableDocument();
 
         return redirect(route('products.edit', [$product]))->with([
             'status' => 'Product successfully saved.'
@@ -162,9 +162,9 @@ class ProductsController extends Controller
      */
     public function merge(Product $source, Product $match)
     {
-        $source->saveStorableDocument([
+        $source->fillStorableDocument([
             'attributes' => $this->request->get('attributes', [])
-        ]);
+        ])->saveStorableDocument();
 
         if ($match->deleteStorableDocument()) {
             $match->attachStorableDocument($source);

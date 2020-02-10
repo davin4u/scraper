@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e92d85a1b96b3b04230020acebec0ab",
+    "content-hash": "4f403a1df4e051412e4db479bcc87fa3",
     "packages": [
+        {
+            "name": "davin4u/laravel-storable",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/davin4u/laravel-storable.git",
+                "reference": "6c56156e3cc477ca1ba2154882999c46396e7842"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/davin4u/laravel-storable/zipball/6c56156e3cc477ca1ba2154882999c46396e7842",
+                "reference": "6c56156e3cc477ca1ba2154882999c46396e7842",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/config": "^6.2",
+                "illuminate/console": "^6.2",
+                "illuminate/database": "^6.2",
+                "illuminate/support": "^6.2",
+                "mongodb/mongodb": "^1.5",
+                "php": "^7.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaravelStorable\\ServiceProviders\\LaravelStorableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "LaravelStorable": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Denis Gorgul",
+                    "email": "davin4u@gmail.com"
+                }
+            ],
+            "description": "Helps to store entities in different storages",
+            "time": "2020-02-10T05:46:09+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
@@ -5476,7 +5524,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "davin4u/laravel-storable": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

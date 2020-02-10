@@ -3,12 +3,12 @@
 namespace App;
 
 use App\Events\ProductPriceUpdatingEvent;
-use App\Traits\Storable;
+use App\Repositories\ProductAttributesRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use LaravelStorable\Traits\Storable;
 
 class Product extends Model
 {
@@ -18,6 +18,11 @@ class Product extends Model
      * @var string
      */
     protected $storableKey = 'storable_id';
+
+    /**
+     * @var string
+     */
+    protected $storableCollection = 'products';
 
     /**
      * @var array
@@ -154,5 +159,50 @@ class Product extends Model
     public function matches()
     {
         return $this->hasMany(ProductMatch::class)->notResolved();
+    }
+
+    /**
+     * @param array $data
+     * @return $this
+     */
+    public function fillStorableDocument(array $data)
+    {
+        if (!empty($data) && (!is_null($this->storable) || !is_null($this->getStorableDocument()))) {
+            foreach ($data as $key => $value) {
+                $this->storable->{$key} = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Product $product
+     */
+    public function attachStorableDocument(Product $product)
+    {
+        $this->update([
+            $this->storableKey => $product->{$this->storableKey}
+        ]);
+    }
+
+    /**
+     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getStorableAttributes()
+    {
+        if (is_null($this->category_id)) {
+            return [];
+        }
+
+        if (empty($this->storable)) {
+            $this->getStorableDocument();
+        }
+
+        /** @var ProductAttributesRepository $attributes */
+        $attributes = app()->make(ProductAttributesRepository::class);
+
+        return $attributes->getCategoryAttributes($this->category_id, Arr::get($this->storable, 'attributes', []));
     }
 }

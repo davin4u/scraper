@@ -4,10 +4,10 @@ namespace App\Matcher\ProductMatcherPlugins;
 
 use App\Matcher\MatcherPluginInterface;
 use App\Product;
-use App\ProductsStorage\Interfaces\ProductsStorageInterface;
-use App\ProductsStorage\MongoDB\Document;
 use App\Repositories\ProductAttributesRepository;
 use Illuminate\Support\Arr;
+use LaravelStorable\Contracts\Document;
+use LaravelStorable\Contracts\Storage;
 
 /**
  * Class MatchByModel
@@ -16,7 +16,7 @@ use Illuminate\Support\Arr;
 class MatchByModel implements MatcherPluginInterface
 {
     /**
-     * @var ProductsStorageInterface|null
+     * @var Storage|null
      */
     protected static $storage = null;
 
@@ -30,7 +30,7 @@ class MatchByModel implements MatcherPluginInterface
     public function __construct()
     {
         if (is_null(static::$storage)) {
-            static::$storage = app()->make(ProductsStorageInterface::class);
+            static::$storage = app()->make(Storage::class);
         }
 
         if (is_null(static::$attributes)) {
