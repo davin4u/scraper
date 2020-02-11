@@ -14,8 +14,10 @@ class ProductAttributes extends Model
 
     public function generateUniqueAttributeKey()
     {
+        $attrNumber = $this->id - 1;
+
         do {
-            $key = 'attr_' . $this->id;
+            $key = 'attr_' . ++$attrNumber;
 
             $exists = static::where('attribute_key', $key)->count();
         } while ($exists > 0);

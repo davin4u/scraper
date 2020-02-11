@@ -9,10 +9,14 @@ use App\Domain;
 use App\Observers\BrandObserver;
 use App\Observers\CategoryObserver;
 use App\Observers\DomainObserver;
+use App\Observers\ProductAttributeObserver;
+use App\Observers\ProductObserver;
 use App\Parsers\Helpers\BrandMatcher;
 use App\Parsers\Helpers\SimpleBrandMatcher;
 use App\Parsers\Helpers\SimpleCategoryMatcher;
 use App\Parsers\Helpers\CategoryMatcher;
+use App\Product;
+use App\ProductAttributes;
 use App\Repositories\ProductAttributesRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -52,5 +56,7 @@ class AppServiceProvider extends ServiceProvider
         Brand::observe(BrandObserver::class);
         Category::observe(CategoryObserver::class);
         Domain::observe(DomainObserver::class);
+        Product::observe(ProductObserver::class);
+        ProductAttributes::observe(ProductAttributeObserver::class);
     }
 }

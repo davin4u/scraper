@@ -33,6 +33,9 @@ class ApiCRUDProvider
         if (Auth::user()) {
             $this->api_token = Arr::get(config('api.tokens'), Auth::user()->id, null);
         }
+        else if (app()->runningInConsole()) {
+            $this->api_token = Arr::get(config('api.tokens'), 1, null);
+        }
 
         if (is_null($this->api_token)) {
             throw new \Exception("Forbidden.", 403);
