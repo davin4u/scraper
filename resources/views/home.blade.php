@@ -23,7 +23,9 @@
 
                         <a class="btn btn-primary" href="{{ route('products.index') }}">Products</a>
 
-                        <a class="btn btn-primary" href="{{ route('matches.index') }}">Matches ({{ $matchesCount }})</a>
+                        <a class="btn btn-primary" href="{{ route('matches.index') }}">Auto matches ({{ $matchesCount }})</a>
+
+                        <a class="btn btn-primary" href="{{ route('matches.userMatches') }}">User matches ({{ $userMatchesCount }})</a>
                     </div>
                 </div>
             </div>

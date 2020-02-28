@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Product;
 use App\ProductMatch;
 use App\Repositories\ProductsRepository;
+use App\UserProductMatch;
 use Illuminate\Http\Request;
 
 /**
@@ -155,30 +156,42 @@ class ProductsController extends Controller
     }
 
     /**
-     * @param Product $source
-     * @param Product $match
+     * @param $matchId
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function merge(Product $source, Product $match)
+    public function merge($matchId)
     {
-        $source->fillStorableDocument([
-            'attributes' => $this->request->get('attributes', [])
-        ])->saveStorableDocument();
+        try {
+            $response = api()->post('products', [
+                'match_id' => (int) $matchId,
+                'attributes' => $this->request->get('attributes', [])
+            ], 'matches/merge');
 
-        if ($match->deleteStorableDocument()) {
-            $match->attachStorableDocument($source);
-
-            ProductMatch::resolve($source->id, $match->id);
+            if (!is_null($response) && !$response->withErrors()) {
+                return redirect(route('products.index'))->with([
+                    'status' => 'The products were successfully merged.'
+                ]);
+            }
         }
-        else {
-            return redirect(route('products.resolve', [$source, $match]))->withErrors([
-                'error' => 'Can not merge the products.'
-            ]);
-        }
+        catch (\Exception $e) {}
 
-        return redirect(route('products.index'))->with([
-            'status' => 'The products were successfully merged.'
+        return redirect()->back()->withErrors([
+            'error' => 'Can not merge the products.'
         ]);
+    }
+
+    /**
+     * @param $matchId
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function resolveUserMatch($matchId)
+    {
+        $match = UserProductMatch::find($matchId);
+
+        if (is_null($match)) {
+            abort(404);
+        }
+
+        return view('products.resolve_user_match', compact('match'));
     }
 }

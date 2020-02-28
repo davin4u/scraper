@@ -57,7 +57,11 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('matches.index') }}">Matches ({{ $matchesCount }})</a>
+                            <a class="nav-link" href="{{ route('matches.index') }}">Auto matches ({{ $matchesCount }})</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('matches.userMatches') }}">User matches ({{ $userMatchesCount }})</a>
                         </li>
                     </ul>
                     @endif

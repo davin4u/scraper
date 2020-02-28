@@ -47,14 +47,19 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     Route::prefix('products')->name('products.')->group(function () {
+        Route::get('resolve/user-match/{matchId}', 'ProductsController@resolveUserMatch')->name('resolveUserMatch');
         Route::get('resolve/{source}/{match}', 'ProductsController@resolve')->name('resolve');
-        Route::post('merge/{source}/{match}', 'ProductsController@merge')->name('merge');
+        Route::post('merge/{match}', 'ProductsController@merge')->name('merge');
     });
 
     // Matches
     Route::resource('matches', 'ProductMatchesController')->only([
         'index'
     ]);
+
+    Route::prefix('matches')->group(function () {
+        Route::get('user-matches', 'ProductMatchesController@userMatches')->name('matches.userMatches');
+    });
 
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {

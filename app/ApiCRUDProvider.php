@@ -45,12 +45,13 @@ class ApiCRUDProvider
     /**
      * @param $entity
      * @param array $data
+     * @param string $method
      * @return ApiResponse|null
      * @throws \Exception
      */
-    public function index($entity, $data = [])
+    public function index($entity, $data = [], $method = '')
     {
-        $endpoint = $this->getEndpoint($entity);
+        $endpoint = $this->getEndpoint($entity, $method);
 
         if (!empty($data)) {
             $endpoint .= '&' . http_build_query($data);
@@ -105,6 +106,18 @@ class ApiCRUDProvider
     }
 
     /**
+     * @param $entity
+     * @param array $data
+     * @param null $idOrMethod
+     * @return ApiResponse|null
+     * @throws \Exception
+     */
+    public function post($entity, $data = [], $idOrMethod = null)
+    {
+        return $this->request('POST', $this->getEndpoint($entity, $idOrMethod), $data);
+    }
+
+    /**
      * @param $method
      * @param $url
      * @param array $data
@@ -138,11 +151,11 @@ class ApiCRUDProvider
 
     /**
      * @param $entity
-     * @param null $id
+     * @param null $idOrMethod
      * @return string
      * @throws \Exception
      */
-    protected function getEndpoint($entity, $id = null)
+    protected function getEndpoint($entity, $idOrMethod = null)
     {
         if (!isset($this->endpoints[$entity])) {
             throw new \Exception("Api endpoint not found.");
@@ -150,8 +163,8 @@ class ApiCRUDProvider
 
         $endpoint = $this->endpoints[$entity];
 
-        if (!is_null($id)) {
-            $endpoint .= '/' . $id;
+        if (!is_null($idOrMethod)) {
+            $endpoint .= '/' . $idOrMethod;
         }
 
         return $endpoint . '?api_token=' . $this->api_token;
