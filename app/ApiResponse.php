@@ -70,6 +70,14 @@ class ApiResponse
     }
 
     /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return $this->response->getStatusCode();
+    }
+
+    /**
      * @param $name
      * @return mixed|null
      */

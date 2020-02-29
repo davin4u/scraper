@@ -118,6 +118,26 @@ class ApiCRUDProvider
     }
 
     /**
+     * @param $entity
+     * @param $data
+     * @param null $idOrMethod
+     * @return ApiResponse|null
+     * @throws \Exception
+     */
+    public function get($entity, $data, $idOrMethod = null)
+    {
+        $url = $this->getEndpoint($entity, $idOrMethod);
+
+        if (!empty($data)) {
+            $query = http_build_query($data);
+
+            $url .= '&' . $query;
+        }
+
+        return $this->request('GET', $url);
+    }
+
+    /**
      * @param $method
      * @param $url
      * @param array $data

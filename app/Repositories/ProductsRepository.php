@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\ApiResponse;
 use App\Brand;
 use App\Category;
 use App\Domain;
@@ -11,6 +12,7 @@ use App\Exceptions\DomainNotFoundException;
 use App\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class ProductsRepository
@@ -45,32 +47,33 @@ class ProductsRepository extends EloquentRepository
     /**
      * @param $data
      * @return bool
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Exception
      */
     public function createOrUpdate($data)
     {
-        if ($product = $this->find(Arr::get($data, 'sku', null))) {
-            /** @var Product $product */
+        /** @var ApiResponse $response */
+        $response = api()->get(
+            'products',
+            Arr::only($data, ['domain_id', 'sku']),
+            'search-one');
 
-            $product->update(Arr::except($data, ['price', 'domain_id', 'currency', 'old_price', 'city_id', 'store_id']));
+        if (!is_null($response) && !$response->withErrors()) {
+            $productData = $response->data();
 
-            $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
-
-            $product->fillStorableDocument(Arr::only($data, ['attributes', 'images'], []))
-                    ->saveStorableDocument();
-
-            return true;
+            if (!is_null($productData)) {
+                return ! is_null(
+                    api()->update('products', (int) $productData['id'], $data)
+                );
+            }
+        }
+        else {
+            return ! is_null(
+                api()->store('products', $data)
+            );
         }
 
-        /** @var Product $product */
-        $product = Product::create(Arr::except($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
-
-        $product->syncPrice(Arr::only($data, ['price', 'currency', 'old_price', 'city_id', 'store_id']));
-
-        $product->fillStorableDocument(Arr::only($data, ['attributes', 'images'], []))
-                ->saveStorableDocument();
-
-        return true;
+        Log::error("Product create/update error.");
+        Log::error($data);
     }
 
     /**
