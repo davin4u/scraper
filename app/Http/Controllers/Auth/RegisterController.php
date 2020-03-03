@@ -37,6 +37,8 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
+        redirect('/');
+
         $this->middleware('guest');
     }
 
