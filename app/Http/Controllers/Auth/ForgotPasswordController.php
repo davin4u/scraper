@@ -22,6 +22,6 @@ class ForgotPasswordController extends Controller
 
     public function __construct()
     {
-        redirect('/');
+        abort(404);
     }
 }
