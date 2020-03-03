@@ -43,6 +43,14 @@ class ScraperCategoryController extends Controller
             ]);
         }
 
+        $exists = ScraperCategory::where('url', $request->get('url'))->first();
+
+        if (!is_null($exists)) {
+            return redirect(route('scraper.categories.create'))->with([
+                'error' => 'Category already exists.'
+            ]);
+        }
+
         $category = ScraperCategory::create([
             'url' => $request->get('url'),
             'user_id' => auth()->user()->id
