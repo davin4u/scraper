@@ -17,7 +17,8 @@ class DomainObserver
     {
         try {
             api()->store('domains', [
-                'name' => $domain->name
+                'name' => $domain->name,
+                'url' => $domain->url
             ]);
         }
         catch (\Exception $e) {
@@ -34,9 +35,24 @@ class DomainObserver
     public function updated(Domain $domain)
     {
         try {
-            api()->update('domains', $domain->id, [
-                'name' => $domain->name
+            $response = api()->update('domains', $domain->id, [
+                'name' => $domain->name,
+                'url' => $domain->url
             ]);
+
+            if (is_null($response)) {
+                Log::debug('Domain for the some reason not found in API. Attempt to create domain...');
+
+                try {
+                    api()->store('domains', [
+                        'name' => $domain->name,
+                        'url' => $domain->url
+                    ]);
+                }
+                catch (\Exception $e) {
+                    Log::error($e->getMessage());
+                }
+            }
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
