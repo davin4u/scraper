@@ -2,6 +2,7 @@
 
 namespace App\Parsers;
 
+use App\Domain;
 use App\Repositories\ProductAttributesRepository;
 
 /**
@@ -18,5 +19,13 @@ class BaseParser
     public function __construct()
     {
         $this->attributes = new ProductAttributesRepository();
+    }
+
+    /**
+     * @return Domain|null
+     */
+    public function getDomain()
+    {
+        return Domain::where('name', static::$domain)->first();
     }
 }
