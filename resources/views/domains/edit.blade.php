@@ -33,6 +33,12 @@
                                     <input type="text" name="name" class="form-control" id="name" placeholder="Domain Name" value="{{ $domain->name }}" />
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="url">Domain url</label>
+
+                                    <input type="text" name="url" class="form-control" id="url" placeholder="Domain url" value="{{ $domain->url }}" />
+                                </div>
+
                                 <button type="submit" class="btn btn-primary">Save</button>
                                 <a href="{{ route('domains.index') }}" class="btn btn-danger">Cancel</a>
                             </form>
