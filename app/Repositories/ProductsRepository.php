@@ -67,9 +67,11 @@ class ProductsRepository extends EloquentRepository
             }
         }
         else {
-            return ! is_null(
-                api()->store('products', $data)
-            );
+            $created = api()->store('products', $data);
+
+            if (!is_null($created)) {
+                return true;
+            }
         }
 
         Log::error("Product create/update error.");

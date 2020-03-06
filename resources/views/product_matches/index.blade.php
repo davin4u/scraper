@@ -28,18 +28,22 @@
                             <tbody>
                             @foreach($matches as $match)
                                 <tr>
-                                    <td>{{ $match->product_id }}</td>
+                                    <td>{{ $match['product']['id'] }}</td>
+
                                     <td>
-                                        <div><a href="{{ route('products.edit', [$match->product_id]) }}">{{ $match->product->name }}</a></div>
-                                        <div><small>{{ $match->product->domain->name }}, {{ $match->product->category->name }}</small></div>
+                                        <div>{{ $match['product']['name'] }}</div>
+                                        <div><small>{{ $match['product']['domain']['name'] }}, {{ $match['product']['category']['name'] }}</small></div>
                                     </td>
-                                    <td>{{ $match->possible_match_id }}</td>
+
+                                    <td>{{ $match['match']['id'] }}</td>
+
                                     <td>
-                                        <div><a href="{{ route('products.edit', [$match->possible_match_id]) }}">{{ $match->match->name }}</a></div>
-                                        <div><small>{{ $match->match->domain->name }}, {{ $match->match->category->name }}</small></div>
+                                        <div>{{ $match['match']['name'] }}</div>
+                                        <div><small>{{ $match['match']['domain']['name'] }}, {{ $match['match']['category']['name'] }}</small></div>
                                     </td>
+
                                     <td class="text-right">
-                                        <a href="{{ route('products.resolve', [$match->product, $match->match]) }}" class="btn btn-primary btn-sm">Merge</a>
+                                        <a href="{{ route('products.resolve', [$match['id']]) }}" class="btn btn-primary btn-sm">Merge</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -49,7 +53,7 @@
                             </tbody>
                         </table>
 
-                        {{ $matches->links() }}
+                        {{ $paginator->links() }}
                     </div>
                 </div>
             </div>

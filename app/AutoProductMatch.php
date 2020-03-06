@@ -4,11 +4,7 @@ namespace App;
 
 use Illuminate\Support\Facades\Log;
 
-/**
- * Class ProductMatch
- * @package App
- */
-class ProductMatch
+class AutoProductMatch
 {
     /**
      * @param int $id
@@ -17,7 +13,7 @@ class ProductMatch
     public static function find(int $id)
     {
         try {
-            $response = api()->index('products', [], 'matches/' . $id);
+            $response = api()->index('products', [], 'matches/auto-matches/' . $id);
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());

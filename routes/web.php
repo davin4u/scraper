@@ -47,8 +47,7 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     Route::prefix('products')->name('products.')->group(function () {
-        Route::get('resolve/user-match/{matchId}', 'ProductsController@resolveUserMatch')->name('resolveUserMatch');
-        Route::get('resolve/{source}/{match}', 'ProductsController@resolve')->name('resolve');
+        Route::get('resolve/{matchId}', 'ProductsController@resolve')->name('resolve');
         Route::post('merge/{match}', 'ProductsController@merge')->name('merge');
     });
 

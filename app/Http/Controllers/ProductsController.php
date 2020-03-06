@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AutoProductMatch;
 use App\Brand;
 use App\Category;
 use App\Domain;
@@ -146,16 +147,6 @@ class ProductsController extends Controller
     }
 
     /**
-     * @param Product $source
-     * @param Product $match
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function resolve(Product $source, Product $match)
-    {
-        return view('products.resolve', compact('source', 'match'));
-    }
-
-    /**
      * @param $matchId
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -184,14 +175,14 @@ class ProductsController extends Controller
      * @param $matchId
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function resolveUserMatch($matchId)
+    public function resolve($matchId)
     {
-        $match = UserProductMatch::find($matchId);
+        $match = ProductMatch::find($matchId);
 
-        if (is_null($match)) {
+        if (is_nuLL($match)) {
             abort(404);
         }
 
-        return view('products.resolve_user_match', compact('match'));
+        return view('products.resolve', compact('match'));
     }
 }

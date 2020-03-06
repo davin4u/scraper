@@ -154,14 +154,6 @@ class Product extends Model
     }
 
     /**
-     * @return mixed
-     */
-    public function matches()
-    {
-        return $this->hasMany(ProductMatch::class)->notResolved();
-    }
-
-    /**
      * @param array $data
      * @return $this
      */

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="card">
-            <div class="card-header">Merge products</div>
+            <div class="card-header">Merge user products</div>
 
             <div class="card-body">
                 @if (session('status'))
@@ -20,18 +20,18 @@
                     @endforeach
                 @endif
 
-                <form action="{{ route('products.merge', [$source, $match]) }}" method="POST">
+                <form action="{{ route('products.merge', [$match['id']]) }}" method="POST">
                     @csrf
                     <div class="row justify-content-center">
                         <div class="col-md-6">
                             <div class="card border-light mb-3">
                                 <div class="card-header">
-                                    <h4>{{ $source->name }}</h4>
-                                    <small>{{ $source->domain->name }}</small>
+                                    <h4>{{ $match['product']['name'] }}</h4>
+                                    <small>{{ $match['product']['domain']['name'] }}</small>
                                 </div>
 
                                 <div class="card-body">
-                                    @foreach($source->getStorableAttributes() as $attribute)
+                                    @foreach($match['product']['attributes'] as $attribute)
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">{{ $attribute['name'] }}</label>
 
@@ -47,12 +47,12 @@
                         <div class="col-md-6">
                             <div class="card border-light mb-3">
                                 <div class="card-header">
-                                    <h4>{{ $match->name }}</h4>
-                                    <small>{{ $match->domain->name }}</small>
+                                    <h4>{{ $match['match']['name'] }}</h4>
+                                    <small>{{ $match['match']['domain']['name'] }}</small>
                                 </div>
 
                                 <div class="card-body">
-                                    @foreach($match->getStorableAttributes() as $attribute)
+                                    @foreach($match['match']['attributes'] as $attribute)
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">{{ $attribute['name'] }}</label>
 
