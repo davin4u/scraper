@@ -20,6 +20,7 @@
                             <thead>
                                 <th>ID</th>
                                 <th>Url</th>
+                                <th>Processed at</th>
                             </thead>
 
                             <tbody>
@@ -27,6 +28,7 @@
                                     <tr>
                                         <td>{{ $category->id }}</td>
                                         <td>{{ $category->url }}</td>
+                                        <td>{{ $category->scraping_finished_at ? $category->scraping_finished_at->toDateTimeString() : '-' }}</td>
                                     </tr>
                                 @endforeach
                                 @empty($categories)
