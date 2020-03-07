@@ -56,7 +56,11 @@ class ScraperProcessCommand extends Command
         // scraping using scraping categories
         if (!$url) {
             /** @var Collection $categories */
-            $categories = ScraperCategory::query()->orderBy('scraping_started_at')->limit(5)->get();
+            $categories = ScraperCategory::query()
+                ->whereRaw('`scraping_finished_at` < ?', [Carbon::now()->subDay()->endOfDay()->toDateTimeString()])
+                ->orderBy('scraping_started_at')
+                ->limit(5)
+                ->get();
 
             if ($categories->count() === 0) {
                 return;
@@ -76,6 +80,10 @@ class ScraperProcessCommand extends Command
                 try {
                     if ($this->handleUrlScraping($category->url)) {
                         unset($initialTime[$category->id]);
+
+                        $category->update([
+                            'scraping_finished_at' => Carbon::now()->toDateTimeString()
+                        ]);
                     }
                 }
                 catch (ScrapingTerminatedException $e) {
