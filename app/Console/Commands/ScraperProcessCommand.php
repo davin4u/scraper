@@ -10,6 +10,7 @@ use App\Scrapers\ScraperFactory;
 use App\Scrapers\ScraperInterface;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class ScraperProcessCommand extends Command
@@ -43,6 +44,7 @@ class ScraperProcessCommand extends Command
      */
     public function handle()
     {
+        // scraping using products url
         if ($this->option('products')) {
             $this->handleProductsScraping($this->option('take') ? (int)$this->option('take') : 100);
 
@@ -51,49 +53,76 @@ class ScraperProcessCommand extends Command
 
         $url = $this->option('url');
 
+        // scraping using scraping categories
         if (!$url) {
-            $category = ScraperCategory::query()->orderBy('scraping_started_at')->first();
+            /** @var Collection $categories */
+            $categories = ScraperCategory::query()->orderBy('scraping_started_at')->limit(5)->get();
 
-            if (!$category) {
+            if ($categories->count() === 0) {
                 return;
             }
 
-            $initialStartedDate = $category->scraping_started_at;
+            $initialTime = [];
+            foreach ($categories as $category) {
+                $initialTime[$category->id] = $category->scraping_started_at;
+            }
 
-            $category->update([
-                'scraping_started_at' => Carbon::now()->toDateTimeString()
-            ]);
+            ScraperCategory::whereIn('id', $categories->pluck('id')->toArray())
+                ->update([
+                    'scraping_started_at' => Carbon::now()->toDateTimeString()
+                ]);
 
-            $url = $category->url;
+            foreach ($categories as $category) {
+                try {
+                    if ($this->handleUrlScraping($category->url)) {
+                        unset($initialTime[$category->id]);
+                    }
+                }
+                catch (ScrapingTerminatedException $e) {
+                    if (isset($category) && isset($initialTime[$category->id])) {
+                        $category->update([
+                            'scraping_started_at' => $initialTime[$category->id]
+                        ]);
+                    }
+                }
+
+                sleep(7);
+            }
+
+            return;
         }
 
+        // scraping by url
+        $this->handleUrlScraping($url);
+    }
+
+    /**
+     * @param string $url
+     * @return bool
+     * @throws \Exception
+     */
+    protected function handleUrlScraping(string $url)
+    {
         try {
             /** @var ScraperInterface $scraper */
             $scraper = (new ScraperFactory())->get($url);
 
             $scraper->handle($url);
 
-            if (isset($category)) {
-                $category->update([
-                    'scraping_finished_at' => Carbon::now()->toDateTimeString()
-                ]);
-            }
+            return true;
         }
         catch (ScraperNotFoundException $e) {
             Log::error("[SCRAPER] Scraper for $url was not found.");
 
             throw new \Exception("Scraper not found.");
         }
-        catch (ScrapingTerminatedException $e) {
-            if (isset($category) && isset($initialStartedDate)) {
-                $category->update([
-                    'scraping_started_at' => $initialStartedDate
-                ]);
-            }
-        }
     }
 
-    public function handleProductsScraping($take = 100)
+    /**
+     * @param int $take
+     * @throws \Exception
+     */
+    protected function handleProductsScraping($take = 100)
     {
         $products = \App\Product::query()->orderBy('scraped_at')->orderBy('id')->take($take)->get();
 
