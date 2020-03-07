@@ -57,7 +57,7 @@ class ScraperProcessCommand extends Command
         if (!$url) {
             /** @var Collection $categories */
             $categories = ScraperCategory::query()
-                ->whereRaw('`scraping_finished_at` < ?', [Carbon::now()->subDay()->endOfDay()->toDateTimeString()])
+                ->whereRaw('(`scraping_finished_at` IS NULL OR `scraping_finished_at` < ?)', [Carbon::now()->subDay()->endOfDay()->toDateTimeString()])
                 ->orderBy('scraping_started_at')
                 ->limit(5)
                 ->get();
