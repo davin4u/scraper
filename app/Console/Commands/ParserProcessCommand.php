@@ -13,6 +13,7 @@ use App\Repositories\ProductsRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ParserProcessCommand extends Command
 {
@@ -52,19 +53,32 @@ class ParserProcessCommand extends Command
      */
     public function handle()
     {
-        if ($this->option('domain')) {
-            $this->files->domain($this->option('domain'));
-        }
-
         if ($this->option('domain') && $this->option('date')) {
+            $this->files->domain($this->option('domain'));
+
             $this->files->date(Carbon::parse($this->option('date')));
+
+            $this->parseDocuments($this->files->get());
         }
         else {
-            $this->files->date(Carbon::now());
+            $directories = array_map(function ($item) {
+                return explode('/', $item)[1];
+            }, Storage::disk('local')->directories('scraper'));
+
+            if (!empty($directories)) {
+                foreach ($directories as $domain) {
+                    $this->files->domain($domain);
+
+                    $this->files->date(Carbon::now());
+
+                    $this->parseDocuments($this->files->get());
+                }
+            }
         }
+    }
 
-        $documents = $this->files->get();
-
+    private function parseDocuments($documents)
+    {
         if (empty($documents)) {
             return;
         }
