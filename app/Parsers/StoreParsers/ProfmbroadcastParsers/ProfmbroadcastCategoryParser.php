@@ -50,7 +50,7 @@ class ProfmbroadcastCategoryParser extends BaseParser implements ParserInterface
 
             $item['domain_id'] = $domain->id;
             $item['category_id'] = $categoryId;
-            $item['url'] = 'https://' . static::$domain . $product->attr('href');
+            $item['url'] = 'https://' . static::$domain . str_replace(' ', '', $product->attr('href'));
 
             // SKU
             $urlParts = explode('/', $product->attr('href'));
