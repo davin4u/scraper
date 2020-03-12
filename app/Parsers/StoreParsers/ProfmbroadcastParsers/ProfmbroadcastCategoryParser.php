@@ -116,6 +116,8 @@ class ProfmbroadcastCategoryParser extends BaseParser implements ParserInterface
 
             $results[] = $item;
         });
+
+        return $results;
     }
 
     /**
