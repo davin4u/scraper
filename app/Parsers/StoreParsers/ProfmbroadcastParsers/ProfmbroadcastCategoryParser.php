@@ -2,7 +2,6 @@
 
 namespace App\Parsers\StoreParsers\ProfmbroadcastParsers;
 
-use App\Domain;
 use App\Parsers\BaseParser;
 use App\Parsers\Document;
 use App\Parsers\Helpers\CategoryMatcher;
