@@ -2,49 +2,36 @@
 
 namespace App\Scrapers\StoreScrapers\NotikScrapers;
 
-use App\Scrapers\BaseScraper;
+use App\Crawler\Clients\SimpleClient;
+use App\Crawler\Crawler;
+use App\Crawler\Interfaces\ClientInterface;
 use App\Scrapers\ScraperInterface;
-use GuzzleHttp\Client;
 
 /**
  * Class NotikProductPageScraper
  * @package App\Scrapers\StoreScrapers\NotikScrapers
  */
-class NotikProductPageScraper extends BaseScraper implements ScraperInterface
+class NotikProductPageScraper extends Crawler implements ScraperInterface
 {
     /**
      * @var string
      */
-    protected static $domain = 'notik.ru';
-
-    /**
-     * @var int
-     */
-    protected $delay = 10;
-
-    /**
-     * @param string $url
-     * @return mixed
-     */
-    public function handle(string $url)
-    {
-        $client = new Client();
-
-        $response = $client->request('GET', $url);
-
-        $content = $response->getBody()->getContents();
-
-        $this->saveDocument($url, $content);
-
-        sleep(rand($this->delay - 3, $this->delay + 2));
-    }
+    protected static $domain = 'www.notik.ru';
 
     /**
      * @param string $url
      * @return bool
      */
-    public static function canHandle(string $url): bool
+    public static function canHandle(string $url) : bool
     {
         return strpos($url, static::$domain) !== false && strpos($url, '/goods/') !== false;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient(): ClientInterface
+    {
+        return new SimpleClient();
     }
 }

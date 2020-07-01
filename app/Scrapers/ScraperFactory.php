@@ -24,7 +24,7 @@ class ScraperFactory extends ClassesFactory
     public function get(string $url)
     {
         foreach (static::$classes as $scraper) {
-            /** @var BaseScraper $scraper */
+            /** @var ScraperInterface $scraper */
 
             if (class_exists($scraper) && $scraper::canHandle($url)) {
                 return new $scraper;
