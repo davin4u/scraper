@@ -2,15 +2,16 @@
 
 namespace App\Scrapers\StoreScrapers\DnsShopScrapers;
 
-use App\Scrapers\BaseScraper;
+use App\Crawler\Clients\SimpleClient;
+use App\Crawler\Crawler;
+use App\Crawler\Interfaces\ClientInterface;
 use App\Scrapers\ScraperInterface;
-use App\Scrapers\Webdriver;
 
 /**
  * Class DnsShopCategoryScraper
  * @package App\Scrapers\StoreScrapers\DnsShopScrapers
  */
-class DnsShopCategoryScraper extends BaseScraper implements ScraperInterface
+class DnsShopCategoryScraper extends Crawler implements ScraperInterface
 {
     /**
      * @var string
@@ -22,23 +23,17 @@ class DnsShopCategoryScraper extends BaseScraper implements ScraperInterface
      */
     protected $delay = 15;
 
-    /**
-     * @param string $url
-     * @return mixed|void
-     * @throws \App\Exceptions\ScrapingTerminatedException
-     */
+    /*
     public function handle(string $url)
     {
         $preparedUrl = $this->getBaseUrl($url);
         $page = 1;
 
         while (true) {
-            /** @var Webdriver $driver */
             $driver = webdriver()->init();
 
             $url = $preparedUrl . '?p=' . $page;
 
-            //@TODO check if we have to execute webdriver's close() method after each iteration
             $content = $driver->open($url)
                 //->wait(rand(3, 5))
                 //->screenshot(storage_path('app/scraper/screenshots'))
@@ -57,6 +52,7 @@ class DnsShopCategoryScraper extends BaseScraper implements ScraperInterface
             sleep(rand($this->delay - 3, $this->delay + 5));
         }
     }
+    */
 
     /**
      * @param string $url
@@ -78,5 +74,21 @@ class DnsShopCategoryScraper extends BaseScraper implements ScraperInterface
         }
 
         return strpos($content, 'n-catalog-product__main') !== false;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient(): ClientInterface
+    {
+        return new SimpleClient(); // @TODO another client class should be developed to support webdriver scraping
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainName(): string
+    {
+        return static::$domain;
     }
 }

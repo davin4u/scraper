@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Parsers\Helpers;
+namespace App\Crawler\Matchers;
 
 /**
  * Class SimpleMatcher
- * @package App\Parsers\Helpers
+ * @package App\Crawler\Matchers
  */
 class SimpleMatcher
 {
@@ -14,20 +14,16 @@ class SimpleMatcher
     protected $map;
 
     /**
-     * SimpleCategoryMatcher constructor.
-     */
-    public function __construct()
-    {
-        $this->loadMapping();
-    }
-
-    /**
      * @param string $name
      * @return int
      * @throws \Exception
      */
-    public function match(string $name) : int
+    public function match(string $name): int
     {
+        if (empty($this->map)) {
+            $this->loadMapping();
+        }
+
         foreach ($this->map as $entityId => $map) {
             if (is_array($map) && count($map) > 0) {
                 foreach ($map as $pattern) {
@@ -53,12 +49,12 @@ class SimpleMatcher
         return $created->id;
     }
 
-    protected function loadMapping()
+    private function loadMapping()
     {
         $this->map = [];
 
         if (!$this->model) {
-            throw new \Exception("Property model should be set in child matcher class.");
+            throw new \Exception("Property model must be set in child matcher class.");
         }
 
         $entities = (new $this->model)->query()->get();

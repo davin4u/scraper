@@ -2,21 +2,20 @@
 
 namespace App\Scrapers\StoreScrapers\TransmittersrusScrapers;
 
-use App\Scrapers\BaseScraper;
+use App\Crawler\Clients\SimpleClient;
+use App\Crawler\Crawler;
+use App\Crawler\Interfaces\ClientInterface;
 use App\Scrapers\ScraperInterface;
 use GuzzleHttp\Client;
 
-class TransmittersrusProductPageScraper extends BaseScraper implements ScraperInterface
+class TransmittersrusProductPageScraper extends Crawler implements ScraperInterface
 {
     /**
      * @var string
      */
     protected static $domain = 'www.transmittersrus.com';
 
-    /**
-     * @param string $url
-     * @return mixed
-     */
+    /*
     public function handle(string $url)
     {
         $client = new Client();
@@ -26,7 +25,7 @@ class TransmittersrusProductPageScraper extends BaseScraper implements ScraperIn
         $content = $response->getBody()->getContents();
 
         $this->saveDocument($url, $content);
-    }
+    }*/
 
     /**
      * @param string $url
@@ -35,5 +34,21 @@ class TransmittersrusProductPageScraper extends BaseScraper implements ScraperIn
     public static function canHandle(string $url): bool
     {
         return strpos($url, static::$domain) !== false && strpos($url, '/shop/') !== false;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient(): ClientInterface
+    {
+        return new SimpleClient();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainName(): string
+    {
+        return static::$domain;
     }
 }

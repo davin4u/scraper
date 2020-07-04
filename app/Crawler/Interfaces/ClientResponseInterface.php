@@ -11,15 +11,15 @@ interface ClientResponseInterface
     /**
      * @return string
      */
-    public function getContent() : string;
+    public function getContent(): string;
 
     /**
      * @return int
      */
-    public function getStatusCode() : int;
+    public function getStatusCode(): int;
 
     /**
      * @return bool
      */
-    public function isSuccess() : bool;
+    public function isSuccess(): bool;
 }

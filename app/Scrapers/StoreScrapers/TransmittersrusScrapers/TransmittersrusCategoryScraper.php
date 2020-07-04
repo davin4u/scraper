@@ -2,22 +2,20 @@
 
 namespace App\Scrapers\StoreScrapers\TransmittersrusScrapers;
 
-use App\Scrapers\BaseScraper;
+use App\Crawler\Clients\SimpleClient;
+use App\Crawler\Crawler;
+use App\Crawler\Interfaces\ClientInterface;
 use App\Scrapers\ScraperInterface;
 use GuzzleHttp\Client;
 
-class TransmittersrusCategoryScraper extends BaseScraper implements ScraperInterface
+class TransmittersrusCategoryScraper extends Crawler implements ScraperInterface
 {
     /**
      * @var string
      */
     protected static $domain = 'www.transmittersrus.com';
 
-    /**
-     * @param string $url
-     * @return mixed|void
-     * @throws \App\Exceptions\ScrapingTerminatedException
-     */
+    /*
     public function handle(string $url)
     {
         $preparedUrl = $this->getBaseUrl($url);
@@ -45,7 +43,7 @@ class TransmittersrusCategoryScraper extends BaseScraper implements ScraperInter
 
             sleep(rand($this->delay - 3, $this->delay + 5));
         }
-    }
+    }*/
 
     /**
      * @param string $url
@@ -63,5 +61,21 @@ class TransmittersrusCategoryScraper extends BaseScraper implements ScraperInter
     protected function containProducts(string $content)
     {
         return strpos($content, 'woocommerce-result-count') !== false;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient(): ClientInterface
+    {
+        return new SimpleClient();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainName(): string
+    {
+        return static::$domain;
     }
 }

@@ -13,5 +13,5 @@ interface ClientInterface
      * @param string $url
      * @return ClientResponseInterface
      */
-    public function request(string $method, string $url) : ClientResponseInterface;
+    public function request(string $method, string $url): ClientResponseInterface;
 }

@@ -55,7 +55,12 @@ abstract class Crawler
     /**
      * @return ClientInterface
      */
-    abstract public function getHttpClient() : ClientInterface;
+    abstract public function getHttpClient(): ClientInterface;
+
+    /**
+     * @return string
+     */
+    abstract public function getDomainName(): string;
 
     /**
      * @param string $url
@@ -72,16 +77,16 @@ abstract class Crawler
     /**
      * @return string
      */
-    protected function getDocumentsDirectory() : string
+    protected function getDocumentsDirectory(): string
     {
-        return 'scraper' . DIRECTORY_SEPARATOR . date('d.m.Y');
+        return 'scraper' . DIRECTORY_SEPARATOR . date('d.m.Y') . DIRECTORY_SEPARATOR . $this->getDomainName();
     }
 
     /**
      * @param string $url
      * @return string
      */
-    protected function convertUrlToHashName(string $url) : string
+    protected function convertUrlToHashName(string $url): string
     {
         return md5($url) . '.html';
     }
@@ -90,7 +95,7 @@ abstract class Crawler
      * @param string $content
      * @return string
      */
-    protected function clearContent(string $content) : string
+    protected function clearContent(string $content): string
     {
         if (!empty($this->clearContentPlugins)) {
             foreach ($this->clearContentPlugins as $pluginClass) {
@@ -107,7 +112,7 @@ abstract class Crawler
     /**
      * @return int
      */
-    private function getDelay() : int
+    private function getDelay(): int
     {
         $delay = $this->delay >= 8 ? $this->delay : 8;
 
@@ -118,7 +123,7 @@ abstract class Crawler
      * @param string $url
      * @return string
      */
-    protected function getBaseUrl(string $url) : string
+    protected function getBaseUrl(string $url): string
     {
         return parse_url($url, PHP_URL_SCHEME) . '://' . parse_url($url, PHP_URL_HOST) . parse_url($url, PHP_URL_PATH);
     }

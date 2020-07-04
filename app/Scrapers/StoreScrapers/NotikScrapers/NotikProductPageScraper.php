@@ -22,7 +22,7 @@ class NotikProductPageScraper extends Crawler implements ScraperInterface
      * @param string $url
      * @return bool
      */
-    public static function canHandle(string $url) : bool
+    public static function canHandle(string $url): bool
     {
         return strpos($url, static::$domain) !== false && strpos($url, '/goods/') !== false;
     }
@@ -33,5 +33,13 @@ class NotikProductPageScraper extends Crawler implements ScraperInterface
     public function getHttpClient(): ClientInterface
     {
         return new SimpleClient();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainName(): string
+    {
+        return static::$domain;
     }
 }

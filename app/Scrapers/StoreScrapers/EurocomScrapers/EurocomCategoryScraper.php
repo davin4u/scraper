@@ -2,21 +2,19 @@
 
 namespace App\Scrapers\StoreScrapers\EurocomScrapers;
 
-use App\Scrapers\BaseScraper;
+use App\Crawler\Clients\SimpleClient;
+use App\Crawler\Crawler;
+use App\Crawler\Interfaces\ClientInterface;
 use App\Scrapers\ScraperInterface;
-use GuzzleHttp\Client;
 
-class EurocomCategoryScraper extends BaseScraper implements ScraperInterface
+class EurocomCategoryScraper extends Crawler implements ScraperInterface
 {
     /**
      * @var string
      */
     protected static $domain = 'www.eurocom.fr';
 
-    /**
-     * @param string $url
-     * @return mixed
-     */
+    /*
     public function handle(string $url)
     {
         $client = new Client();
@@ -45,7 +43,7 @@ class EurocomCategoryScraper extends BaseScraper implements ScraperInterface
 
             sleep(rand($this->delay - 3, $this->delay + 5));
         }
-    }
+    }*/
 
     /**
      * @param $content
@@ -82,5 +80,21 @@ class EurocomCategoryScraper extends BaseScraper implements ScraperInterface
         $parts = array_filter(explode('/', parse_url($url, PHP_URL_PATH)), function ($item) { return !empty($item); });
 
         return strpos($url, static::$domain) !== false && count($parts) === 1;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient(): ClientInterface
+    {
+        return new SimpleClient();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainName(): string
+    {
+        return static::$domain;
     }
 }

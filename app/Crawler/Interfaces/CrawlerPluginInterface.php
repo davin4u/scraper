@@ -12,5 +12,5 @@ interface CrawlerPluginInterface
      * @param string $content
      * @return string
      */
-    public function handle(string $content) : string;
+    public function handle(string $content): string;
 }

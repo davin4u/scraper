@@ -2,16 +2,16 @@
 
 namespace App\Scrapers\StoreScrapers\NotikScrapers;
 
-use App\Scrapers\BaseScraper;
+use App\Crawler\Clients\SimpleClient;
+use App\Crawler\Crawler;
+use App\Crawler\Interfaces\ClientInterface;
 use App\Scrapers\ScraperInterface;
-use GuzzleHttp\Client;
-use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class NotikCategoryScraper
  * @package App\Scrapers\StoreScrapers\NotikScrapers
  */
-class NotikCategoryScraper extends BaseScraper implements ScraperInterface
+class NotikCategoryScraper extends Crawler implements ScraperInterface
 {
     /**
      * @var string
@@ -23,10 +23,7 @@ class NotikCategoryScraper extends BaseScraper implements ScraperInterface
      */
     protected $delay = 15;
 
-    /**
-     * @param string $url
-     * @return mixed
-     */
+    /*
     public function handle(string $url)
     {
         $preparedUrl = $this->getBaseUrl($url);
@@ -52,7 +49,7 @@ class NotikCategoryScraper extends BaseScraper implements ScraperInterface
             $page++;
         }
         while (!is_null($lastPage) && $page < $lastPage);
-    }
+    }*/
 
     /**
      * @param string $url
@@ -70,7 +67,7 @@ class NotikCategoryScraper extends BaseScraper implements ScraperInterface
     private function getLastPage($content)
     {
         try {
-            $paginator = (new Crawler($content))->filter('.paginator');
+            $paginator = (new \Symfony\Component\DomCrawler\Crawler($content))->filter('.paginator');
 
             if ($paginator && $paginator->count()) {
                 $paginator = $paginator->first();
@@ -91,5 +88,21 @@ class NotikCategoryScraper extends BaseScraper implements ScraperInterface
         }
 
         return 1;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient(): ClientInterface
+    {
+        return new SimpleClient();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainName(): string
+    {
+        return static::$domain;
     }
 }

@@ -2,69 +2,20 @@
 
 namespace App\Parsers\StoreParsers\NotikParsers;
 
-use App\Parsers\BaseParser;
+use App\Crawler\Extractors\ProductExtractor;
 use App\Parsers\Document;
 use App\Parsers\ParserInterface;
-use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class NotikProductPageParser
  * @package App\Parsers\StoreParsers\NotikParsers
  */
-class NotikProductPageParser extends BaseParser implements ParserInterface
+class NotikProductPageParser extends ProductExtractor implements ParserInterface
 {
     /**
      * @var string
      */
     protected static $domain = 'notik.ru';
-
-    /**
-     * @var bool
-     */
-    protected $isSinglePageParser = true;
-
-    /**
-     * @param string $content
-     * @return mixed
-     */
-    public function handle(string $content)
-    {
-        $product = [];
-
-        $page = new Crawler($content);
-
-        // Meta title
-        try {
-            $title = $page->filter('title')->first();
-
-            if ($title) {
-                $product['meta_title'] = trim($title->html());
-            }
-        }
-        catch (\InvalidArgumentException $e) {}
-
-        // Meta description
-        try {
-            $description = $page->filter('meta[name="description"]');
-
-            if ($description && $description->count()) {
-                $product['meta_description'] = trim($description->attr('content'));
-            }
-        }
-        catch (\InvalidArgumentException $e) {}
-
-        // Meta keywords
-        try {
-            $keywords = $page->filter('meta[name="keywords"]');
-
-            if ($keywords && $keywords->count()) {
-                $product['meta_keywords'] = trim($keywords->attr('content'));
-            }
-        }
-        catch (\InvalidArgumentException $e) {}
-
-        return $product;
-    }
 
     /**
      * @param Document $document
@@ -82,6 +33,54 @@ class NotikProductPageParser extends BaseParser implements ParserInterface
      */
     public function isSinglePageParser(): bool
     {
-        return $this->isSinglePageParser;
+        return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        // TODO: Implement getName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrandName(): string
+    {
+        // TODO: Implement getBrandName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryName(): string
+    {
+        // TODO: Implement getCategoryName() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhotos(): array
+    {
+        // TODO: Implement getPhotos() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        // TODO: Implement getDescription() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        // TODO: Implement getAttributes() method.
     }
 }

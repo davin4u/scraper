@@ -2,7 +2,9 @@
 
 namespace App\Scrapers\StoreScrapers\ProfmbroadcastScrapers;
 
-use App\Scrapers\BaseScraper;
+use App\Crawler\Clients\SimpleClient;
+use App\Crawler\Crawler;
+use App\Crawler\Interfaces\ClientInterface;
 use App\Scrapers\ScraperInterface;
 use GuzzleHttp\Client;
 
@@ -10,17 +12,14 @@ use GuzzleHttp\Client;
  * Class ProfmbroadcastCategoryScraper
  * @package App\Scrapers\StoreScrapers\ProfmbroadcastScrapers
  */
-class ProfmbroadcastCategoryScraper extends BaseScraper implements ScraperInterface
+class ProfmbroadcastCategoryScraper extends Crawler implements ScraperInterface
 {
     /**
      * @var string
      */
     protected static $domain = 'www.profmbroadcast.com';
 
-    /**
-     * @param string $url
-     * @return mixed
-     */
+    /*
     public function handle(string $url)
     {
         $client = new Client();
@@ -36,7 +35,7 @@ class ProfmbroadcastCategoryScraper extends BaseScraper implements ScraperInterf
         $this->saveDocument($url, $content);
 
         sleep(rand($this->delay - 3, $this->delay + 5));
-    }
+    }*/
 
     /**
      * @param string $url
@@ -55,5 +54,21 @@ class ProfmbroadcastCategoryScraper extends BaseScraper implements ScraperInterf
     {
         return strpos($content, 'tiles clearfix feat_products') !== false
             && strpos($content, 'tile twentyfive tile_product') !== false;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient(): ClientInterface
+    {
+        return new SimpleClient();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainName(): string
+    {
+        return static::$domain;
     }
 }
