@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\ProductAttributes;
+use App\Attribute;
 
 /**
  * Class ProductAttributesRepository
@@ -13,7 +13,7 @@ class ProductAttributesRepository
     /**
      * @param string $name
      * @param int $categoryId
-     * @return ProductAttributes|mixed
+     * @return Attribute|mixed
      */
     public function recognizeAttribute(string $name, int $categoryId)
     {
@@ -35,17 +35,17 @@ class ProductAttributesRepository
      */
     public function find(string $name, int $categoryId)
     {
-        return ProductAttributes::where('category_id', $categoryId)->where('name', $name)->first();
+        return Attribute::where('category_id', $categoryId)->where('name', $name)->first();
     }
 
     /**
      * @param string $name
      * @param int $categoryId
-     * @return ProductAttributes
+     * @return Attribute
      */
     public function create(string $name, int $categoryId)
     {
-        $model = ProductAttributes::create([
+        $model = Attribute::create([
             'name' => $name,
             'category_id' => $categoryId
         ]);
@@ -63,7 +63,7 @@ class ProductAttributesRepository
         $prepared = [];
 
         /** @var \Illuminate\Database\Eloquent\Collection $attributes */
-        $attributes = ProductAttributes::where('category_id', $categoryId)->get();
+        $attributes = Attribute::where('category_id', $categoryId)->get();
 
         if ($attributes->count()) {
             foreach ($attributes as $attr) {

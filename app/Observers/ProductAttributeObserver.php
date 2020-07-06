@@ -2,15 +2,15 @@
 
 namespace App\Observers;
 
-use App\ProductAttributes;
+use App\Attribute;
 use Illuminate\Support\Facades\Log;
 
 class ProductAttributeObserver
 {
     /**
-     * @param ProductAttributes $productAttribute
+     * @param Attribute $productAttribute
      */
-    public function created(ProductAttributes $productAttribute)
+    public function created(Attribute $productAttribute)
     {
         try {
             api()->store('product-attributes', [

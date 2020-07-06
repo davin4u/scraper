@@ -13,11 +13,11 @@ class CreateProductAttributesTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_attributes', function (Blueprint $table) {
+        Schema::create('attributes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->bigInteger('category_id');
-            $table->string('attribute_key')->nullable();
+            $table->string('attribute_key')->nullable()->index();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateProductAttributesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_attributes');
+        Schema::dropIfExists('attributes');
     }
 }

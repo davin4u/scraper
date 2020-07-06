@@ -4,8 +4,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductAttributes extends Model
+class Attribute extends Model
 {
+    /**
+     * @var string
+     */
+    protected $table = 'attributes';
+
+    /**
+     * @var array
+     */
     protected $fillable = [
         'name',
         'category_id',

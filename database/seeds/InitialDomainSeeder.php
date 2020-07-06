@@ -16,7 +16,8 @@ class InitialDomainSeeder extends Seeder
             'eldorado.ru',
             'poiskhome.ru',
             'citilink.ru',
-            'mvideo.ru'
+            'mvideo.ru',
+            'www.notik.ru'
         ];
 
         foreach ($domains as $domain) {
