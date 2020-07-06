@@ -30,13 +30,14 @@ class SimpleClient implements ClientInterface
     /**
      * @param string $method
      * @param string $url
+     * @param array $options
      * @return ClientResponseInterface
      * @throws CrawlerHttpException
      */
-    public function request(string $method, string $url): ClientResponseInterface
+    public function request(string $method, string $url, array $options = []): ClientResponseInterface
     {
         try {
-            return new HttpResponse($this->client->request($method, $url));
+            return new HttpResponse($this->client->request($method, $url, $options));
         }
         catch (\Exception $e) {
             throw new CrawlerHttpException($e->getMessage());

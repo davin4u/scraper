@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Parsers;
+namespace App\Crawler;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +30,7 @@ class DocumentsRepository
     /**
      * @var string
      */
-    private $directory = '';
+    private $directory = 'scraper';
 
     /**
      * DocumentsRepository constructor.
@@ -78,21 +78,23 @@ class DocumentsRepository
      */
     public function get()
     {
-        $this->buildDirectory();
-
         $files = array_values(array_filter($this->storage->files($this->directory, true), function ($file) {
             return strpos($file, '.html') !== false;
         }));
 
-        $files = array_map(function ($path) {
-            return new Document($this->documentPath($path));
-        }, $files);
-
         if (!is_null($this->date)) {
-            $files = array_filter($files, function ($file) {
-                /** @var Document $file */
+            $date = $this->date->format('d.m.Y');
 
-                return $file->getCreatedAt()->gt($this->date->startOfDay()) && $file->getCreatedAt()->lt($this->date->endOfDay());
+            $files = array_filter($files, function ($file) use ($date) {
+                return strpos($file, $date) !== false;
+            });
+        }
+
+        if (!is_null($this->domain)) {
+            $domain = $this->domain;
+
+            $files = array_filter($files, function ($file) use ($domain) {
+                return strpos($file, $domain) !== false;
             });
         }
 
@@ -100,18 +102,11 @@ class DocumentsRepository
             $files = array_slice($files, 0, $this->limit);
         }
 
+        $files = array_map(function ($path) {
+            return new Document($this->documentPath($path));
+        }, $files);
+
         return array_values($files);
-    }
-
-    private function buildDirectory()
-    {
-        $dir = 'scraper';
-
-        if (!is_null($this->domain)) {
-            $dir .= DIRECTORY_SEPARATOR . $this->domain;
-        }
-
-        $this->directory = $dir;
     }
 
     /**

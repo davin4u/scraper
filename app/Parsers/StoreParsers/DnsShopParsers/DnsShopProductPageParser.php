@@ -2,11 +2,10 @@
 
 namespace App\Parsers\StoreParsers\DnsShopParsers;
 
+use App\Crawler\Extractors\ProductExtractor;
 use App\Domain;
 use App\Parsers\BaseParser;
-use App\Parsers\Document;
-use App\Parsers\Helpers\BrandMatcher;
-use App\Parsers\Helpers\CategoryMatcher;
+use App\Crawler\Document;
 use App\Parsers\ParserInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -14,7 +13,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * Class DnsShopProductPageParser
  * @package App\Parsers\StoreParsers\DnsShopParsers
  */
-class DnsShopProductPageParser extends BaseParser implements ParserInterface
+class DnsShopProductPageParser extends ProductExtractor implements ParserInterface
 {
     /**
      * @var string
@@ -36,12 +35,8 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
         2 => 'attr_79'
     ];
 
-    /**
-     * @param string $content
-     * @return array|mixed
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
-    public function handle(string $content)
+    /*
+    public function handle()
     {
         $product = [];
         $data = [];
@@ -191,7 +186,7 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
         }
 
         return $product;
-    }
+    }*/
 
     /**
      * @param Document $document
@@ -217,5 +212,53 @@ class DnsShopProductPageParser extends BaseParser implements ParserInterface
     public function isSinglePageParser() : bool
     {
         return $this->singlePageParser;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        // TODO: Implement getName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrandName(): string
+    {
+        // TODO: Implement getBrandName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryName(): string
+    {
+        // TODO: Implement getCategoryName() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhotos(): array
+    {
+        // TODO: Implement getPhotos() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        // TODO: Implement getDescription() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        // TODO: Implement getAttributes() method.
     }
 }

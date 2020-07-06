@@ -28,6 +28,11 @@ abstract class Crawler
     /**
      * @var array
      */
+    protected $requestOptions = [];
+
+    /**
+     * @var array
+     */
     protected $clearContentPlugins = [
         RemoveJavascript::class,
         RemoveCss::class,
@@ -47,7 +52,7 @@ abstract class Crawler
      */
     public function handle(string $url)
     {
-        $this->saveDocument($url, $this->client->request('GET', $url)->getContent());
+        $this->saveDocument($url, $this->client->request('GET', $url, $this->requestOptions)->getContent());
 
         sleep($this->getDelay());
     }

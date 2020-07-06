@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Parsers;
+namespace App\Crawler;
 
 use App\Exceptions\DocumentNotFoundException;
 use App\Exceptions\DocumentNotReadableException;
@@ -82,7 +82,7 @@ class Document
     {
         $path = explode('/', $this->file->getPath());
 
-        return $path[count($path) - 2];
+        return $path[count($path) - 1];
     }
 
     /**

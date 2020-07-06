@@ -3,7 +3,7 @@
 namespace App\Parsers\StoreParsers\NotikParsers;
 
 use App\Crawler\Extractors\ProductExtractor;
-use App\Parsers\Document;
+use App\Crawler\Document;
 use App\Parsers\ParserInterface;
 
 /**
@@ -15,7 +15,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
     /**
      * @var string
      */
-    protected static $domain = 'notik.ru';
+    protected static $domain = 'www.notik.ru';
 
     /**
      * @param Document $document

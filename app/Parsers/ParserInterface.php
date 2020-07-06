@@ -2,6 +2,8 @@
 
 namespace App\Parsers;
 
+use App\Crawler\Document;
+
 /**
  * Interface ParserInterface
  * @package App\Parsers

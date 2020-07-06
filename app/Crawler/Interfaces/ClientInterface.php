@@ -11,7 +11,8 @@ interface ClientInterface
     /**
      * @param string $method
      * @param string $url
+     * @param array $options
      * @return ClientResponseInterface
      */
-    public function request(string $method, string $url): ClientResponseInterface;
+    public function request(string $method, string $url, array $options = []): ClientResponseInterface;
 }

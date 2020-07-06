@@ -2,14 +2,11 @@
 
 namespace App\Parsers\StoreParsers\DnsShopParsers;
 
-use App\Parsers\Document;
-use App\Parsers\Helpers\BrandMatcher;
-use App\Parsers\Helpers\CategoryMatcher;
+use App\Crawler\Extractors\ProductExtractor;
+use App\Crawler\Document;
 use App\Parsers\ParserInterface;
-use Symfony\Component\DomCrawler\Crawler;
-use App\Domain;
 
-class DnsShopCategoryParser implements ParserInterface
+class DnsShopCategoryParser extends ProductExtractor implements ParserInterface
 {
     /**
      * @var string
@@ -21,11 +18,7 @@ class DnsShopCategoryParser implements ParserInterface
      */
     protected $singlePageParser = false;
 
-    /**
-     * @param string $content
-     * @return array|mixed
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
+    /*
     public function handle(string $content)
     {
         $results = [];
@@ -96,7 +89,7 @@ class DnsShopCategoryParser implements ParserInterface
         });
 
         return $results;
-    }
+    }*/
 
     /**
      * @param Document $document
@@ -122,5 +115,53 @@ class DnsShopCategoryParser implements ParserInterface
     public function isSinglePageParser(): bool
     {
         return $this->singlePageParser;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        // TODO: Implement getName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrandName(): string
+    {
+        // TODO: Implement getBrandName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryName(): string
+    {
+        // TODO: Implement getCategoryName() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhotos(): array
+    {
+        // TODO: Implement getPhotos() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        // TODO: Implement getDescription() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        // TODO: Implement getAttributes() method.
     }
 }

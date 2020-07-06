@@ -3,6 +3,7 @@
 namespace App\Parsers;
 
 use App\ClassesFactory;
+use App\Crawler\Document;
 use App\Exceptions\ParserNotFoundException;
 
 class ParserFactory extends ClassesFactory
@@ -16,6 +17,7 @@ class ParserFactory extends ClassesFactory
      * @param Document $document
      * @return ParserInterface
      * @throws ParserNotFoundException
+     * @throws \App\Exceptions\DocumentNotReadableException
      */
     public static function get(Document $document) : ParserInterface
     {
@@ -23,7 +25,7 @@ class ParserFactory extends ClassesFactory
             /** @var ParserInterface $parser */
 
             if (class_exists($parser) && $parser::canHandle($document)) {
-                return new $parser;
+                return new $parser($document->getContent());
             }
         }
 

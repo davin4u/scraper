@@ -19,6 +19,12 @@ class NotikProductPageScraper extends Crawler implements ScraperInterface
     protected static $domain = 'www.notik.ru';
 
     /**
+     * @TODO verification disabled just for testing purpose, that mustn't happen on production
+     * @var array
+     */
+    protected $requestOptions = ['verify' => false];
+
+    /**
      * @param string $url
      * @return bool
      */

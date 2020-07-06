@@ -2,20 +2,15 @@
 
 namespace App\Parsers\StoreParsers\NotikParsers;
 
-use App\Domain;
-use App\Parsers\BaseParser;
-use App\Parsers\Document;
-use App\Parsers\Helpers\BrandMatcher;
-use App\Parsers\Helpers\CategoryMatcher;
+use App\Crawler\Extractors\ProductExtractor;
+use App\Crawler\Document;
 use App\Parsers\ParserInterface;
-use App\ProductStatus;
-use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class NotikCategoryParser
  * @package App\Parsers\StoreParsers\NotikParsers
  */
-class NotikCategoryParser extends BaseParser implements ParserInterface
+class NotikCategoryParser extends ProductExtractor implements ParserInterface
 {
     /**
      * @var string
@@ -27,11 +22,7 @@ class NotikCategoryParser extends BaseParser implements ParserInterface
      */
     protected $isSinglePageParser = false;
 
-    /**
-     * @param string $content
-     * @return array|mixed
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
+    /*
     public function handle(string $content)
     {
         $results = [];
@@ -168,7 +159,7 @@ class NotikCategoryParser extends BaseParser implements ParserInterface
         });
 
         return $results;
-    }
+    }*/
 
     /**
      * @param Document $document
@@ -187,5 +178,53 @@ class NotikCategoryParser extends BaseParser implements ParserInterface
     public function isSinglePageParser(): bool
     {
         return $this->isSinglePageParser;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        // TODO: Implement getName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrandName(): string
+    {
+        // TODO: Implement getBrandName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryName(): string
+    {
+        // TODO: Implement getCategoryName() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhotos(): array
+    {
+        // TODO: Implement getPhotos() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        // TODO: Implement getDescription() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        // TODO: Implement getAttributes() method.
     }
 }

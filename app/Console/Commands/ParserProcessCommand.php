@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use App\Exceptions\DocumentNotReadableException;
 use App\Exceptions\DomainNotFoundException;
 use App\Exceptions\ParserNotFoundException;
-use App\Parsers\Document;
-use App\Parsers\DocumentsRepository;
+use App\Crawler\Document;
+use App\Crawler\DocumentsRepository;
 use App\Parsers\ParserFactory;
 use App\Parsers\ParserInterface;
 use App\Repositories\ProductsRepository;
@@ -22,7 +22,7 @@ class ParserProcessCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'parser:process {--domain=} {--date=}';
+    protected $signature = 'parser:process {--domain=} {--date=} {--all}';
 
     /**
      * The console command description.
@@ -53,28 +53,22 @@ class ParserProcessCommand extends Command
      */
     public function handle()
     {
-        if ($this->option('domain') && $this->option('date')) {
-            $this->files->domain($this->option('domain'));
+        $date = $this->option('date') ?: ($this->option('all') ? date('d.m.Y') : null);
 
-            $this->files->date(Carbon::parse($this->option('date')));
-
-            $this->parseDocuments($this->files->get());
-        }
-        else {
-            $directories = array_map(function ($item) {
-                return explode('/', $item)[1];
-            }, Storage::disk('local')->directories('scraper'));
-
-            if (!empty($directories)) {
-                foreach ($directories as $domain) {
-                    $this->files->domain($domain);
-
-                    $this->files->date(Carbon::now());
-
-                    $this->parseDocuments($this->files->get());
-                }
+        if ($date) {
+            try {
+                $this->files->date(Carbon::parse($date));
+            }
+            catch (\Exception $e) {
+                $this->error('Wrong date format');
             }
         }
+
+        if ($domain = $this->option('domain')) {
+            $this->files->domain($domain);
+        }
+
+        $this->parseDocuments($this->files->get());
     }
 
     private function parseDocuments($documents)
@@ -92,7 +86,7 @@ class ParserProcessCommand extends Command
                 /** @var ParserInterface $parser */
                 $parser = (new ParserFactory)->get($document);
 
-                $results = $parser->handle($document->getContent(false));
+                $results = $parser->handle();
 
                 if (!empty($results)) {
                     if ($parser->isSinglePageParser()) {
@@ -102,8 +96,6 @@ class ParserProcessCommand extends Command
                         (new ProductsRepository())->domain($domain)->bulkCreateOrUpdate($results);
                     }
                 }
-
-                $document->unlock();
             }
             catch (ParserNotFoundException $e) {
                 Log::error("Parser NOT FOUND: " . $document->getPath());
