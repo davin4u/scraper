@@ -20,4 +20,12 @@ class Category extends Model
     protected $casts = [
         'map' => 'array'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attributes()
+    {
+        return $this->hasMany(Attribute::class);
+    }
 }

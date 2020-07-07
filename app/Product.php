@@ -2,10 +2,7 @@
 
 namespace App;
 
-use App\Repositories\ProductAttributesRepository;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use LaravelStorable\Traits\Storable;
 
 class Product extends Model
 {
@@ -34,5 +31,16 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'product_attributes')
+            ->using(ProductAttribute::class)
+            ->as('attributeValue')
+            ->withPivot(['value']);
     }
 }
