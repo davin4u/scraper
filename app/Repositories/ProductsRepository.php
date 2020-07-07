@@ -2,85 +2,47 @@
 
 namespace App\Repositories;
 
-use App\ApiResponse;
-use App\Brand;
-use App\Category;
-use App\Domain;
-use App\Exceptions\BrandNotFoundException;
-use App\Exceptions\CategoryNotFoundException;
-use App\Exceptions\DomainNotFoundException;
+use App\Exceptions\ProductNotFoundException;
 use App\Product;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class ProductsRepository
  * @package App\Repositories
  */
-class ProductsRepository extends EloquentRepository
+class ProductsRepository
 {
     /**
-     * @return string
+     * @param array $data
+     * @return Product|bool
+     * @throws ProductNotFoundException
      */
-    public function model() : string
+    public function createOrUpdate(array $data)
     {
-        return Product::class;
-    }
+        if ($validated = $this->validate($data)) {
+            if (!empty($data['id'])) {
+                /** @var Product $product */
+                $product = Product::find($data['id']);
 
-    /**
-     * @param $sku
-     * @return mixed
-     */
-    public function find($sku)
-    {
-        /** @var Collection $product */
-        $product = $this->where('sku', '=', $sku)->get();
+                if (is_null($product)) {
+                    throw new ProductNotFoundException("Product with ID {$data['id']} NOT FOUND.");
+                }
 
-        if ($product->count() > 1) {
-            // @TODO in case if several products were found with the same SKU for the same domain - notify admin
-        }
-
-        return $product->first();
-    }
-
-    /**
-     * @param $data
-     * @return bool
-     * @throws \Exception
-     */
-    public function createOrUpdate($data)
-    {
-        /** @var ApiResponse $response */
-        $response = api()->get(
-            'products',
-            Arr::only($data, ['domain_id', 'sku']),
-            'search-one');
-
-        if (!is_null($response) && !$response->withErrors()) {
-            $productData = $response->data();
-
-            if (!is_null($productData)) {
-                return ! is_null(
-                    api()->update('products', (int) $productData['id'], $data)
-                );
+                $product->update($validated);
             }
-        }
-        else {
-            $created = api()->store('products', $data);
-
-            if (!is_null($created)) {
-                return true;
+            else {
+                $product = Product::create($validated);
             }
+
+            return $product;
         }
 
-        Log::error("Product create/update error.");
-        Log::error($data);
+        return false;
     }
 
     /**
      * @param iterable $products
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws ProductNotFoundException
      */
     public function bulkCreateOrUpdate(iterable $products)
     {
@@ -90,80 +52,21 @@ class ProductsRepository extends EloquentRepository
     }
 
     /**
-     * @param $nameOrId
-     * @return ProductsRepository
-     * @throws DomainNotFoundException
+     * @param array $data
+     * @return array|bool
      */
-    public function domain($nameOrId)
+    private function validate(array $data)
     {
-        if (is_integer($nameOrId)) {
-            $this->where('domain_id', '=', $nameOrId);
-
-            return $this;
+        if (empty($data['name'])) {
+            return false;
         }
 
-        if (is_string($nameOrId)) {
-            $domain = Domain::where('name', $nameOrId)->first();
-
-            if (!is_null($domain)) {
-                $this->where('domain_id', '=', $domain->id);
-
-                return $this;
-            }
-        }
-
-        throw new DomainNotFoundException("Domain [$nameOrId] NOT FOUND.");
-    }
-
-    /**
-     * @param $nameOrId
-     * @return ProductsRepository
-     * @throws CategoryNotFoundException
-     */
-    public function category($nameOrId)
-    {
-        if (is_integer($nameOrId)) {
-            $this->where('category_id', '=', $nameOrId);
-
-            return $this;
-        }
-
-        if (is_string($nameOrId)) {
-            $category = Category::where('name', $nameOrId)->first();
-
-            if (!is_null($category)) {
-                $this->where('category_id', '=', $category->id);
-
-                return $this;
-            }
-        }
-
-        throw new CategoryNotFoundException("Category $nameOrId NOT FOUND.");
-    }
-
-    /**
-     * @param $nameOrId
-     * @return ProductsRepository
-     * @throws BrandNotFoundException
-     */
-    public function brand($nameOrId)
-    {
-        if (is_integer($nameOrId)) {
-            $this->where('brand_id', '=', $nameOrId);
-
-            return $this;
-        }
-
-        if (is_string($nameOrId)) {
-            $brand = Brand::where('name', $nameOrId)->first();
-
-            if (!is_null($brand)) {
-                $this->where('brand_id', '=', $brand->id);
-
-                return $this;
-            }
-        }
-
-        throw new BrandNotFoundException("Brand $nameOrId NOT FOUND.");
+        return [
+            'name' => Arr::get($data, 'name'),
+            'category_id' => (int)Arr::get($data, 'category_id', null),
+            'brand_id' => (int)Arr::get($data, 'brand_id', null),
+            'manufacturer_id' => Arr::get($data, 'manufacturer_id', null),
+            'description' => Arr::get($data, 'description', null)
+        ];
     }
 }

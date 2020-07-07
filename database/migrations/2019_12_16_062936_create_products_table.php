@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->bigInteger('category_id')->nullable()->index();
             $table->bigInteger('brand_id')->nullable()->index();
             $table->string('name');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->string('manufacturer_id')->nullable()->index();
             $table->timestamps();
         });

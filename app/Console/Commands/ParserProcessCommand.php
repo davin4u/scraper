@@ -7,6 +7,7 @@ use App\Exceptions\DomainNotFoundException;
 use App\Exceptions\ParserNotFoundException;
 use App\Crawler\Document;
 use App\Crawler\DocumentsRepository;
+use App\Exceptions\ProductNotFoundException;
 use App\Parsers\ParserFactory;
 use App\Parsers\ParserInterface;
 use App\Repositories\ProductsRepository;
@@ -80,8 +81,6 @@ class ParserProcessCommand extends Command
         foreach ($documents as $document) {
             /** @var Document $document */
 
-            $domain = $document->getDocumentDomain();
-
             try {
                 /** @var ParserInterface $parser */
                 $parser = (new ParserFactory)->get($document);
@@ -90,10 +89,10 @@ class ParserProcessCommand extends Command
 
                 if (!empty($results)) {
                     if ($parser->isSinglePageParser()) {
-                        (new ProductsRepository())->domain($domain)->createOrUpdate($results);
+                        (new ProductsRepository())->createOrUpdate($results);
                     }
                     else {
-                        (new ProductsRepository())->domain($domain)->bulkCreateOrUpdate($results);
+                        (new ProductsRepository())->bulkCreateOrUpdate($results);
                     }
                 }
             }
@@ -102,7 +101,7 @@ class ParserProcessCommand extends Command
 
                 throw new \Exception("Parser not found.");
             }
-            catch (DomainNotFoundException $e) {
+            catch (ProductNotFoundException $e) {
                 Log::error($e->getMessage());
             }
             catch (DocumentNotReadableException $e) {
