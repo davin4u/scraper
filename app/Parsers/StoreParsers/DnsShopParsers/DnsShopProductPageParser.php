@@ -21,11 +21,6 @@ class DnsShopProductPageParser extends ProductExtractor implements ParserInterfa
     protected static $domain = 'dns-shop.ru';
 
     /**
-     * @var bool
-     */
-    protected $singlePageParser = true;
-
-    /**
      * Mapping for manufacturer id property
      * category ID => Attribute Key
      * @var array
@@ -209,9 +204,9 @@ class DnsShopProductPageParser extends ProductExtractor implements ParserInterfa
     /**
      * @return bool
      */
-    public function isSinglePageParser() : bool
+    public function isSinglePageParser(): bool
     {
-        return $this->singlePageParser;
+        return true;
     }
 
     /**
@@ -260,5 +255,21 @@ class DnsShopProductPageParser extends ProductExtractor implements ParserInterfa
     public function getAttributes(): array
     {
         // TODO: Implement getAttributes() method.
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        // TODO: Implement getPrice() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency(): string
+    {
+        // TODO: Implement getCurrency() method.
     }
 }

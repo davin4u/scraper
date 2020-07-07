@@ -13,11 +13,6 @@ class DnsShopCategoryParser extends ProductExtractor implements ParserInterface
      */
     protected static $domain = 'dns-shop.ru';
 
-    /**
-     * @var bool
-     */
-    protected $singlePageParser = false;
-
     /*
     public function handle(string $content)
     {
@@ -114,7 +109,7 @@ class DnsShopCategoryParser extends ProductExtractor implements ParserInterface
      */
     public function isSinglePageParser(): bool
     {
-        return $this->singlePageParser;
+        return false;
     }
 
     /**
@@ -163,5 +158,21 @@ class DnsShopCategoryParser extends ProductExtractor implements ParserInterface
     public function getAttributes(): array
     {
         // TODO: Implement getAttributes() method.
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        // TODO: Implement getPrice() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency(): string
+    {
+        // TODO: Implement getCurrency() method.
     }
 }

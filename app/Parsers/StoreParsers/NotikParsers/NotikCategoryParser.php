@@ -17,11 +17,6 @@ class NotikCategoryParser extends ProductExtractor implements ParserInterface
      */
     protected static $domain = 'notik.ru';
 
-    /**
-     * @var bool
-     */
-    protected $isSinglePageParser = false;
-
     /*
     public function handle(string $content)
     {
@@ -177,7 +172,7 @@ class NotikCategoryParser extends ProductExtractor implements ParserInterface
      */
     public function isSinglePageParser(): bool
     {
-        return $this->isSinglePageParser;
+        return false;
     }
 
     /**
@@ -226,5 +221,21 @@ class NotikCategoryParser extends ProductExtractor implements ParserInterface
     public function getAttributes(): array
     {
         // TODO: Implement getAttributes() method.
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        // TODO: Implement getPrice() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency(): string
+    {
+        // TODO: Implement getCurrency() method.
     }
 }

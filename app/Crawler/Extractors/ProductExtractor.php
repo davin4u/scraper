@@ -41,6 +41,16 @@ abstract class ProductExtractor extends Extractor
     abstract public function getAttributes(): array;
 
     /**
+     * @return float
+     */
+    abstract public function getPrice(): float;
+
+    /**
+     * @return string
+     */
+    abstract public function getCurrency(): string;
+
+    /**
      * @return array
      */
     public function handle()
@@ -51,7 +61,9 @@ abstract class ProductExtractor extends Extractor
             'category' => $this->matchCategory($this->clear($this->getCategoryName())),
             'description' => $this->clear($this->getDescription()),
             'photos' => $this->getPhotos(),
-            'properties' => $this->getAttributes()
+            //'price' => $this->getPrice(),
+            //'currency' => $this->clear($this->getCurrency()),
+            'attributes' => $this->getAttributes()
         ];
     }
 }

@@ -83,4 +83,20 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
     {
         // TODO: Implement getAttributes() method.
     }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        // TODO: Implement getPrice() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency(): string
+    {
+        // TODO: Implement getCurrency() method.
+    }
 }
