@@ -15,23 +15,39 @@ class SimpleMatcher
 
     /**
      * @param string $name
+     * @param array $props
+     * @param bool $returnModel
      * @return int
      * @throws \Exception
      */
-    public function match(string $name): int
+    public function match(string $name, array $props = [], $returnModel = false): int
     {
         if (empty($this->map)) {
             $this->loadMapping();
         }
 
-        foreach ($this->map as $entityId => $map) {
-            if (is_array($map) && count($map) > 0) {
-                foreach ($map as $pattern) {
+        foreach ($this->map as $entity) {
+            if (is_array($entity->map) && count($entity->map) > 0) {
+                foreach ($entity->map as $pattern) {
                     if (
                         (strcasecmp($pattern, $name) === 0)
                         || (strcmp(mb_strtolower($pattern), mb_strtolower($name)) === 0)
                     ) {
-                        return (int)$entityId;
+                        $match = true;
+
+                        if (!empty($props)) {
+                            foreach ($props as $propName => $propValue) {
+                                if ($entity->{$propName} !== $propValue) {
+                                    $match = false;
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($match) {
+                            return $returnModel ? $entity : (int)$entity->id;
+                        }
                     }
                 }
             }
@@ -57,10 +73,6 @@ class SimpleMatcher
             throw new \Exception("Property model must be set in child matcher class.");
         }
 
-        $entities = (new $this->model)->query()->get();
-
-        foreach ($entities as $entity) {
-            $this->map[$entity->id] = $entity->map;
-        }
+        $this->map = (new $this->model)->query()->get();
     }
 }

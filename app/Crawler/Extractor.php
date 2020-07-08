@@ -2,7 +2,9 @@
 
 namespace App\Crawler;
 
+use App\Attribute;
 use App\Crawler\Interfaces\Matchable;
+use App\Crawler\Matchers\SimpleAttributeMatcher;
 use App\Crawler\Matchers\SimpleBrandMatcher;
 use App\Crawler\Matchers\SimpleCategoryMatcher;
 
@@ -28,6 +30,11 @@ class Extractor
     private $categoryMatcher;
 
     /**
+     * @var Matchable
+     */
+    private $attributeMatcher;
+
+    /**
      * Extractor constructor.
      * @param string $content
      */
@@ -38,6 +45,8 @@ class Extractor
         $this->brandMatcher = $this->getBrandMatcher();
 
         $this->categoryMatcher = $this->getCategoryMatcher();
+
+        $this->attributeMatcher = $this->getAttributeMatcher();
     }
 
     /**
@@ -57,6 +66,14 @@ class Extractor
     }
 
     /**
+     * @return Matchable
+     */
+    protected function getAttributeMatcher(): Matchable
+    {
+        return new SimpleAttributeMatcher();
+    }
+
+    /**
      * @param string $brand
      * @return int
      */
@@ -72,6 +89,26 @@ class Extractor
     public function matchCategory(string $category): int
     {
         return $this->categoryMatcher->match($category);
+    }
+
+    /**
+     * @param array $attributes
+     * @param int $categoryId
+     * @return array
+     */
+    public function matchAttributes(array $attributes, int $categoryId): array
+    {
+        $matches = [];
+
+        foreach ($attributes as $attrName => $value) {
+            if ($match = $this->attributeMatcher->match($attrName, ['category_id' => $categoryId], true)) {
+                /** @var Attribute $match */
+
+                $matches[$match->attribute_key] = $value;
+            }
+        }
+
+        return $matches;
     }
 
     /**

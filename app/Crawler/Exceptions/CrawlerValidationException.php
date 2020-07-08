@@ -3,10 +3,10 @@
 namespace App\Crawler\Exceptions;
 
 /**
- * Class CrawlerHttpException
+ * Class CrawlerValidationException
  * @package App\Crawler\Exceptions
  */
-class CrawlerHttpException extends \Exception
+class CrawlerValidationException extends \Exception
 {
 
 }

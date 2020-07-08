@@ -2,6 +2,7 @@
 
 namespace App\Crawler\Extractors;
 
+use App\Crawler\Exceptions\CrawlerValidationException;
 use App\Crawler\Extractor;
 
 /**
@@ -52,18 +53,43 @@ abstract class ProductExtractor extends Extractor
 
     /**
      * @return array
+     * @throws CrawlerValidationException
      */
     public function handle()
     {
-        return [
+        $categoryId = (int)$this->matchCategory($this->clear($this->getCategoryName()));
+
+        return $this->validate([
             'name' => $this->clear($this->getName()),
-            'brand' => $this->matchBrand($this->clear($this->getBrandName())),
-            'category' => $this->matchCategory($this->clear($this->getCategoryName())),
+            'brand_id' => $this->matchBrand($this->clear($this->getBrandName())),
+            'category_id' => $categoryId,
             'description' => $this->clear($this->getDescription()),
             'photos' => $this->getPhotos(),
             //'price' => $this->getPrice(),
             //'currency' => $this->clear($this->getCurrency()),
-            'attributes' => $this->getAttributes()
-        ];
+            'attributes' => $this->matchAttributes($this->getAttributes(), $categoryId)
+        ]);
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws CrawlerValidationException
+     */
+    protected function validate(array $data): array
+    {
+        $data = array_filter($data, function ($item) {
+            return !empty($item) && $item;
+        });
+
+        if (empty($data['name'])) {
+            throw new CrawlerValidationException("name field is required");
+        }
+
+        if (empty($data['category_id']) || !$data['category_id']) {
+            throw new CrawlerValidationException("category_id is required");
+        }
+
+        return $data;
     }
 }

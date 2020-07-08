@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Attribute;
+use App\Crawler\Matchers\SimpleAttributeMatcher;
 
 /**
  * Class ProductAttributesRepository
@@ -11,21 +12,29 @@ use App\Attribute;
 class ProductAttributesRepository
 {
     /**
+     * @var SimpleAttributeMatcher
+     */
+    private static $attributeMatcher = null;
+
+    /**
+     * ProductAttributesRepository constructor.
+     */
+    public function __construct()
+    {
+        if (is_null(static::$attributeMatcher)) {
+            static::$attributeMatcher = new SimpleAttributeMatcher();
+        }
+    }
+
+    /**
      * @param string $name
      * @param int $categoryId
-     * @return Attribute|mixed
+     * @return int
+     * @throws \Exception
      */
     public function recognizeAttribute(string $name, int $categoryId)
     {
-        $model = $this->find($name, $categoryId);
-
-        if (is_null($model)) {
-            $model = $this->create($name, $categoryId);
-
-            $model->generateUniqueAttributeKey();
-        }
-
-        return $model;
+        return static::$attributeMatcher->match($name, ['category_id' => $categoryId], true);
     }
 
     /**

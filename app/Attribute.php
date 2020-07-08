@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Traits\Matchable;
 use Illuminate\Database\Eloquent\Model;
 
 class Attribute extends Model
 {
+    use Matchable;
+
     /**
      * @var string
      */
@@ -17,7 +20,15 @@ class Attribute extends Model
     protected $fillable = [
         'name',
         'category_id',
-        'attribute_key'
+        'attribute_key',
+        'map'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'map' => 'array'
     ];
 
     public function generateUniqueAttributeKey()

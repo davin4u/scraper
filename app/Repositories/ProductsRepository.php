@@ -34,6 +34,10 @@ class ProductsRepository
                 $product = Product::create($validated);
             }
 
+            if (!empty($data['attributes'])) {
+                $product->updateAttributes($data['attributes']);
+            }
+
             return $product;
         }
 
@@ -57,7 +61,7 @@ class ProductsRepository
      */
     private function validate(array $data)
     {
-        if (empty($data['name'])) {
+        if (empty($data['name']) || empty($data['category_id'])) {
             return false;
         }
 

@@ -10,7 +10,9 @@ interface Matchable
 {
     /**
      * @param string $name
+     * @param array $props
+     * @param bool $returnModel
      * @return int
      */
-    public function match(string $name): int;
+    public function match(string $name, array $props = [], bool $returnModel = false): int;
 }

@@ -43,4 +43,22 @@ class Product extends Model
             ->as('attributeValue')
             ->withPivot(['value']);
     }
+
+    /**
+     * @param array $attributes
+     */
+    public function updateAttributes(array $attributes)
+    {
+        $syncData = [];
+
+        $models = Attribute::whereIn('attribute_key', array_keys($attributes))->get();
+
+        foreach ($models as $model) {
+            if (isset($attributes[$model->attribute_key])) {
+                $syncData[$model->id] = ['value' => $attributes[$model->attribute_key]];
+            }
+        }
+
+        $this->attributes()->sync($syncData);
+    }
 }
