@@ -25,10 +25,8 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'domain_id' => 'required|exists:domains,id',
             'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'required|exists:brands,id',
-            'sku' => 'required'
+            'brand_id' => 'required|exists:brands,id'
         ];
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateScraperCategoriesTable extends Migration
+class CreateScraperJobsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateScraperCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('scraper_categories', function (Blueprint $table) {
+        Schema::create('scraper_jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('url')->unique();
             $table->bigInteger('user_id');
-            $table->dateTime('scraping_started_at')->nullable();
-            $table->dateTime('scraping_finished_at')->nullable();
+            $table->string('url');
+            $table->dateTime('completed_at')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateScraperCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('scraper_categories');
+        Schema::dropIfExists('scraper_jobs');
     }
 }

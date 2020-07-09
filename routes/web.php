@@ -26,11 +26,6 @@ Route::middleware(['auth'])->group(function () {
         ]);
     });
 
-    // Domains
-    Route::resource('domains', 'DomainsController')->only([
-        'index', 'create', 'store', 'edit', 'update'
-    ]);
-
     // Categories
     Route::resource('categories', 'CategoriesController')->only([
         'index', 'create', 'store', 'edit', 'update'
@@ -62,7 +57,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {
-        Route::resource('domains', 'DomainsController')->only(['destroy']);
         Route::resource('categories', 'CategoriesController')->only(['destroy']);
         Route::resource('brands', 'BrandsController')->only(['destroy']);
     });

@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\AutoProductMatch;
-use App\Brand;
-use App\Category;
-use App\Domain;
 use App\Exceptions\BrandNotFoundException;
 use App\Exceptions\CategoryNotFoundException;
 use App\Exceptions\DomainNotFoundException;
 use App\Http\Requests\UpdateProductRequest;
 use App\Product;
-use App\ProductMatch;
 use App\Repositories\ProductsRepository;
-use App\UserProductMatch;
 use Illuminate\Http\Request;
 
 /**
@@ -111,12 +105,7 @@ class ProductsController extends Controller
      */
     public function edit(Product $product)
     {
-        $domains    = Domain::all();
-        $categories = Category::all();
-        $brands     = Brand::all();
-        $matches    = $product->matches;
 
-        return view('products.edit', compact('product', 'domains', 'categories', 'brands', 'matches'));
     }
 
     /**
@@ -127,62 +116,6 @@ class ProductsController extends Controller
      */
     public function update(Product $product, UpdateProductRequest $request)
     {
-        $product->update($request->only([
-            'name',
-            'sku',
-            'domain_id',
-            'category_id',
-            'brand_id',
-            'meta_title',
-            'meta_description'
-        ]));
 
-        $product->fillStorableDocument([
-            'attributes' => $request->get('attributes', [])
-        ])->saveStorableDocument();
-
-        return redirect(route('products.edit', [$product]))->with([
-            'status' => 'Product successfully saved.'
-        ]);
-    }
-
-    /**
-     * @param $matchId
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function merge($matchId)
-    {
-        try {
-            $response = api()->post('products', [
-                'match_id' => (int) $matchId,
-                'attributes' => $this->request->get('attributes', [])
-            ], 'matches/merge');
-
-            if (!is_null($response) && !$response->withErrors()) {
-                return redirect(route('products.index'))->with([
-                    'status' => 'The products were successfully merged.'
-                ]);
-            }
-        }
-        catch (\Exception $e) {}
-
-        return redirect()->back()->withErrors([
-            'error' => 'Can not merge the products.'
-        ]);
-    }
-
-    /**
-     * @param $matchId
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function resolve($matchId)
-    {
-        $match = ProductMatch::find($matchId);
-
-        if (is_nuLL($match)) {
-            abort(404);
-        }
-
-        return view('products.resolve', compact('match'));
     }
 }
