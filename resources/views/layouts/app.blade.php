@@ -35,10 +35,6 @@
                     @if(\Illuminate\Support\Facades\Auth::user())
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('domains.index') }}">Domains</a>
-                        </li>
-
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('categories.index') }}">Product categories</a>
                         </li>
 
@@ -54,14 +50,6 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('matches.index') }}">Auto matches ({{ $matchesCount }})</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('matches.userMatches') }}">User matches ({{ $userMatchesCount }})</a>
                         </li>
                     </ul>
                     @endif
