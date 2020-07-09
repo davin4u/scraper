@@ -24,7 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('scraper:process')->everyMinute();
+        $schedule->command('scraper:process-categories')->everyMinute();
+
+        $schedule->command('scraper:process-jobs')->everyMinute();
 
         // until that time all scraping must be completed
         $schedule->command('parser:process')->dailyAt('04:00');
