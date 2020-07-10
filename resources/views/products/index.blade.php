@@ -25,10 +25,6 @@
                                 </th>
 
                                 <th>
-                                    <input value="{{ request('domain', old('domain')) }}" type="text" name="domain" form="filters" class="form-control" placeholder="Domain" />
-                                </th>
-
-                                <th>
                                     <input value="{{ request('category', old('category')) }}" type="text" name="category" form="filters" class="form-control" placeholder="Category" />
                                 </th>
 
@@ -41,10 +37,6 @@
                                 </th>
 
                                 <th>
-                                    <input value="{{ request('sku', old('sku')) }}" type="text" name="sku" form="filters" class="form-control" placeholder="SKU" />
-                                </th>
-
-                                <th>
                                     <button class="btn btn-primary" type="submit" form="filters">Filter</button>
                                 </th>
                             </thead>
@@ -53,11 +45,9 @@
                                 @foreach($products as $product)
                                     <tr>
                                         <td>{{ $product->id }}</td>
-                                        <td>{{ $product->domain->name }}</td>
                                         <td>{{ $product->category->name }}</td>
                                         <td>{{ $product->brand->name }}</td>
                                         <td>{{ $product->name }}</td>
-                                        <td>{{ $product->sku }}</td>
                                         <td>
                                             <a href="{{ route('products.edit', [$product]) }}" class="btn btn-primary btn-sm">Edit</a>
                                         </td>
