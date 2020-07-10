@@ -11,13 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('scraper')->name('scraper.')->group(function () {
@@ -40,20 +36,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('products', 'ProductsController')->only([
         'index', 'edit', 'update'
     ]);
-
-    Route::prefix('products')->name('products.')->group(function () {
-        Route::get('resolve/{matchId}', 'ProductsController@resolve')->name('resolve');
-        Route::post('merge/{match}', 'ProductsController@merge')->name('merge');
-    });
-
-    // Matches
-    Route::resource('matches', 'ProductMatchesController')->only([
-        'index'
-    ]);
-
-    Route::prefix('matches')->group(function () {
-        Route::get('user-matches', 'ProductMatchesController@userMatches')->name('matches.userMatches');
-    });
 
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {
