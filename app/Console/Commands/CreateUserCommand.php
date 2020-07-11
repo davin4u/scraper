@@ -53,7 +53,7 @@ class CreateUserCommand extends Command
             $user = User::create([
                 'name' => $name,
                 'email' => $email,
-                'password' => Hash::make($password)
+                'password' => bcrypt($password)
             ]);
 
             if ($user) {
