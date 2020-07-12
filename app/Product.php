@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Traits\WithMedia;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    use WithMedia;
+
     /**
      * @var array
      */

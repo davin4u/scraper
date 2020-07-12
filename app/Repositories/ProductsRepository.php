@@ -38,6 +38,10 @@ class ProductsRepository
                 $product->updateAttributes($data['attributes']);
             }
 
+            if (!empty($data['photos'])) {
+                $product->saveFilesFromUrl($data['photos']);
+            }
+
             return $product;
         }
 

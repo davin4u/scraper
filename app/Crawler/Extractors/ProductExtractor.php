@@ -90,6 +90,16 @@ abstract class ProductExtractor extends Extractor
             throw new CrawlerValidationException("category_id is required");
         }
 
+        if (!empty($data['photos'])) {
+            foreach ($data['photos'] as $url) {
+                preg_match('/^https?:\/\/.+\.[jpe?g|png]*$/', $url, $match);
+
+                if (empty($match)) {
+                    throw new CrawlerValidationException("Photo path {$url} is not valid.");
+                }
+            }
+        }
+
         return $data;
     }
 }
