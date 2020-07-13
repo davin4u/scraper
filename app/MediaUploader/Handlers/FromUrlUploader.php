@@ -5,6 +5,10 @@ namespace App\MediaUploader\Handlers;
 use App\MediaUploader\Interfaces\UploaderInterface;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Class FromUrlUploader
+ * @package App\MediaUploader\Handlers
+ */
 class FromUrlUploader implements UploaderInterface
 {
     /**
@@ -17,11 +21,59 @@ class FromUrlUploader implements UploaderInterface
      */
     public function __construct()
     {
-        $this->storage = Storage::disk(config('filesystems.media_storage'));
+        $this->storage = Storage::disk(config('media.storage_disk'));
     }
 
-    public function save($fileOrUrls)
+    /**
+     * @param $fileOrUrls
+     * @param string $folder
+     * @return array|mixed
+     */
+    public function save($fileOrUrls, string $folder)
     {
-        // TODO: Implement save() method.
+        $files = [];
+
+        foreach ($fileOrUrls as $url) {
+            $filename = $this->getFileName($url);
+
+            $path = $folder . DIRECTORY_SEPARATOR . $filename;
+
+            if ($this->storage->put($path, file_get_contents($url))) {
+                $file = new \SplFileObject(public_path($path));
+
+                $files[] = [
+                    'filename' => $filename,
+                    'path'     => $path,
+                    'size'     => $file->getSize(),
+                    'url'      => $this->getUrl($path),
+                    'type'     => $file->getType(),
+                    'storage'  => config('filesystems.disks.' . config('media.storage_disk') . '.driver')
+                ];
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    protected function getFileName(string $url): string
+    {
+        $parts = explode('.', $url);
+
+        return md5($url) . "." . end($parts);
+    }
+
+    /**
+     * @param $path
+     * @return string
+     */
+    protected function getUrl($path): string
+    {
+        $path = implode('/', explode(DIRECTORY_SEPARATOR, $path));
+
+        return config('media.app_url') . '/' . $path;
     }
 }

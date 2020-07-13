@@ -22,7 +22,7 @@ trait WithMedia
         }
 
         if (is_array($url)) {
-            MediaUploader::getUrlUploader()->save($url);
+            MediaUploader::getUrlUploader()->save($url, $this->getSaveToPath());
         }
 
         throw new \InvalidArgumentException("url must be either string or array of strings");
@@ -42,8 +42,38 @@ trait WithMedia
      */
     public function media()
     {
-        $intermediate_table = strtolower(collect(explode('\\', static::class))->last()) . '_media';
+        $intermediate_table = $this->getModelName() . '_media';
 
         return $this->belongsToMany(Media::class, $intermediate_table);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSaveToPath(): string
+    {
+        $path = $this->getModelName();
+
+        if ($folder = $this->getMediaFolder()) {
+            $path .= DIRECTORY_SEPARATOR . $folder;
+        }
+
+        return $path;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getMediaFolder(): string
+    {
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    private function getModelName()
+    {
+        return strtolower(collect(explode('\\', static::class))->last());
     }
 }

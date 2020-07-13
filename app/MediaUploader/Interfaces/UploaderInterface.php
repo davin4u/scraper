@@ -2,7 +2,16 @@
 
 namespace App\MediaUploader\Interfaces;
 
+/**
+ * Interface UploaderInterface
+ * @package App\MediaUploader\Interfaces
+ */
 interface UploaderInterface
 {
-    public function save($fileOrUrl);
+    /**
+     * @param $fileOrUrl
+     * @param string $folder
+     * @return mixed
+     */
+    public function save($fileOrUrl, string $folder);
 }

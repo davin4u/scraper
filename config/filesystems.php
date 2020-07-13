@@ -70,7 +70,4 @@ return [
         ]
 
     ],
-
-    'media_storage' => 'media'
-
 ];

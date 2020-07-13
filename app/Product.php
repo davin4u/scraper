@@ -21,6 +21,14 @@ class Product extends Model
     ];
 
     /**
+     * @return string
+     */
+    protected function getMediaFolder(): string
+    {
+        return (string)$this->category_id;
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function category()
