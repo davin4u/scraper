@@ -54,7 +54,6 @@ class ScraperJobsController extends Controller
         ScraperJob::create([
             'url' => $request->get('url'),
             'user_id' => auth()->user()->id,
-            'completed_at' => Carbon::now()->toDateTimeString(),
         ]);
 
         return redirect(route('scraper-jobs.index'))->with([
