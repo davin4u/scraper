@@ -61,6 +61,10 @@
                                     <a class="nav-link" href="{{ route('scraper.categories.index') }}">Scraping
                                         categories</a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('scraper-jobs.index') }}">Scraping jobs</a>
+                                </li>
                             </ul>
                         @endif
                     </div>
