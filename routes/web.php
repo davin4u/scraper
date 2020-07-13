@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Scraping jobs
     Route::resource('scraper-jobs', 'ScraperJobsController')->only([
-        'index', 'edit', 'update'
+        'index', 'create', 'store', 'edit', 'update'
     ]);
 
     // Routes with admin permissions
