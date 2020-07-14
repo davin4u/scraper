@@ -37,6 +37,11 @@ Route::middleware(['auth'])->group(function () {
         'index', 'edit', 'update'
     ]);
 
+    //Scraping jobs
+    Route::resource('scraper-jobs', 'ScraperJobsController')->only([
+        'index', 'create', 'store', 'edit', 'update'
+    ]);
+
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {
         Route::resource('categories', 'CategoriesController')->only(['destroy']);
