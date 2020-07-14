@@ -15,6 +15,8 @@
                             </div>
                         @endif
 
+                        @include('partials.notifications.errors')
+
                         <div>
                             <form method="POST" action="{{ route('scraper-jobs.store') }}">
                                 @csrf

@@ -15,13 +15,15 @@
                             </div>
                         @endif
 
+                        @include('partials.notifications.errors')
+
                         <div>
-                            <form method="POST" action="{{ route('scraper-jobs.update', [$job]) }}">
+                            <form method="POST" action="{{ route('scraper-jobs.update', [$scraperJob]) }}">
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">
                                     <label for="url">URL for scraping</label>
-                                    <input value="{{$job->url}}" type="url" name="url" class="form-control" id="url" />
+                                    <input value="{{$scraperJob->url}}" type="url" name="url" class="form-control" id="url" />
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Update</button>

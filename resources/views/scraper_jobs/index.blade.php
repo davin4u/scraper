@@ -6,8 +6,9 @@
             <div class=" col-md-12">
                 <div class="card">
                     <div class="card-header clearfix">
-                        <span>Scraper jobs</span>
-                        <a class="btn btn-primary float-right" href="{{ route('scraper-jobs.create') }}">Create</a></div>
+                        <span>Scraping jobs</span>
+                        <a class="btn btn-primary float-right" href="{{ route('scraper-jobs.create') }}">Create</a>
+                    </div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -15,6 +16,8 @@
                                 {{ session('status') }}
                             </div>
                         @endif
+
+                        @include('partials.notifications.errors')
 
                         <table class="table">
                             <thead>
@@ -24,24 +27,25 @@
                             </thead>
 
                             <tbody>
-                            @foreach($jobs as $job)
+                            @foreach($scraperJobs as $scraperJob)
                                 <tr>
-                                    <td>{{ $job->url }}</td>
-                                    <td>{{ $job->completed_at }}</td>
+                                    <td>{{ $scraperJob->url }}</td>
+                                    <td>{{ $scraperJob->completed_at }}</td>
                                     <td class="text-right">
-                                        <a href="{{ route('scraper-jobs.edit', [$job]) }}" class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="{{ route('scraper-jobs.edit', [$scraperJob]) }}"
+                                           class="btn btn-primary btn-sm">Edit</a>
                                     </td>
                                 </tr>
                             @endforeach
-                            @empty($jobs)
+                            @empty($scraperJobs)
                                 <tr>
                                     <td colspan="3">No jobs added</td>
                                 </tr>
                             @endempty
                             </tbody>
                         </table>
-                        @if(!empty($jobs))
-                            {{$jobs->render()}}
+                        @if(!empty($scraperJobs))
+                            {{$scraperJobs->render()}}
                         @endif
                     </div>
 
