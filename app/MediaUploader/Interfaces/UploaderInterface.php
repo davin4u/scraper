@@ -11,7 +11,7 @@ interface UploaderInterface
     /**
      * @param $fileOrUrl
      * @param string $folder
-     * @return mixed
+     * @return array
      */
     public function save($fileOrUrl, string $folder);
 }

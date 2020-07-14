@@ -14,6 +14,7 @@ trait WithMedia
 {
     /**
      * @param string|array $url
+     * @return bool
      */
     public function saveFilesFromUrl($url)
     {
@@ -22,7 +23,23 @@ trait WithMedia
         }
 
         if (is_array($url)) {
-            MediaUploader::getUrlUploader()->save($url, $this->getSaveToPath());
+            $files = MediaUploader::getUrlUploader()->save($url, $this->getSaveToPath());
+
+            if (!empty($files)) {
+                $productMedia = [];
+
+                foreach ($files as $file) {
+                    if ($media = Media::create($file)) {
+                        $productMedia[] = $media->id;
+                    }
+                }
+
+                if (!empty($productMedia)) {
+                    $this->media()->syncWithoutDetaching($productMedia);
+                }
+            }
+
+            return true;
         }
 
         throw new \InvalidArgumentException("url must be either string or array of strings");

@@ -3,6 +3,7 @@
 namespace App\MediaUploader\Handlers;
 
 use App\MediaUploader\Interfaces\UploaderInterface;
+use function GuzzleHttp\Psr7\mimetype_from_filename;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -39,15 +40,17 @@ class FromUrlUploader implements UploaderInterface
             $path = $folder . DIRECTORY_SEPARATOR . $filename;
 
             if ($this->storage->put($path, file_get_contents($url))) {
-                $file = new \SplFileObject(public_path($path));
+                $file = new \SplFileObject(public_path('media/' . $path));
 
                 $files[] = [
-                    'filename' => $filename,
-                    'path'     => $path,
-                    'size'     => $file->getSize(),
-                    'url'      => $this->getUrl($path),
-                    'type'     => $file->getType(),
-                    'storage'  => config('filesystems.disks.' . config('media.storage_disk') . '.driver')
+                    'filename'     => $filename,
+                    'path'         => $path,
+                    'full_path'    => $file->getRealPath(),
+                    'size'         => $file->getSize(),
+                    'url'          => $this->getUrl($path),
+                    'type'         => mimetype_from_filename($filename),
+                    'extension'    => $file->getExtension(),
+                    'storage'      => config('filesystems.disks.' . config('media.storage_disk') . '.driver')
                 ];
             }
         }
@@ -74,6 +77,6 @@ class FromUrlUploader implements UploaderInterface
     {
         $path = implode('/', explode(DIRECTORY_SEPARATOR, $path));
 
-        return config('media.app_url') . '/' . $path;
+        return config('media.app_url') . '/media/' . $path;
     }
 }
