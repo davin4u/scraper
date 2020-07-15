@@ -4,6 +4,7 @@
 /public/css
 /public/js
 /public/php_errors.log
+/public/media
 /storage
 /vendor
 .env
