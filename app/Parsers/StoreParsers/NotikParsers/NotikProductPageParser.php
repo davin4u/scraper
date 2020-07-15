@@ -41,7 +41,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getName(): string
     {
-        // TODO: Implement getName() method.
+        return $this->content->filter('.goodtitlemain')->text();
     }
 
     /**
@@ -49,7 +49,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getBrandName(): string
     {
-        // TODO: Implement getBrandName() method.
+        return $this->content->filter('div.pathBox>span>a>span')->eq(2)->text();
     }
 
     /**
@@ -57,7 +57,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getCategoryName(): string
     {
-        // TODO: Implement getCategoryName() method.
+        return $this->content->filter('div.pathBox>span>a>span')->first()->text();
     }
 
     /**
@@ -65,7 +65,13 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getPhotos(): array
     {
-        // TODO: Implement getPhotos() method.
+        $links = $this->content->filter('div.images-scroll-list.cn-pth.product-pictures-scroll-list-zone>ul>li>a')->extract(['href']);
+
+        array_walk($links, function (&$value) {
+            $value = "https://www.notik.ru$value";
+        });
+
+        return $links;
     }
 
     /**
@@ -73,7 +79,10 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getDescription(): string
     {
-        // TODO: Implement getDescription() method.
+        $desc = $this->content->filter('li.characteristics.active.cn-pth>div')->first()->text();
+        $desc = preg_replace('/(.+)\.\.\./', '', $desc);
+
+        return $desc;
     }
 
     /**
@@ -81,7 +90,17 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getAttributes(): array
     {
-        // TODO: Implement getAttributes() method.
+        $html = $this->content->html();
+        $keysAndValuesPattern = '/td.class="cell1">(.+)\s(.+)/u';
+        preg_match_all($keysAndValuesPattern, $html, $matches);
+
+        $keys = array_slice($matches[1], 0, 25);
+        $values = array_slice($matches[2], 0, 25);
+
+        $keys = preg_replace('/<[^>]*>|\[\s\?\s\]|:/', '', $keys);
+        $values = preg_replace('/<[^>]*>|\[\s\?\s\]|:/', '', $values);
+
+        return array_combine($keys, $values);
     }
 
     /**
