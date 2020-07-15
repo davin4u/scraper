@@ -19,6 +19,7 @@ class ReviewAuthor extends Model
         'country_id',
         'city_id',
         'total_reviews',
-        'rating'
+        'rating',
+        'profile_url'
     ];
 }

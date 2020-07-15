@@ -21,6 +21,7 @@ class CreateReviewAuthorsTable extends Migration
             $table->integer('city_id')->index()->nullable();
             $table->integer('total_reviews')->default(0);
             $table->float('rating')->default(0);
+            $table->string('profile_url')->nullable();
 
             $table->timestamps();
         });
