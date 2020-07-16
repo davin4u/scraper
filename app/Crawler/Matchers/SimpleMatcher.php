@@ -62,7 +62,7 @@ class SimpleMatcher
 
         $this->loadMapping();
 
-        return $created->id;
+        return $returnModel ? $created : (int)$created->id;
     }
 
     /**
