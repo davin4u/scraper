@@ -91,14 +91,18 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
     public function getAttributes(): array
     {
         $html = $this->content->html();
-        $keysAndValuesPattern = '/td.class="cell1">(.+)\s(.+)/u';
-        preg_match_all($keysAndValuesPattern, $html, $matches);
 
-        $keys = array_slice($matches[1], 0, 25);
-        $values = array_slice($matches[2], 0, 25);
+        $keysPattern = '/<td.class=.cell1.>(<[^>]*>|<[^>]*><[^>]*>)([а-яА-Я]|\s)+/iu';
+        $manufacturerIdKeyPattern = '/<td.class=.cell1.><[^>]*>([а-яА-Я]|\s)+/iu';
+        $valuesPattern = '/<\/td><td>(<b>|<\/?br\/?>|<span>|<\/span>|[a-zA-Z]|\s|\d|[а-яА-Я]|-|\.|\"|\' | \( | \) |,|:|\/)+/u';
 
+        preg_match_all($keysPattern, $html, $matches);
+        $keys = array_slice($matches[0], 0, 25);
         $keys = preg_replace('/<[^>]*>|\[\s\?\s\]|:/', '', $keys);
-        $values = preg_replace('/<[^>]*>|\[\s\?\s\]|:/', '', $values);
+
+        preg_match_all($valuesPattern, $html, $matches);
+        $values = array_slice($matches[0], 0, 25);
+        $values = preg_replace('/<[^>]*>|\[\s\?\s\]|:|\s$/', '', $values);
 
         return array_combine($keys, $values);
     }

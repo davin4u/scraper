@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Parsers\StoreParsers\NotikParsers\NotikProductPageParser;
 use App\ScraperJob;
 use Illuminate\Console\Command;
 
@@ -51,12 +52,20 @@ class ProcessNotikCategoriesCommand extends Command
         return;
     }
 
+    private function wait()
+    {
+        sleep(random_int(4, 10));
+    }
+
+
+
     private function searchCategoryParser($url)
     {
         $html = file_get_contents($url);
         $urlsArray = [];
         $pagePattern = '/paginator(.+\s){1,7}<a.href=(.+)</u';
 
+        $this->wait();
         preg_match($pagePattern, $html, $match);
         //в match[2] строка вида "'/search_catalog/filter/brand.htm?page=27' class='firstlast'>27"
         //Поэтому разбиваем и берем результат с индексом 1
@@ -64,9 +73,10 @@ class ProcessNotikCategoriesCommand extends Command
 
         //паттерн нормально работает для ноутбуков, моноблоков и смартфонов
         $urlPattern = '/<div><b><a.href="(.+).htm">/iu';
+        $this->wait();
         preg_match_all($urlPattern, $html, $matches);
         array_walk($matches[1], function (&$value) {
-            $value = "https://www.notik.ru$value";
+            $value = "https://www.notik.ru{$value}";
         });
         array_push($urlsArray, $matches[1]);
 
@@ -75,9 +85,10 @@ class ProcessNotikCategoriesCommand extends Command
             //пагинация идёт со второй страницы
             $html = file_get_contents($url . '?page=' . $i);
             $urlPattern = '/<div><b><a.href="(.+).htm">/iu';
+            $this->wait();
             preg_match_all($urlPattern, $html, $matches);
             array_walk($matches[1], function (&$value) {
-                $value = "https://www.notik.ru$value";
+                $value = "https://www.notik.ru{$value}";
             });
             array_push($urlsArray, $matches[1]);
         }
@@ -98,23 +109,26 @@ class ProcessNotikCategoriesCommand extends Command
         $urlsArray = [];
 
         $urlPattern = '/href="\/goods(.+).htm"/iu';
+        $this->wait();
         preg_match_all($urlPattern, $html, $matches);
         $matches[1] = array_unique($matches[1]); //иначе некоторые записи дублируются 3 раза
         array_walk($matches[1], function (&$value) {
-            $value = "https://www.notik.ru/goods$value";
+            $value = "https://www.notik.ru/goods{$value}";
         });
         array_push($urlsArray, $matches[1]);
 
         $pagePattern = '/paginator(.+\s){1,7}<a.href=(.+)</u';
+        $this->wait();
         preg_match($pagePattern, $html, $match);
         $lastPage = (int)explode('>', $match[2])[1];
 
         for ($i = 2; $i <= $lastPage; $i++) {
             $html = file_get_contents($url . '?page=' . $i);
+            $this->wait();
             preg_match_all($urlPattern, $html, $matches);
             $matches[1] = array_unique($matches[1]);
             array_walk($matches[1], function (&$value) {
-                $value = "https://www.notik.ru/goods$value";
+                $value = "https://www.notik.ru/goods{$value}";
             });
             array_push($urlsArray, $matches[1]);
         }
@@ -136,6 +150,7 @@ class ProcessNotikCategoriesCommand extends Command
 
         //[*]тут логика парсинга ссылок с одной страницы
         $urlPattern = '/href="\/goods(.+).htm"/iu';
+        $this->wait();
         preg_match_all($urlPattern, $html, $matches);
         //чтобы не пихать в urlsArray сразу, там потом будет массив массивов, а иначе пишется массив в последний элемент
         //Поэтому временный массив
@@ -145,18 +160,20 @@ class ProcessNotikCategoriesCommand extends Command
         }
         $tempArray = array_splice($tempArray, 1); //в начале лишняя ссылка
         array_walk($tempArray, function (&$value) {
-            $value = "https://www.notik.ru/goods$value";
+            $value = "https://www.notik.ru/goods{$value}";
         });
         array_push($urlsArray, $tempArray);
         //[*]конец
 
         $pagePattern = '/paginator(.+\s){1,7}<a.href=(.+)</u';
+        $this->wait();
         preg_match($pagePattern, $html, $match);
         $lastPage = (int)explode('>', $match[2])[1];
 
         for ($i = 2; $i <= $lastPage; $i++) {
             $html = file_get_contents($url . '?page=' . $i);
             $urlPattern = '/href="\/goods(.+).htm"/iu';
+            $this->wait();
             preg_match_all($urlPattern, $html, $matches);
             $tempArray = [];
             foreach ($matches[1] as $match) {
@@ -164,7 +181,7 @@ class ProcessNotikCategoriesCommand extends Command
             }
             $tempArray = array_splice($tempArray, 1);
             array_walk($tempArray, function (&$value) {
-                $value = "https://www.notik.ru/goods$value";
+                $value = "https://www.notik.ru/goods{$value}";
             });
             array_push($urlsArray, $tempArray);
         }
