@@ -2,6 +2,8 @@
 
 namespace App\Crawler\Matchers;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Class SimpleMatcher
  * @package App\Crawler\Matchers
@@ -17,10 +19,10 @@ class SimpleMatcher
      * @param string $name
      * @param array $props
      * @param bool $returnModel
-     * @return int
+     * @return int|Model
      * @throws \Exception
      */
-    public function match(string $name, array $props = [], $returnModel = false): int
+    public function match(string $name, array $props = [], $returnModel = false)
     {
         if (empty($this->map)) {
             $this->loadMapping();

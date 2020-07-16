@@ -28,6 +28,10 @@ class Extractor
      */
     protected function clear(string $value): string
     {
+        if (is_null($value)) {
+            return $value;
+        }
+
         return trim(strip_tags($value));
     }
 }
