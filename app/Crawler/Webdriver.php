@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Scrapers;
+namespace App\Crawler;
 
 use App\Exceptions\ScrapingTerminatedException;
-use App\Exceptions\WebdriverPageNotReachableException;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Illuminate\Support\Facades\Log;
 use Facebook\WebDriver\Remote\DesiredCapabilities;

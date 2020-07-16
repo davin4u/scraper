@@ -2,8 +2,13 @@
 
 namespace App\Crawler\Extractors;
 
+use App\Attribute;
 use App\Crawler\Exceptions\CrawlerValidationException;
 use App\Crawler\Extractor;
+use App\Crawler\Interfaces\Matchable;
+use App\Crawler\Matchers\SimpleAttributeMatcher;
+use App\Crawler\Matchers\SimpleBrandMatcher;
+use App\Crawler\Matchers\SimpleCategoryMatcher;
 
 /**
  * Class ProductExtractor
@@ -11,6 +16,98 @@ use App\Crawler\Extractor;
  */
 abstract class ProductExtractor extends Extractor
 {
+    /**
+     * @var Matchable
+     */
+    private $brandMatcher;
+
+    /**
+     * @var Matchable
+     */
+    private $categoryMatcher;
+
+    /**
+     * @var Matchable
+     */
+    private $attributeMatcher;
+
+    /**
+     * ProductExtractor constructor.
+     * @param string $content
+     */
+    public function __construct(string $content)
+    {
+        parent::__construct($content);
+
+        $this->brandMatcher = $this->getBrandMatcher();
+
+        $this->categoryMatcher = $this->getCategoryMatcher();
+
+        $this->attributeMatcher = $this->getAttributeMatcher();
+    }
+
+    /**
+     * @return Matchable
+     */
+    protected function getBrandMatcher(): Matchable
+    {
+        return new SimpleBrandMatcher();
+    }
+
+    /**
+     * @return Matchable
+     */
+    protected function getCategoryMatcher(): Matchable
+    {
+        return new SimpleCategoryMatcher();
+    }
+
+    /**
+     * @return Matchable
+     */
+    protected function getAttributeMatcher(): Matchable
+    {
+        return new SimpleAttributeMatcher();
+    }
+
+    /**
+     * @param string $brand
+     * @return int
+     */
+    public function matchBrand(string $brand): int
+    {
+        return $this->brandMatcher->match($brand);
+    }
+
+    /**
+     * @param string $category
+     * @return int
+     */
+    public function matchCategory(string $category): int
+    {
+        return $this->categoryMatcher->match($category);
+    }
+
+    /**
+     * @param array $attributes
+     * @param int $categoryId
+     * @return array
+     */
+    public function matchAttributes(array $attributes, int $categoryId): array
+    {
+        $matches = [];
+
+        foreach ($attributes as $attrName => $value) {
+            if ($match = $this->attributeMatcher->match($attrName, ['category_id' => $categoryId], true)) {
+                /** @var Attribute $match */
+
+                $matches[$match->attribute_key] = $value;
+            }
+        }
+
+        return $matches;
+    }
+
     /**
      * @return string
      */

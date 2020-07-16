@@ -2,6 +2,8 @@
 
 namespace App\Crawler\Matchers;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Class SimpleMatcher
  * @package App\Crawler\Matchers
@@ -17,10 +19,10 @@ class SimpleMatcher
      * @param string $name
      * @param array $props
      * @param bool $returnModel
-     * @return int
+     * @return int|Model
      * @throws \Exception
      */
-    public function match(string $name, array $props = [], $returnModel = false): int
+    public function match(string $name, array $props = [], $returnModel = false)
     {
         if (empty($this->map)) {
             $this->loadMapping();
@@ -55,14 +57,25 @@ class SimpleMatcher
 
         // create entity if not found
         // @TODO remove or change below logic after initial scraping
-        $created = $this->model::create([
-            'name' => $name,
-            'map' => [$name]
-        ]);
+
+        $created = $this->model::create($this->getCreateData($name, $props));
 
         $this->loadMapping();
 
         return $created->id;
+    }
+
+    /**
+     * @param string $name
+     * @param array $props
+     * @return array
+     */
+    protected function getCreateData(string $name, array $props = []): array
+    {
+        return [
+            'name' => $name,
+            'map' => [$name]
+        ];
     }
 
     private function loadMapping()
