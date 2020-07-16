@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
-        "davin4u/laravel-storable": "dev-master",
         "facebook/webdriver": "^1.7",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "~6.0",
