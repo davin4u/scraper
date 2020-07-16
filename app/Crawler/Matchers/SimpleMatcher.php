@@ -57,14 +57,25 @@ class SimpleMatcher
 
         // create entity if not found
         // @TODO remove or change below logic after initial scraping
-        $created = $this->model::create([
-            'name' => $name,
-            'map' => [$name]
-        ]);
+
+        $created = $this->model::create($this->getCreateData($name, $props));
 
         $this->loadMapping();
 
         return $created->id;
+    }
+
+    /**
+     * @param string $name
+     * @param array $props
+     * @return array
+     */
+    protected function getCreateData(string $name, array $props = []): array
+    {
+        return [
+            'name' => $name,
+            'map' => [$name]
+        ];
     }
 
     private function loadMapping()
