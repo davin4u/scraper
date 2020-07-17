@@ -129,7 +129,7 @@ abstract class ReviewExtractor extends Extractor
      */
     public function handle()
     {
-        return [
+        return $this->validate([
             'author_id'    => $this->getReviewAuthorId(),
             'title'        => $this->clear($this->getTitle()),
             'url'          => $this->clear($this->getUrl()),
@@ -142,6 +142,19 @@ abstract class ReviewExtractor extends Extractor
             'bought_at'    => $this->getBoughtAt()->toDateString(),
             'rating'       => $this->getRating(),
             'i_recommend'  => $this->getIRecommend() ? 1 : 0
-        ];
+        ]);
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function validate(array $data): array
+    {
+        $data = array_filter($data, function ($item) {
+            return !empty($item);
+        });
+
+        return $data;
     }
 }
