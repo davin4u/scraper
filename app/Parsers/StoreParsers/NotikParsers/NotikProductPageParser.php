@@ -41,7 +41,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getName(): string
     {
-        // TODO: Implement getName() method.
+        return $this->content->filter('.goodtitlemain')->text();
     }
 
     /**
@@ -49,7 +49,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getBrandName(): string
     {
-        // TODO: Implement getBrandName() method.
+        return $this->content->filter('div.pathBox>span>a>span')->eq(2)->text();
     }
 
     /**
@@ -57,7 +57,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getCategoryName(): string
     {
-        // TODO: Implement getCategoryName() method.
+        return $this->content->filter('div.pathBox>span>a>span')->first()->text();
     }
 
     /**
@@ -65,7 +65,13 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getPhotos(): array
     {
-        // TODO: Implement getPhotos() method.
+        $links = $this->content->filter('div.images-scroll-list.cn-pth.product-pictures-scroll-list-zone>ul>li>a')->extract(['href']);
+
+        array_walk($links, function (&$value) {
+            $value = "https://www.notik.ru$value";
+        });
+
+        return $links;
     }
 
     /**
@@ -73,7 +79,10 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getDescription(): string
     {
-        // TODO: Implement getDescription() method.
+        $desc = $this->content->filter('li.characteristics.active.cn-pth>div')->first()->text();
+        $desc = preg_replace('/(.+)\.\.\./', '', $desc);
+
+        return $desc;
     }
 
     /**
@@ -81,7 +90,53 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getAttributes(): array
     {
-        // TODO: Implement getAttributes() method.
+        $html = $this->content->html();
+
+        $keysPattern = '/<td.class=.cell1.>(<[^>]*>|<[^>]*><[^>]*>)([а-яА-ЯёЁ]|[a-zA-Z]|\s|,|\.)+/iu';
+        $valuesPattern = '/<\/td><td>(<img[^>]+?jpg.*?>|\+|®|<b>|<\/?br\/?>|<span>|<\/span>|[a-zA-Z]|\s|\d|[а-яА-ЯёЁ]|-|\.|\"|\'|\(|\)|,|:|\/)+/u';
+
+        $priceValuePattern = '/<noindex><b><[^>]*>(\d|\W)+/u';
+        preg_match($priceValuePattern, $html, $match);
+        $priceValue = preg_replace('/([^\d])/', '', $match[0]);
+
+        $validKeys = [
+            //notebooks, monoblocks
+            'Процессор', 'Количество ядер', 'Кэш', 'Оперативная память', 'Экран', 'Разрешение', 'Видеокарта',
+            'Звук', 'Накопитель', 'Связь', 'Беспроводная связь', 'Порты', 'Слоты расширения', 'Дополнительные устройства',
+            'Устройства ввода', 'Дополнительно', 'Цвет', 'Цвет клавиатуры', 'Материал корпуса', 'Материал крышки',
+            'Размеры корпуса', 'Вес', 'Батарея', 'Операционная система', 'Гарантия', 'Партнам', 'Артикул', 'Цена',
+            'Комплектация',
+            //monitors
+            'Производитель', 'Серия', 'Модель', 'Интерфейсы', 'Диагональ ', 'Поверхность экрана', 'Соотношение сторон',
+            'Разрешение, пикс.', 'Стандарт разрешения', 'Тип матрицы', 'Контрастность', 'Динамическая контрастность',
+            'Частота развертки', 'Время отклика', 'Яркость экрана', 'Размер крепления VESA', 'Размеры, мм',
+            //pads
+            'Встроенная память', 'Задняя камера', 'Фронтальная камера', 'Датчики', 'Порт зарядки',
+            'Программное обеспечение',
+            //smartphones
+            'Особенности камер', 'Время работы', 'Степень защиты',
+        ];
+
+        preg_match_all($keysPattern, $html, $matches);
+        $keys = preg_replace('/<[^>]*>|\[\s\?\s\]|:/', '', $matches[0]);
+
+        preg_match_all($valuesPattern, $html, $matches);
+        $values = preg_replace('/<br>/', ' ', $matches[0]); //remove <br> tag between 2 video cards
+        $values = preg_replace('/<[^>]*>|\[\s\?\s\]/', '', $values);
+
+        $attrs = [];
+
+        foreach ($keys as $key) {
+            if (in_array($key, $validKeys)) {
+                array_push($attrs, $key);
+            }
+        }
+
+        $values = array_splice($values, 0, count($attrs));
+        $attrs = array_combine($attrs, $values);
+        $attrs["Цена"] = $priceValue;
+
+        return $attrs;
     }
 
     /**
