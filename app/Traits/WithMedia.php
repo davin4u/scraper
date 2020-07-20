@@ -65,6 +65,19 @@ trait WithMedia
     }
 
     /**
+     * @param int $mediaId
+     * @throws \Exception
+     */
+    public function deleteFile(int $mediaId)
+    {
+        $media = $this->media()->find($mediaId);
+
+        $this->media()->detach([$mediaId]);
+
+        $media->delete();
+    }
+
+    /**
      * @return string
      */
     protected function getSaveToPath(): string
