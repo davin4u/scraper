@@ -5,6 +5,8 @@ namespace App\Parsers\StoreParsers\NotikParsers;
 use App\Crawler\Extractors\ProductExtractor;
 use App\Crawler\Document;
 use App\Parsers\ParserInterface;
+use function GuzzleHttp\describe_type;
+use function GuzzleHttp\Psr7\str;
 
 /**
  * Class NotikProductPageParser
@@ -41,7 +43,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getBrandName(): string
     {
-        return $this->content->filter('div.pathBox>span>a>span')->eq(2)->text();
+        return $this->content->filter('div.pathBox>span>a>span')->eq(1)->text();
     }
 
     /**
@@ -71,10 +73,12 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getDescription(): string
     {
-        $desc = $this->content->filter('li.characteristics.active.cn-pth>div')->first()->text();
-        $desc = preg_replace('/(.+)\.\.\./', '', $desc);
+        $descHtml = $this->content->filter('li.characteristics.active.cn-pth')->html();
 
-        return $desc;
+        $removeTrashPattern = '/<table.width=.100%.>(.+?)<\/table>|<br>|<div.class=.parametersInCard.contanier.>(.+?)<\/a><\/div>|<\/div><\/td>(.+?)<\/a><\/div>||<div.title=(.+?)<\/span><\/div>/ui';
+        $desc = preg_replace($removeTrashPattern, '', $descHtml);
+
+        return strip_tags($desc);
     }
 
     /**
@@ -85,7 +89,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
         $html = $this->content->html();
 
         $keysPattern = '/<td.class=.cell1.>(<[^>]*>|<[^>]*><[^>]*>)([а-яА-ЯёЁ]|[a-zA-Z]|\s|,|\.)+/iu';
-        $valuesPattern = '/<\/td><td>(<img[^>]+?jpg.*?>|\+|®|<b>|<\/?br\/?>|<span>|<\/span>|[a-zA-Z]|\s|\d|[а-яА-ЯёЁ]|-|\.|\"|\'|\(|\)|,|:|\/)+/u';
+        $valuesPattern = '/<\/td><td>(<img[^>]+?jpg.*?>|\+|®|<b>|<\/?br\/?>|<span>|<\/span>|[a-zA-Z]|\s|\d|[а-яА-ЯёЁ]|-|\.|\"|\'|\(|\)|,|:|\/|±|=|_|<a|>)+/u';
 
         $priceValuePattern = '/<noindex><b><[^>]*>(\d|\W)+/u';
         preg_match($priceValuePattern, $html, $match);
@@ -97,7 +101,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
             'Звук', 'Накопитель', 'Связь', 'Беспроводная связь', 'Порты', 'Слоты расширения', 'Дополнительные устройства',
             'Устройства ввода', 'Дополнительно', 'Цвет', 'Цвет клавиатуры', 'Материал корпуса', 'Материал крышки',
             'Размеры корпуса', 'Вес', 'Батарея', 'Операционная система', 'Гарантия', 'Партнам', 'Артикул', 'Цена',
-            'Комплектация',
+            'Комплектация', 'Оптический привод',
             //monitors
             'Производитель', 'Серия', 'Модель', 'Интерфейсы', 'Диагональ ', 'Поверхность экрана', 'Соотношение сторон',
             'Разрешение, пикс.', 'Стандарт разрешения', 'Тип матрицы', 'Контрастность', 'Динамическая контрастность',
@@ -120,6 +124,7 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
 
         foreach ($keys as $key) {
             if (in_array($key, $validKeys)) {
+                $key = trim($key);
                 array_push($attrs, $key);
             }
         }

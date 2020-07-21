@@ -152,6 +152,7 @@ class ProcessNotikCategoriesCommand extends Command
         $urlPattern = '/href="\/goods(.+).htm"/iu';
 
         preg_match_all($urlPattern, $html, $matches);
+
         //чтобы не пихать в urlsArray сразу, там потом будет массив массивов, а иначе пишется массив в последний элемент
         //Поэтому временный массив
         $tempArray = [];
@@ -162,6 +163,9 @@ class ProcessNotikCategoriesCommand extends Command
         array_walk($tempArray, function (&$value) {
             $value = "https://www.notik.ru/goods{$value}";
         });
+
+        //remove " sign from urls
+        $tempArray = preg_replace('/"/', '', $tempArray);
         array_push($urlsArray, $tempArray);
         //[*]конец
 
@@ -183,6 +187,8 @@ class ProcessNotikCategoriesCommand extends Command
             array_walk($tempArray, function (&$value) {
                 $value = "https://www.notik.ru/goods{$value}";
             });
+
+            $tempArray = preg_replace('/"/', '', $tempArray);
             array_push($urlsArray, $tempArray);
         }
 
