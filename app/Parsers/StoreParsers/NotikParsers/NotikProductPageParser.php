@@ -5,8 +5,6 @@ namespace App\Parsers\StoreParsers\NotikParsers;
 use App\Crawler\Extractors\ProductExtractor;
 use App\Crawler\Document;
 use App\Parsers\ParserInterface;
-use function GuzzleHttp\describe_type;
-use function GuzzleHttp\Psr7\str;
 
 /**
  * Class NotikProductPageParser
