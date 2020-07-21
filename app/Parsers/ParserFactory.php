@@ -19,7 +19,7 @@ class ParserFactory extends ClassesFactory
      * @throws ParserNotFoundException
      * @throws \App\Exceptions\DocumentNotReadableException
      */
-    public static function get(Document $document) : ParserInterface
+    public function get(Document $document) : ParserInterface
     {
         foreach (static::$classes as $parser) {
             /** @var ParserInterface $parser */
