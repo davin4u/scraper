@@ -22,7 +22,8 @@ interface ParserInterface
     public static function canHandle(Document $document): bool;
 
     /**
-     * @return bool
+     * @param array $options
+     * @return $this
      */
-    public function isSinglePageParser(): bool;
+    public function setOptions(array $options);
 }

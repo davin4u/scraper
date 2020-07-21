@@ -29,14 +29,6 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
     }
 
     /**
-     * @return bool
-     */
-    public function isSinglePageParser(): bool
-    {
-        return true;
-    }
-
-    /**
      * @return string
      */
     public function getName(): string

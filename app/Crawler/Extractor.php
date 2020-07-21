@@ -14,12 +14,37 @@ class Extractor
     protected $content;
 
     /**
+     * @var
+     */
+    protected $options;
+
+    /**
      * Extractor constructor.
      * @param string $content
      */
     public function __construct(string $content)
     {
         $this->content = new \Symfony\Component\DomCrawler\Crawler($content);
+    }
+
+    /**
+     * @param array $options
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    /**
+     * @param $option
+     * @return bool
+     */
+    protected function withOption($option): bool
+    {
+        return in_array($this->options, $option);
     }
 
     /**
