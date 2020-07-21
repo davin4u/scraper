@@ -13,5 +13,5 @@ class ScraperJob extends Model
     /**
      * @var array
      */
-    protected $fillable = ['user_id', 'url', 'completed_at'];
+    protected $fillable = ['user_id', 'url', 'regular', 'completed_at'];
 }
