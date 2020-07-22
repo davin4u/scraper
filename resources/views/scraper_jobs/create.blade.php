@@ -29,6 +29,14 @@
                                     <small class="form-text text-muted">For example: https://www.dns-shop.ru/catalog/17a892f816404e77/noutbuki/</small>
                                 </div>
 
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch my-4">
+                                        <input type="checkbox" class="custom-control-input" id="is_regular" name="is_regular" value="1" />
+
+                                        <label class="custom-control-label" for="is_regular">Regular</label>
+                                    </div>
+                                </div>
+
                                 <button type="submit" class="btn btn-primary">Save</button>
                                 <a href="{{ route('scraper-jobs.index') }}" class="btn btn-danger">Cancel</a>
                             </form>
