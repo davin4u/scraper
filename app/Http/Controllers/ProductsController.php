@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\BrandNotFoundException;
-use App\Exceptions\CategoryNotFoundException;
-use App\Exceptions\DomainNotFoundException;
+use App\Brand;
+use App\Category;
 use App\Http\Requests\UpdateProductRequest;
 use App\Product;
 use App\Repositories\ProductsRepository;
@@ -29,11 +28,11 @@ class ProductsController extends Controller
     /**
      * ProductsController constructor.
      * @param Request $request
-     * @param ProductsRepository $products
+     * @param Product $products
      */
-    public function __construct(Request $request, ProductsRepository $products)
+    public function __construct(Request $request, Product $products)
     {
-        $this->request  = $request;
+        $this->request = $request;
         $this->products = $products;
     }
 
@@ -42,61 +41,44 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $page     = $this->request->get('page', 1);
-        $perPage  = $this->request->get('per_page', 20);
-        $offset   = ($page - 1) * $perPage;
+        $id = $this->request->get('id', null);
+        $category = $this->request->get('category', null);
+        $brand = $this->request->get('brand', null);
+        $name = $this->request->get('name', null);
 
-        $id         = $this->request->get('id', null);
-        $domain     = $this->request->get('domain', null);
-        $category   = $this->request->get('category', null);
-        $brand      = $this->request->get('brand', null);
-        $name       = $this->request->get('name', null);
-        $sku        = $this->request->get('sku', null);
+        $products = Product::paginate(30);
 
-        if (!is_null($domain)) {
-            try {
-                $this->products->domain($domain);
-            }
-            catch (DomainNotFoundException $e) {}
+        if (!is_null($id)) {
+            $products = $this->products->where('id', $id)->get();
         }
-
+//
         if (!is_null($category)) {
-            try {
-                $this->products->category($category);
-            }
-            catch (CategoryNotFoundException $e) {}
+            $categoryId = Category::where('name', $category)->first();
+            $products = $this->products->where('category_id', $categoryId->id)->get();
         }
 
         if (!is_null($brand)) {
-            try {
-                $this->products->brand($brand);
-            }
-            catch (BrandNotFoundException $e) {}
-        }
-
-        if (!is_null($id)) {
-            $this->products->where('id', $id);
-        }
-
-        if (!is_null($sku)) {
-            $this->products->where('sku', $sku);
+            $brandId = Brand::where('name', $brand)->first();
+            $products = $this->products->where('brand_id', $brandId->id)->get();
         }
 
         if (!is_null($name)) {
-            $this->products->whereLike('name', "%$name%");
-        }
-
-        $paginator = $this->products->orderBy('id')->offset($offset)->take($perPage)->paginate();
-
-        foreach (['id' => $id, 'domain' => $domain, 'category' => $category, 'brand' => $brand, 'name' => $name, 'sku' => $sku] as $key => $item) {
-            if (!is_null($item) && $item) {
-                $paginator->appends([$key => $item]);
-            }
+            $products = $this->products->where('name', 'like', "%{$name}%")->get();
         }
 
         return view('products.index', [
-            'products' => $paginator
+            'products' => $products,
         ]);
+    }
+
+    public function create()
+    {
+        return view('products.create');
+    }
+
+    public function store(Request $request)
+    {
+
     }
 
     /**
@@ -105,7 +87,20 @@ class ProductsController extends Controller
      */
     public function edit(Product $product)
     {
+        $keys = [];
+        $values = [];
+        foreach ($product->attributes as $attribute) {
+            array_push($keys, $attribute->name);
+            array_push($values, $attribute->attributeValue->value());
+        }
+        $values = preg_replace('/(\s\s)/u', '', $values);
+        $attrs = array_combine($keys, $values);
 
+        return view('products.edit',
+            [
+                'product' => $product,
+                'attrs' => $attrs
+            ]);
     }
 
     /**
@@ -116,6 +111,13 @@ class ProductsController extends Controller
      */
     public function update(Product $product, UpdateProductRequest $request)
     {
+        //
+    }
 
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return redirect(route('products.index'))->with(['status' => "Product has been deleted"]);
     }
 }

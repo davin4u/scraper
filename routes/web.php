@@ -34,12 +34,17 @@ Route::middleware(['auth'])->group(function () {
 
     // Products
     Route::resource('products', 'ProductsController')->only([
-        'index', 'edit', 'update'
+        'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
 
     //Scraping jobs
     Route::resource('scraper-jobs', 'ScraperJobsController')->only([
         'index', 'create', 'store', 'edit', 'update'
+    ]);
+
+    //Media
+    Route::resource('media', 'MediaController')->only([
+        'create', 'store', 'edit', 'update', 'destroy'
     ]);
 
     // Routes with admin permissions
