@@ -5,6 +5,7 @@ namespace App\Crawler\Extractors;
 use App\Crawler\Extractor;
 use App\Crawler\Interfaces\Matchable;
 use App\Crawler\Matchers\SimpleReviewAuthorMatcher;
+use App\Repositories\ReviewsRepository;
 use Carbon\Carbon;
 
 /**
@@ -19,6 +20,11 @@ abstract class ReviewExtractor extends Extractor
     protected $reviewAuthorMatcher;
 
     /**
+     * @var ReviewsRepository
+     */
+    protected $reviews;
+
+    /**
      * ReviewExtractor constructor.
      * @param string $content
      */
@@ -27,6 +33,8 @@ abstract class ReviewExtractor extends Extractor
         parent::__construct($content);
 
         $this->reviewAuthorMatcher = $this->getReviewAuthorMatcher();
+
+        $this->reviews = new ReviewsRepository();
     }
 
     /**
@@ -125,24 +133,24 @@ abstract class ReviewExtractor extends Extractor
     abstract public function getReviewAuthorProfileUrl(): string;
 
     /**
-     * @return array
+     * @throws \App\Exceptions\ReviewNotFoundException
      */
     public function handle()
     {
-        return $this->validate([
+        $this->reviews->createOrUpdate($this->validate([
             'author_id'    => $this->getReviewAuthorId(),
             'title'        => $this->clear($this->getTitle()),
             'url'          => $this->clear($this->getUrl()),
             'published_at' => $this->getPublishedAt()->toDateString(),
             'pros'         => $this->clear($this->getPros()),
             'cons'         => $this->clear($this->getCons()),
-            'likes_count'  => $this->getReviewLikesCount(),
+            'likes_count'  => (int)$this->getReviewLikesCount(),
             'body'         => $this->getBody(),
             'summary'      => $this->clear($this->getShortSummary()),
             'bought_at'    => $this->getBoughtAt()->toDateString(),
             'rating'       => $this->getRating(),
             'i_recommend'  => $this->getIRecommend() ? 1 : 0
-        ]);
+        ]));
     }
 
     /**

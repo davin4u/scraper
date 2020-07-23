@@ -22,7 +22,7 @@ class ReviewsRepository
         if ($validated = $this->validate($data)) {
             if (!empty($data['id'])) {
                 /** @var ProductReview $review */
-                $review = ProductReview::find($data);
+                $review = ProductReview::find($data['id']);
 
                 if (is_null($review)) {
                     throw new ReviewNotFoundException("Review with ID {$data['id']} NOT FOUND.");
