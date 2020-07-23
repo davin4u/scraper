@@ -47,6 +47,7 @@ class ScraperJobsController extends Controller
         ScraperJob::create([
             'url' => $request->get('url'),
             'user_id' => auth()->user()->id,
+            'regular' => $request->get('is_regular') ? 1 : 0
         ]);
 
         return redirect(route('scraper-jobs.index'))->with([
@@ -85,8 +86,10 @@ class ScraperJobsController extends Controller
      */
     public function update(ScraperJob $scraperJob, ScraperJobStoreUpdateRequest $request)
     {
-        $scraperJob->url = $request->get('url');
-        $scraperJob->save();
+        $scraperJob->update([
+            'url' => $request->get('url'),
+            'regular' => $request->get('is_regular') ? 1 : 0
+        ]);
 
         return redirect(route('scraper-jobs.index'))->with(['status' => 'Job has been updated']);
     }

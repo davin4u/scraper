@@ -21,9 +21,19 @@
                             <form method="POST" action="{{ route('scraper-jobs.update', [$scraperJob]) }}">
                                 @csrf
                                 @method('PUT')
+
                                 <div class="form-group">
                                     <label for="url">URL for scraping</label>
+
                                     <input value="{{$scraperJob->url}}" type="url" name="url" class="form-control" id="url" />
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch my-4">
+                                        <input {{ $scraperJob->regular == 1 ? 'checked' : ''}} type="checkbox" class="custom-control-input" id="is_regular" name="is_regular" value="1" />
+
+                                        <label class="custom-control-label" for="is_regular">Regular</label>
+                                    </div>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Update</button>
