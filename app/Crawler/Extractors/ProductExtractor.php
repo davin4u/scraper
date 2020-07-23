@@ -106,6 +106,9 @@ abstract class ProductExtractor extends Extractor
         $matches = [];
 
         foreach ($attributes as $attrName => $value) {
+            $attrName = $this->clear($attrName);
+            $value = $this->clear($value);
+
             if ($match = $this->attributeMatcher->match($attrName, ['category_id' => $categoryId], true)) {
                 /** @var Attribute $match */
 
