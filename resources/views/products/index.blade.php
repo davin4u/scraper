@@ -14,7 +14,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-body">
                         @include('partials.notifications.success')
                         @include('partials.notifications.errors')
@@ -43,16 +42,16 @@
                                 <th scope="col">
                                     <select class="form-control" name="category" form="filters">
                                         <option></option>
-                                        @foreach(\App\Category::find(1)->get() as $category)
-                                            <option value="{{$category->name}}">{{$category->name}}</option>
+                                        @foreach(\App\Category::all() as $category)
+                                            <option @if (request('category') == $category->id) selected @endif value="{{$category->id}}">{{$category->name}}</option>
                                         @endforeach
                                     </select>
                                 </th>
                                 <th scope="col">
                                     <select class="form-control" name="brand" form="filters">
                                         <option></option>
-                                        @foreach(\App\Brand::find(1)->get() as $brand)
-                                            <option value="{{$brand->name}}">{{$brand->name}}</option>
+                                        @foreach(\App\Brand::all() as $brand)
+                                            <option @if (request('brand') == $brand->id) selected @endif value="{{$brand->id}}">{{$brand->name}}</option>
                                         @endforeach
                                     </select>
                                 </th>
@@ -76,7 +75,7 @@
                                     <td class="text-right">
                                         <a href="{{route('products.edit', [$product])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
                                         <form method="POST" hidden action="{{route('products.destroy', [$product])}}" id="delete">
-                                            @csrf
+                                            @csrf()
                                             @method('DELETE')
                                         </form>
                                         <button class="inline btn btn-sm btn-danger" type="submit" form="delete"><i class="fa fa-trash"></i></button>
@@ -89,11 +88,9 @@
                             @endforelse
                             </tbody>
                         </table>
-
-                        @if(!empty($products) && ($products instanceof \Illuminate\Pagination\LengthAwarePaginator))
+                        @if(!empty($products))
                             {{$products->render()}}
                         @endif
-
                     </div>
                 </div>
             </div>

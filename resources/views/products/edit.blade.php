@@ -8,7 +8,6 @@
                     <div class="card-header">
                         <div class="d-flex">
                             <div class="align-self-center flex-grow-1">Edit product | #{{$product->id}} {{$product->name}}</div>
-
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.index')}}" class="btn btn-danger">Cancel</a>
                                 <a href="{{route('media.edit', [$product])}}" class="btn btn-primary"><i class="fa fa-image"></i> Manage media</a>
@@ -17,14 +16,12 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-body">
                         @include('partials.notifications.success')
                         @include('partials.notifications.errors')
                         <form method="POST" action="{{route('products.update', [$product])}}" id="edit">
                             @csrf
                             @method('PUT')
-                        </form>
                             <div class="row">
                                 <div class="col-md-4">
                                     <img src="{{$product->media->first()->url}}" class="img-thumbnail img-fluid">
@@ -47,7 +44,7 @@
                                         <label for="category" class="col-sm-3 col-form-label">Category</label>
                                         <div class="col-sm-5">
                                             <select class="form-control" name="category_id">
-                                                @foreach(\App\Category::find(1)->get() as $category)
+                                                @foreach(\App\Category::all() as $category)
                                                     <option value="{{$category->id}}" @if($category->id === $product->category->id) selected @endif >{{$category->name}}</option>
                                                 @endforeach
                                             </select>
@@ -57,18 +54,17 @@
                                         <label for="brand" class="col-sm-3 col-form-label">Brand</label>
                                         <div class="col-sm-5">
                                             <select class="form-control" name="brand_id">
-                                                @foreach(\App\Brand::find(1)->get() as $brand)
+                                                @foreach(\App\Brand::all() as $brand)
                                                     <option value="{{$brand->id}}" @if($brand->id === $product->brand->id) selected @endif >{{$brand->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="manufacturer_id" class="col-sm-3 col-form-label">Manufacturer
-                                            ID</label>
+                                        <label for="manufacturer_id" class="col-sm-3 col-form-label">Manufacturer ID</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="manufacturer_id"
-                                                   value="{{$attrs['Партнам']}}">
+                                                   value="Партнам">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -80,26 +76,23 @@
                                     </div>
                                 </div>
                             </div>
-
                             <h4>Attributes</h4>
                             <hr/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    @foreach($attrs as $key => $value)
+                                    @foreach($product->attributes as $attribute)
                                         <div class="form-group row">
-                                            <label for="attr_1" class="col-sm-2 col-form-label">{{$key}}</label>
+                                            <label for="attr_1" class="col-sm-2 col-form-label">{{$attribute->name}}</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="attr_1"
-                                                       value="{{$value}}"/>
+                                                       value="{{$attribute->attributeValue->value()}}"/>
                                             </div>
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
-
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Brand;
-use App\Category;
+use Illuminate\Http\Request;
 use App\Http\Requests\UpdateProductRequest;
 use App\Product;
 use App\Repositories\ProductsRepository;
-use Illuminate\Http\Request;
 
 /**
  * Class ProductsController
@@ -46,28 +44,32 @@ class ProductsController extends Controller
         $brand = $this->request->get('brand', null);
         $name = $this->request->get('name', null);
 
-        $products = Product::paginate(30);
+        $products = Product::with('category');
 
         if (!is_null($id)) {
-            $products = $this->products->where('id', $id)->get();
+            $products->where('id', $id);
         }
 //
         if (!is_null($category)) {
-            $categoryId = Category::where('name', $category)->first();
-            $products = $this->products->where('category_id', $categoryId->id)->get();
+            $products->where('category_id', $category);
         }
 
         if (!is_null($brand)) {
-            $brandId = Brand::where('name', $brand)->first();
-            $products = $this->products->where('brand_id', $brandId->id)->get();
+            $products->where('brand_id', $brand);
         }
 
         if (!is_null($name)) {
-            $products = $this->products->where('name', 'like', "%{$name}%")->get();
+            $products->where('name', 'like', "%{$name}%");
         }
 
-        return view('products.index', [
-            'products' => $products,
+        $products = $products->paginate(30);
+
+        return view('products.index')->with([
+            'products' => $products->appends(\request()->except('page')),
+            'id' => $id,
+            'category' => $category,
+            'brand' => $brand,
+            'name' => $name
         ]);
     }
 
@@ -87,20 +89,7 @@ class ProductsController extends Controller
      */
     public function edit(Product $product)
     {
-        $keys = [];
-        $values = [];
-        foreach ($product->attributes as $attribute) {
-            array_push($keys, $attribute->name);
-            array_push($values, $attribute->attributeValue->value());
-        }
-        $values = preg_replace('/(\s\s)/u', '', $values);
-        $attrs = array_combine($keys, $values);
-
-        return view('products.edit',
-            [
-                'product' => $product,
-                'attrs' => $attrs
-            ]);
+        return view('products.edit', compact('product'));
     }
 
     /**

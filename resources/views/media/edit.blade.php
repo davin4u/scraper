@@ -7,9 +7,8 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Manage media |
-                                #{{$product->id}} {{$product->name}}</div>
-
+                            <div class="align-self-center flex-grow-1">Manage media | #{{$product->id}} {{$product->name}}
+                            </div>
                             <div class="align-self-center text-right">
                                 <a href="{{\Illuminate\Support\Facades\URL::previous()}}"
                                    class="btn btn-danger">Cancel</a>
@@ -28,9 +27,10 @@
                                 @foreach($product->media as $media)
                                     <div class="position-relative mx-2 my-2">
                                         <div class="position-absolute" style="right: 0px; top: 0px;">
-                                            <form action="{{route('media.destroy', [ $media])}}" method="POST" id="delete">
+                                            <form action="{{route('media.destroy', [$media, $product])}}" method="POST" id="delete">
                                                 @csrf
                                                 @method('DELETE')
+                                                <input type="hidden" name="product_id" value="{{$product->id}}">
                                                 <button type="submit" form="delete" class="btn btn-sm btn-danger mt-2 mr-2"><i class="fa fa-trash"></i></button>
                                             </form>
                                         </div>
