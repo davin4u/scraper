@@ -3,18 +3,15 @@
 namespace App\Console\Commands;
 
 use App\Exceptions\DocumentNotReadableException;
-use App\Exceptions\DomainNotFoundException;
 use App\Exceptions\ParserNotFoundException;
 use App\Crawler\Document;
 use App\Crawler\DocumentsRepository;
 use App\Exceptions\ProductNotFoundException;
 use App\Parsers\ParserFactory;
 use App\Parsers\ParserInterface;
-use App\Repositories\ProductsRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class ParserProcessCommand extends Command
 {
@@ -23,14 +20,14 @@ class ParserProcessCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'parser:process {--domain=} {--date=} {--all}';
+    protected $signature = 'parser:process {--domain=} {--date=} {--collect-links}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Process scraped files.';
+    protected $description = 'Process stored files.';
 
     /**
      * @var DocumentsRepository
@@ -54,7 +51,7 @@ class ParserProcessCommand extends Command
      */
     public function handle()
     {
-        $date = $this->option('date') ?: ($this->option('all') ? date('d.m.Y') : null);
+        $date = $this->option('date') ?: null;
 
         if ($date) {
             try {
@@ -85,16 +82,11 @@ class ParserProcessCommand extends Command
                 /** @var ParserInterface $parser */
                 $parser = (new ParserFactory)->get($document);
 
-                $results = $parser->handle();
-
-                if (!empty($results)) {
-                    if ($parser->isSinglePageParser()) {
-                        (new ProductsRepository())->createOrUpdate($results);
-                    }
-                    else {
-                        (new ProductsRepository())->bulkCreateOrUpdate($results);
-                    }
+                if ($this->option('collect-links')) {
+                    $parser->setOptions(['collect-links']);
                 }
+
+                $parser->handle();
             }
             catch (ParserNotFoundException $e) {
                 Log::error("Parser NOT FOUND: " . $document->getPath());

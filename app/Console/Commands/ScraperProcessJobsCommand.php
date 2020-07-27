@@ -17,7 +17,7 @@ class ScraperProcessJobsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'scraper:process-jobs {--take=}';
+    protected $signature = 'scraper:process-jobs {--take=} {--jobs=}';
 
     /**
      * The console command description.
@@ -45,10 +45,23 @@ class ScraperProcessJobsCommand extends Command
     {
         $limit = $this->option('take') ?: 5;
 
-        $jobs = ScraperJob::query()->whereNull('completed_at')
-            ->orderBy('id')
-            ->limit($limit)
-            ->get();
+        if ($jobIds = $this->option('jobs')) {
+            $limit = null;
+
+            $jobIds = explode(',', $jobIds);
+        }
+
+        $query = ScraperJob::query()->whereNull('completed_at')->orderBy('id');
+
+        if (!is_null($limit)) {
+            $query->limit($limit);
+        }
+
+        if ($jobIds) {
+            $query->whereIn('id', $jobIds);
+        }
+
+        $jobs = $query->get();
 
         if ($jobs->count() === 0) {
             return;

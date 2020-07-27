@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\BrandNotFoundException;
-use App\Exceptions\CategoryNotFoundException;
-use App\Exceptions\DomainNotFoundException;
+use Illuminate\Http\Request;
 use App\Http\Requests\UpdateProductRequest;
 use App\Product;
 use App\Repositories\ProductsRepository;
-use Illuminate\Http\Request;
 
 /**
  * Class ProductsController
@@ -29,11 +26,11 @@ class ProductsController extends Controller
     /**
      * ProductsController constructor.
      * @param Request $request
-     * @param ProductsRepository $products
+     * @param Product $products
      */
-    public function __construct(Request $request, ProductsRepository $products)
+    public function __construct(Request $request, Product $products)
     {
-        $this->request  = $request;
+        $this->request = $request;
         $this->products = $products;
     }
 
@@ -42,61 +39,48 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $page     = $this->request->get('page', 1);
-        $perPage  = $this->request->get('per_page', 20);
-        $offset   = ($page - 1) * $perPage;
+        $id = $this->request->get('id', null);
+        $category = $this->request->get('category', null);
+        $brand = $this->request->get('brand', null);
+        $name = $this->request->get('name', null);
 
-        $id         = $this->request->get('id', null);
-        $domain     = $this->request->get('domain', null);
-        $category   = $this->request->get('category', null);
-        $brand      = $this->request->get('brand', null);
-        $name       = $this->request->get('name', null);
-        $sku        = $this->request->get('sku', null);
+        $products = Product::with('category');
 
-        if (!is_null($domain)) {
-            try {
-                $this->products->domain($domain);
-            }
-            catch (DomainNotFoundException $e) {}
+        if (!is_null($id)) {
+            $products->where('id', $id);
         }
-
+//
         if (!is_null($category)) {
-            try {
-                $this->products->category($category);
-            }
-            catch (CategoryNotFoundException $e) {}
+            $products->where('category_id', $category);
         }
 
         if (!is_null($brand)) {
-            try {
-                $this->products->brand($brand);
-            }
-            catch (BrandNotFoundException $e) {}
-        }
-
-        if (!is_null($id)) {
-            $this->products->where('id', $id);
-        }
-
-        if (!is_null($sku)) {
-            $this->products->where('sku', $sku);
+            $products->where('brand_id', $brand);
         }
 
         if (!is_null($name)) {
-            $this->products->whereLike('name', "%$name%");
+            $products->where('name', 'like', "%{$name}%");
         }
 
-        $paginator = $this->products->orderBy('id')->offset($offset)->take($perPage)->paginate();
+        $products = $products->paginate(30);
 
-        foreach (['id' => $id, 'domain' => $domain, 'category' => $category, 'brand' => $brand, 'name' => $name, 'sku' => $sku] as $key => $item) {
-            if (!is_null($item) && $item) {
-                $paginator->appends([$key => $item]);
-            }
-        }
-
-        return view('products.index', [
-            'products' => $paginator
+        return view('products.index')->with([
+            'products' => $products->appends(\request()->except('page')),
+            'id' => $id,
+            'category' => $category,
+            'brand' => $brand,
+            'name' => $name
         ]);
+    }
+
+    public function create()
+    {
+        return view('products.create');
+    }
+
+    public function store(Request $request)
+    {
+
     }
 
     /**
@@ -105,7 +89,7 @@ class ProductsController extends Controller
      */
     public function edit(Product $product)
     {
-
+        return view('products.edit', compact('product'));
     }
 
     /**
@@ -116,6 +100,13 @@ class ProductsController extends Controller
      */
     public function update(Product $product, UpdateProductRequest $request)
     {
+        //
+    }
 
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return redirect(route('products.index'))->with(['status' => "Product has been deleted"]);
     }
 }

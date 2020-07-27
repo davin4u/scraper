@@ -2,9 +2,9 @@
 
 namespace App\MediaUploader\Handlers;
 
+use App\MediaUploader\Interfaces\MediaStorageInterface;
 use App\MediaUploader\Interfaces\UploaderInterface;
 use function GuzzleHttp\Psr7\mimetype_from_filename;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Class FromUrlUploader
@@ -13,16 +13,17 @@ use Illuminate\Support\Facades\Storage;
 class FromUrlUploader implements UploaderInterface
 {
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     * @var MediaStorageInterface
      */
     protected $storage;
 
     /**
      * FromUrlUploader constructor.
+     * @param MediaStorageInterface $storage
      */
-    public function __construct()
+    public function __construct(MediaStorageInterface $storage)
     {
-        $this->storage = Storage::disk(config('media.storage_disk'));
+        $this->storage = $storage;
     }
 
     /**

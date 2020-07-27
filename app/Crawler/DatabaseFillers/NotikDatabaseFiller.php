@@ -1,63 +1,122 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Crawler\DatabaseFillers;
 
 use App\ScraperJob;
-use Illuminate\Console\Command;
+use Illuminate\Console\OutputStyle;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 
-class ProcessNotikCategoriesCommand extends Command
+/**
+ * Class NotikDatabaseFiller
+ * @package App\Crawler\DatabaseFillers
+ */
+final class NotikDatabaseFiller
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
+     * @var array
      */
-    protected $signature = 'parser:notik-categories {--url=}';
+    private $categories = [
+        'https://www.notik.ru/search_catalog/filter/brand.htm',
+        'https://www.notik.ru/search_catalog/filter/monoblocks.htm',
+        'https://www.notik.ru/search_catalog/filter/allmonitors.htm',
+        'https://www.notik.ru/search_catalog/filter/allpads.htm',
+        'https://www.notik.ru/search_catalog/filter/allsmarts.htm'
+    ];
 
     /**
-     * The console command description.
-     *
-     * @var string
+     * @var array
      */
-    protected $description = 'Parsing notik categories';
+    private $jobs = [];
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
+     * @var OutputStyle
      */
-    public function __construct()
+    private $output;
+
+    /**
+     * NotikDatabaseFiller constructor.
+     * @param OutputStyle $output
+     */
+    public function __construct(OutputStyle $output)
     {
-        parent::__construct();
+        $this->output = $output;
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * @throws \Exception
      */
     public function handle()
     {
-        $url = $this->option('url');
+        $this->output->text("Process categories...");
 
-        if (is_null($url)) {
-            $this->error('url not given');
+        $bar = $this->output->createProgressBar(count($this->categories));
 
-            return;
+        $bar->start();
+
+        foreach ($this->categories as $url) {
+            $this->checkCategory($url);
+
+            $bar->advance();
         }
 
-        $this->checkCategory($url);
+        $bar->finish();
 
-        return;
+        $this->output->success("Scraper jobs have been created.");
+
+        if (count($this->jobs) > 0) {
+            $this->output->text("Start scraping...");
+
+            $bar = $this->output->createProgressBar(ceil(count($this->jobs) / 10));
+
+            $bar->start();
+
+            foreach (collect($this->jobs)->chunk(10) as $chunk) {
+                /** @var Collection $chunk */
+
+                Artisan::call('scraper:process-jobs', [
+                    '--jobs' => $chunk->implode(',')
+                ]);
+
+                $bar->advance();
+            }
+
+            $bar->finish();
+
+            $this->output->success("Content has been stored.");
+
+            $this->output->text("Start parsing...");
+
+            Artisan::call('parser:process', [
+                '--date' => date('d.m.Y')
+            ]);
+
+            $this->output->success("Products have been processed.");
+        }
     }
 
     private function wait()
     {
-        sleep(random_int(4, 10));
+        sleep(rand(4, 10));
     }
 
+    /**
+     * @param string $url
+     */
+    private function createJob(string $url)
+    {
+        $job = ScraperJob::create([
+            'url' => $url,
+            'user_id' => 1
+        ]);
 
-    private function searchCategoryParser($url)
+        $this->jobs[] = $job->id;
+    }
+
+    /**
+     * @param string $url
+     */
+    private function searchCategoryParser(string $url)
     {
         $this->wait();
         $html = file_get_contents($url);
@@ -94,15 +153,15 @@ class ProcessNotikCategoriesCommand extends Command
         //insert arrays in database
         for ($i = 0; $i < $lastPage; $i++) {
             foreach ($urlsArray[$i] as $url) {
-                ScraperJob::create([
-                    'url' => $url,
-                    'user_id' => 1
-                ]);
+                $this->createJob($url);
             }
         }
     }
 
-    private function padsParser($url)
+    /**
+     * @param string $url
+     */
+    private function padsParser(string $url)
     {
         $this->wait();
         $html = file_get_contents($url);
@@ -134,15 +193,15 @@ class ProcessNotikCategoriesCommand extends Command
 
         for ($i = 0; $i < $lastPage; $i++) {
             foreach ($urlsArray[$i] as $url) {
-                ScraperJob::create([
-                    'url' => $url,
-                    'user_id' => 1
-                ]);
+                $this->createJob($url);
             }
         }
     }
 
-    private function monitorsParser($url)
+    /**
+     * @param string $url
+     */
+    private function monitorsParser(string $url)
     {
         $this->wait();
         $html = file_get_contents($url);
@@ -194,17 +253,17 @@ class ProcessNotikCategoriesCommand extends Command
 
         for ($i = 0; $i < $lastPage; $i++) {
             foreach ($urlsArray[$i] as $url) {
-                ScraperJob::create([
-                    'url' => $url,
-                    'user_id' => 1
-                ]);
+                $this->createJob($url);
             }
         }
     }
 
+    /**
+     * @param string $url
+     * @throws \Exception
+     */
     private function checkCategory(string $url)
     {
-        $html = file_get_contents($url);
         $slicedUrl = preg_split('/(\.|\/)/', $url);
 
         //searchCategory it is url like https://www.notik.ru/search_catalog/filter/brand.htm
@@ -224,6 +283,9 @@ class ProcessNotikCategoriesCommand extends Command
                 default:
                     $this->searchCategoryParser($url);
             }
-        } else $this->error('Wrong url');
+        }
+        else {
+            throw new \Exception("Category was not recognized.");
+        }
     }
 }

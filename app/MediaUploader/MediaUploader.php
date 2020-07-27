@@ -13,7 +13,7 @@ class MediaUploader
      */
     public static function getUrlUploader(): UploaderInterface
     {
-        return new FromUrlUploader();
+        return new FromUrlUploader(new MediaStorage());
     }
 
     /**
@@ -21,6 +21,6 @@ class MediaUploader
      */
     public static function getFilesUploader(): UploaderInterface
     {
-        return new FromRequestUploader();
+        return new FromRequestUploader(new MediaStorage());
     }
 }

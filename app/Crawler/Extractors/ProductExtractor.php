@@ -9,6 +9,7 @@ use App\Crawler\Interfaces\Matchable;
 use App\Crawler\Matchers\SimpleAttributeMatcher;
 use App\Crawler\Matchers\SimpleBrandMatcher;
 use App\Crawler\Matchers\SimpleCategoryMatcher;
+use App\Repositories\ProductsRepository;
 
 /**
  * Class ProductExtractor
@@ -32,6 +33,11 @@ abstract class ProductExtractor extends Extractor
     private $attributeMatcher;
 
     /**
+     * @var ProductsRepository
+     */
+    private $products;
+
+    /**
      * ProductExtractor constructor.
      * @param string $content
      */
@@ -44,6 +50,8 @@ abstract class ProductExtractor extends Extractor
         $this->categoryMatcher = $this->getCategoryMatcher();
 
         $this->attributeMatcher = $this->getAttributeMatcher();
+
+        $this->products = new ProductsRepository();
     }
 
     /**
@@ -98,6 +106,9 @@ abstract class ProductExtractor extends Extractor
         $matches = [];
 
         foreach ($attributes as $attrName => $value) {
+            $attrName = $this->clear($attrName);
+            $value = $this->clear($value);
+
             if ($match = $this->attributeMatcher->match($attrName, ['category_id' => $categoryId], true)) {
                 /** @var Attribute $match */
 
@@ -149,14 +160,14 @@ abstract class ProductExtractor extends Extractor
     abstract public function getCurrency(): string;
 
     /**
-     * @return array
      * @throws CrawlerValidationException
+     * @throws \App\Exceptions\ProductNotFoundException
      */
     public function handle()
     {
         $categoryId = (int)$this->matchCategory($this->clear($this->getCategoryName()));
 
-        return $this->validate([
+        $this->products->createOrUpdate($this->validate([
             'name' => $this->clear($this->getName()),
             'brand_id' => $this->matchBrand($this->clear($this->getBrandName())),
             'category_id' => $categoryId,
@@ -165,7 +176,7 @@ abstract class ProductExtractor extends Extractor
             //'price' => $this->getPrice(),
             //'currency' => $this->clear($this->getCurrency()),
             'attributes' => $this->matchAttributes($this->getAttributes(), $categoryId)
-        ]);
+        ]));
     }
 
     /**

@@ -7,7 +7,7 @@ use App\Crawler\Interfaces\CrawlerPluginInterface;
 use App\Crawler\Plugins\RemoveCss;
 use App\Crawler\Plugins\RemoveJavascript;
 use App\Crawler\Plugins\RemoveSpaces;
-use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 /**
  * Class Crawler
@@ -31,6 +31,11 @@ abstract class Crawler
     protected $requestOptions = [];
 
     /**
+     * @var DocumentsRepository
+     */
+    protected $documents;
+
+    /**
      * @var array
      */
     protected $clearContentPlugins = [
@@ -45,6 +50,8 @@ abstract class Crawler
     public function __construct()
     {
         $this->client = $this->getHttpClient();
+
+        $this->documents = new DocumentsRepository();
     }
 
     /**
@@ -73,18 +80,11 @@ abstract class Crawler
      */
     public function saveDocument(string $url, string $content)
     {
-        Storage::disk('local')->put(
-            $this->getDocumentsDirectory() . DIRECTORY_SEPARATOR . $this->convertUrlToHashName($url),
-            $this->clearContent($content)
-        );
-    }
-
-    /**
-     * @return string
-     */
-    protected function getDocumentsDirectory(): string
-    {
-        return 'scraper' . DIRECTORY_SEPARATOR . date('d.m.Y') . DIRECTORY_SEPARATOR . $this->getDomainName();
+        $this->documents
+            ->domain($this->getDomainName())
+            ->date(Carbon::now())
+            ->fileName($this->convertUrlToHashName($url))
+            ->put($this->clearContent($content));
     }
 
     /**

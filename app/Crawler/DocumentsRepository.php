@@ -2,6 +2,7 @@
 
 namespace App\Crawler;
 
+use App\Exceptions\DocumentNotFoundException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,6 +22,11 @@ class DocumentsRepository
      * @var Carbon
      */
     protected $date = null;
+
+    /**
+     * @var string
+     */
+    protected $fileName = null;
 
     /**
      * @var int
@@ -58,6 +64,17 @@ class DocumentsRepository
     public function date(Carbon $date)
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * @param string $fileName
+     * @return $this
+     */
+    public function fileName(string $fileName)
+    {
+        $this->fileName = $fileName;
 
         return $this;
     }
@@ -110,11 +127,48 @@ class DocumentsRepository
     }
 
     /**
+     * @param string $content
+     * @return Document|null
+     */
+    public function put(string $content)
+    {
+        if ($this->storage->put($this->buildStoragePath(), $content)) {
+            try {
+                return new Document($this->documentPath($this->buildStoragePath()));
+            }
+            catch (DocumentNotFoundException $e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param $path
      * @return string
      */
     private function documentPath($path)
     {
         return 'app/' . $path;
+    }
+
+    private function buildStoragePath(): string
+    {
+        $path = $this->directory;
+
+        if (!is_null($this->date)) {
+            $path .= DIRECTORY_SEPARATOR . $this->date->format('d.m.Y');
+        }
+
+        if (!is_null($this->domain)) {
+            $path .= DIRECTORY_SEPARATOR . $this->domain;
+        }
+
+        if (!is_null($this->fileName)) {
+            $path .= DIRECTORY_SEPARATOR . $this->fileName;
+        }
+
+        return $path;
     }
 }
