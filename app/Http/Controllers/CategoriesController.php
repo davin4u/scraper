@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Http\Requests\CreateCategoryRequest;
+use Illuminate\Http\Request;
 
 /**
  * Class CategoriesController
@@ -14,11 +15,29 @@ class CategoriesController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
 
-        return view('categories.index', compact('categories'));
+        if (!empty($request->get('id')) || !empty($request->get('name'))){
+
+            $categories = Category::query();
+
+            if ($request->get('id')) {
+                $categories->where('id', $request->get('id'));
+            }
+
+            if ($request->get('name')) {
+                $categories->where('name', 'like', '%' . $request->get('name') . '%');
+            }
+
+            $categories = $categories->paginate(30);
+        }
+        else
+        {
+            $categories = Category::all();
+        }
+
+        return view('categories.index', compact('categories','request'));
     }
 
     /**
@@ -46,7 +65,7 @@ class CategoriesController extends Controller
             'name' => $name,
             'map'  => $map
         ]);
-
+        
         return redirect(route('categories.index'))->with(['status' => 'Category has been created.']);
     }
 

@@ -5,7 +5,16 @@
         <div class="row justify-content-center">
             <div class="col-md-12 px-0 px-md-4">
                 <div class="card">
-                    <div class="card-header">Edit product brand</div>
+
+                    <div class="card-header">
+                        <div class="d-flex">
+                            <div class="align-self-center flex-grow-1">Edit product brand | #{{$brand->id}} {{$brand->name}}</div>
+                            <div class="align-self-center text-right">
+                              <a href="{{ route('brands.index') }}" class="btn btn-danger">Cancel</a>
+                              <button form="edit-brand-form" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                            </div>
+                          </div>
+                    </div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -23,7 +32,7 @@
                         @endif
 
                         <div>
-                            <form method="POST" action="{{ route('brands.update', [$brand]) }}">
+                            <form method="POST" action="{{ route('brands.update', [$brand]) }}" id="edit-brand-form">
                                 <input type="hidden" name="_method" value="PUT" />
                                 @csrf
 
@@ -40,9 +49,6 @@
 
                                     <small class="form-text text-muted">Comma separated different variants of brand name for matching with different stores.</small>
                                 </div>
-
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <a href="{{ route('brands.index') }}" class="btn btn-danger">Cancel</a>
                             </form>
                         </div>
                     </div>

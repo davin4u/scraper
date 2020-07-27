@@ -5,8 +5,16 @@
         <div class="row justify-content-center">
             <div class="col-md-12 px-0 px-md-4">
                 <div class="card">
-                    <div class="card-header">Create new product category</div>
+                    <div class="card-header">
+                        <div class="d-flex">
+                            <div class="align-self-center flex-grow-1">Create new product category</div>
 
+                            <div class="align-self-center text-right">
+                                <a href="{{ route('categories.index') }}" class="btn btn-danger"> Cancel</a>
+                                <button form="create-cat-form" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
@@ -23,7 +31,7 @@
                         @endif
 
                         <div>
-                            <form method="POST" action="{{ route('categories.store') }}">
+                            <form id="create-cat-form" method="POST" action="{{ route('categories.store') }}">
                                 @csrf
 
                                 <div class="form-group">
@@ -39,9 +47,6 @@
 
                                     <small class="form-text text-muted">Comma separated different variants of category name for matching with different stores.</small>
                                 </div>
-
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <a href="{{ route('categories.index') }}" class="btn btn-danger">Cancel</a>
                             </form>
                         </div>
                     </div>

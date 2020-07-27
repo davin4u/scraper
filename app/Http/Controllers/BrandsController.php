@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Brand;
 use App\Http\Requests\CreateBrandRequest;
+use Illuminate\Http\Request;
 
 /**
  * Class BrandsController
@@ -14,11 +15,28 @@ class BrandsController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $brands = Brand::all();
+        if (!empty($request->get('id')) || !empty($request->get('name'))){
 
-        return view('brands.index', compact('brands'));
+            $brands = Brand::query();
+
+            if ($request->get('id')) {
+                $brands->where('id', $request->get('id'));
+            }
+
+            if ($request->get('name')) {
+                $brands->where('name', 'like', '%' . $request->get('name') . '%');
+            }
+
+            $brands = $brands->paginate(30);
+        }
+        else
+        {
+            $brands = Brand::all();
+        }
+
+        return view('brands.index', compact('brands','request'));
     }
 
     /**

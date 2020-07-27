@@ -12,16 +12,16 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto flex-column">
                 <li class="nav-item">
-                    <a class="{{ Request::is('categories') ? 'active' : '' }} nav-link" href="{{ route('categories.index') }}">Product categories</a>
+                    <a class="{{ Request::is('categories*') ? 'active' : '' }} nav-link" href="{{ route('categories.index') }}">Product categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="{{ Request::is('brands') ? 'active' : '' }} nav-link" href="{{ route('brands.index') }}">Product brands</a>
+                    <a class="{{ Request::is('brands*') ? 'active' : '' }} nav-link" href="{{ route('brands.index') }}">Product brands</a>
                 </li>
                 <li class="nav-item">
-                    <a class="{{ Request::is('products') ? 'active' : '' }} nav-link" href="{{ route('products.index') }}">Products</a>
+                    <a class="{{ Request::is('products*') ? 'active' : '' }} nav-link" href="{{ route('products.index') }}">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="{{ Request::is('scraper/categories') ? 'active' : '' }} nav-link" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
+                    <a class="{{ Request::is('scraper/categories*') ? 'active' : '' }} nav-link" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
                 </li>
                 <li class="nav-item">
                     <a class="{{ Request::is('scraper-jobs') ? 'active' : '' }} nav-link" href="{{ route('scraper-jobs.index') }}">Scraping jobs</a>

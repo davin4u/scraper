@@ -5,9 +5,14 @@
         <div class="row justify-content-center">
             <div class="col-md-12 px-0 px-md-4">
                 <div class="card">
-                    <div class="card-header clearfix">
-                        <span>Brands</span>
-                        <a class="btn btn-primary float-right" href="{{ route('brands.create') }}">Create</a></div>
+                    <div class="card-header">
+                        <div class="d-flex">
+                            <div class="align-self-center flex-grow-1">Brands</div>
+                            <div class="align-self-center text-right">
+                                <a href="{{ route('brands.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add category</a>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -15,13 +20,26 @@
                                 {{ session('status') }}
                             </div>
                         @endif
-
+                        <form id="brand-filter-form" action="{{ route('brands.index') }}" method="GET"></form>
                         <table class="table">
-                            <thead>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Map</th>
-                                <th></th>
+                            <thead class="thead-light">
+                                <tr>
+                                    <th style="width: 100px;">ID</th>
+                                    <th>Name</th>
+                                    <th>Map</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">
+                                        <input form="brand-filter-form" name="id" type="text" class="form-control" value="{{ $request->id }}" />
+                                    </th>
+                                    <th scope="col">
+                                        <input form="brand-filter-form" name="name" type="text" class="form-control" value="{{ $request->name }}"/>
+                                    </th>
+                                    <th><button form="brand-filter-form" type="submit" class="btn btn-primary"> Filter </button></th>
+                                    <th></th>
+                                </tr>
+
                             </thead>
 
                             <tbody>
@@ -37,17 +55,17 @@
                                                 @csrf
                                                 <input type="hidden" name="_method" value="DELETE" />
 
-                                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                             </form>
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
-                            @empty($brands)
-                                <tr><td colspan="3">No brands added</td></tr>
-                            @endempty
                             </tbody>
                         </table>
+                        @if ($brands->isEmpty())
+                            <div class="alert alert-secondary" role="alert">No brands added</div>
+                        @endif
                     </div>
                 </div>
             </div>
