@@ -41,7 +41,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('scraper-jobs', 'ScraperJobsController')->only([
         'index', 'create', 'store', 'edit', 'update'
     ]);
-
+    //Search statistics
+    Route::resource('search-statistics', 'SearchStatisticsCotroller')->only([
+        'index', 'create', 'store', 'edit','update'
+    ]);
     //Media
     Route::resource('media', 'MediaController')->only([
         'create', 'store', 'edit', 'update', 'destroy'
@@ -51,5 +54,6 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['isAdmin'])->group(function () {
         Route::resource('categories', 'CategoriesController')->only(['destroy']);
         Route::resource('brands', 'BrandsController')->only(['destroy']);
+        Route::resource('search-statistics', 'SearchStatisticsCotroller')->only(['destroy']);
     });
 });

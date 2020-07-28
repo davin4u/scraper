@@ -24,7 +24,10 @@
                     <a class="{{ Request::is('scraper/categories*') ? 'active' : '' }} nav-link" href="{{ route('scraper.categories.index') }}">Scraping categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="{{ Request::is('scraper-jobs') ? 'active' : '' }} nav-link" href="{{ route('scraper-jobs.index') }}">Scraping jobs</a>
+                    <a class="{{ Request::is('scraper-jobs*') ? 'active' : '' }} nav-link" href="{{ route('scraper-jobs.index') }}">Scraping jobs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="{{ Request::is('search-statistics*') ? 'active' : '' }} nav-link" href="{{ route('search-statistics.index') }}">Search statistics</a>
                 </li>
             </ul>
         </div>

@@ -28,7 +28,7 @@
                                     <th scope="col" style="width: 100px;">ID</th>
                                     <th scope="col">Name</th>
                                     <th>Map</th>
-                                    <th></th>
+                                    <th style="min-width:90px;"></th>
                                 <tr>
                                 <tr>
                                     <th scope="col">
@@ -37,8 +37,8 @@
                                     <th scope="col">
                                         <input form="category-filter-form" name="name" type="text" class="form-control" value="{{ $request->name }}"/>
                                     </th>
-                                    <th><button form="category-filter-form" type="submit" class="btn btn-primary"> Filter </button></th>
                                     <th></th>
+                                    <th class="text-right"><button form="category-filter-form" type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button></th>
                                 </tr>
                             </thead>
 

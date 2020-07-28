@@ -27,7 +27,7 @@
                                     <th style="width: 100px;">ID</th>
                                     <th>Name</th>
                                     <th>Map</th>
-                                    <th></th>
+                                    <th style="min-width:90px;"></th>
                                 </tr>
                                 <tr>
                                     <th scope="col">
@@ -36,8 +36,8 @@
                                     <th scope="col">
                                         <input form="brand-filter-form" name="name" type="text" class="form-control" value="{{ $request->name }}"/>
                                     </th>
-                                    <th><button form="brand-filter-form" type="submit" class="btn btn-primary"> Filter </button></th>
                                     <th></th>
+                                    <th class="text-right"><button form="brand-filter-form" type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button></th>
                                 </tr>
 
                             </thead>
@@ -49,7 +49,7 @@
                                     <td>{{ $brand->name }}</td>
                                     <td>{{ $brand->mapAsString() }}</td>
                                     <td class="text-right">
-                                        <a href="{{ route('brands.edit', [$brand]) }}" class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="{{ route('brands.edit', [$brand]) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
                                         @if (auth()->user()->isAdmin())
                                             <form method="POST" action="{{ route('brands.destroy', [$brand]) }}" class="d-inline">
                                                 @csrf
