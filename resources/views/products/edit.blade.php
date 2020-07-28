@@ -24,14 +24,13 @@
                             @method('PUT')
                             <div class="row">
                                 <div class="col-md-4">
-                                    <img src="{{$product->media->first()->url}}" class="img-thumbnail img-fluid">
+                                    <img src="{{$product->media->first()->url ?? 'https://via.placeholder.com/250'}}" class="img-thumbnail img-fluid">
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">ID</label>
+                                        <label for="id" class="col-sm-3 col-form-label">ID</label>
                                         <div class="col-sm-5">
-                                            <input type="text" readonly class="form-control-plaintext"
-                                                   value="{{$product->id}}">
+                                            <input type="text" readonly class="form-control-plaintext" id="id" name="id" value="{{$product->id}}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -64,14 +63,13 @@
                                         <label for="manufacturer_id" class="col-sm-3 col-form-label">Manufacturer ID</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="manufacturer_id"
-                                                   value="Партнам">
+                                                   value="-">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="description" class="col-sm-3 col-form-label">Description</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control"
-                                                      id="description">{{$product->description}}</textarea>
+                                            <textarea class="form-control" name="description" form="edit">{{$product->description}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -82,13 +80,23 @@
                                 <div class="col-md-12">
                                     @foreach($product->attributes as $attribute)
                                         <div class="form-group row">
-                                            <label for="attr_1" class="col-sm-2 col-form-label">{{$attribute->name}}</label>
+                                            <label for="{{$attribute->attribute_key}}" class="col-sm-2 col-form-label">{{$attribute->name}}</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="attr_1"
+                                                <input type="text" class="form-control" id="{{$attribute->attribute_key}}" name="attributes[{{$attribute->attribute_key}}]"
                                                        value="{{$attribute->attributeValue->value()}}"/>
                                             </div>
                                         </div>
                                     @endforeach
+                                    @if(count($product->attributes) == 0)
+                                        @foreach(\App\Attribute::where('category_id', $product->category->id)->get() as $attribute)
+                                                <div class="form-group row">
+                                                    <label for="{{$attribute->attribute_key}}" class="col-sm-2 col-form-label">{{$attribute->name}}</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="{{$attribute->attribute_key}}" name="attributes[{{$attribute->attribute_key}}]"/>
+                                                    </div>
+                                                </div>
+                                        @endforeach
+                                    @endif
                                 </div>
                             </div>
                         </form>

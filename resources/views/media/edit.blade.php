@@ -20,9 +20,7 @@
                     <div class="card-body">
                         @include('partials.notifications.success')
                         @include('partials.notifications.errors')
-                        <form method="POST">
-                            @csrf
-                            @method('PUT')
+                        <form>
                             <div class="d-flex flex-wrap">
                                 @foreach($product->media as $media)
                                     <div class="position-relative mx-2 my-2">
@@ -39,8 +37,7 @@
                                 @endforeach
                                     <!--Add new photo button-->
                                     <div class="align-self-center mx-2 my-2">
-                                        <button class="btn btn-lg btn-secondary rounded-circle"><i
-                                                class="fa fa-plus"></i></button>
+                                        <a href="{{route('media.upload', [$product])}}" class="btn btn-lg btn-secondary rounded-circle"><i class="fa fa-plus"></i></a>
                                     </div>
                                     <!--/Add new photo button-->
                             </div>

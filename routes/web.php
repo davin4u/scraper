@@ -44,7 +44,12 @@ Route::middleware(['auth'])->group(function () {
 
     //Media
     Route::resource('media', 'MediaController')->only([
-        'create', 'store', 'edit', 'update', 'destroy'
+        'edit', 'update', 'destroy'
+    ]);
+    Route::get('media/upload/{product}', 'MediaController@upload')->name('media.upload');
+
+    Route::resource('users', 'UsersController')->only([
+        'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
 
     // Routes with admin permissions

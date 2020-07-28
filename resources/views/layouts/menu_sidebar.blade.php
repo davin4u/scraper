@@ -26,6 +26,9 @@
                 <li class="nav-item">
                     <a class="{{ Request::is('scraper-jobs') ? 'active' : '' }} nav-link" href="{{ route('scraper-jobs.index') }}">Scraping jobs</a>
                 </li>
+                <li class="nav-item">
+                    <a class="{{ Request::is('users') ? 'active' : '' }} nav-link" href="{{ route('users.index') }}">Users</a>
+                </li>
             </ul>
         </div>
     </nav>

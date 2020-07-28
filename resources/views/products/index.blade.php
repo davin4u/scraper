@@ -74,11 +74,12 @@
                                     <td>-</td>
                                     <td class="text-right">
                                         <a href="{{route('products.edit', [$product])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                        <form method="POST" hidden action="{{route('products.destroy', [$product])}}" id="delete">
+                                        <form method="POST"  action="{{route('products.destroy', [$product])}}">
                                             @csrf()
                                             @method('DELETE')
+                                            <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>
                                         </form>
-                                        <button class="inline btn btn-sm btn-danger" type="submit" form="delete"><i class="fa fa-trash"></i></button>
+
                                     </td>
                                 </tr>
                             @empty
