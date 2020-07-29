@@ -34,9 +34,6 @@ class ProductsController extends Controller
         $this->products = $products;
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function index()
     {
         $id = $this->request->get('id', null);
@@ -49,7 +46,7 @@ class ProductsController extends Controller
         if (!is_null($id)) {
             $products->where('id', $id);
         }
-//
+
         if (!is_null($category)) {
             $products->where('category_id', $category);
         }
@@ -80,27 +77,38 @@ class ProductsController extends Controller
 
     public function store(Request $request)
     {
+        $repository = new ProductsRepository();
 
+        $repository->createOrUpdate([
+            'name' => $request->name,
+            'category_id' => $request->category_id,
+            'brand_id' => $request->brand_id,
+            'description' => $request->description,
+        ]);
+
+        return redirect(route('products.index'))->with(['status' => 'Product has been created']);
     }
 
-    /**
-     * @param Product $product
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function edit(Product $product)
     {
         return view('products.edit', compact('product'));
     }
 
-    /**
-     * @param Product $product
-     * @param UpdateProductRequest $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
     public function update(Product $product, UpdateProductRequest $request)
     {
-        //
+        $attributes = $request->get('attributes');
+        $repository = new ProductsRepository();
+
+        $repository->createOrUpdate([
+            'id' => $request->id,
+            'name' => $request->name,
+            'category_id' => $request->category_id,
+            'brand_id' => $request->brand_id,
+            'description' => $request->description,
+            'attributes' => $attributes
+        ]);
+
+        return redirect(route('products.index'))->with(['status' => 'Product has been changed']);
     }
 
     public function destroy(Product $product)

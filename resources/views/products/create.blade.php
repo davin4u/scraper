@@ -31,14 +31,14 @@
                                     <div class="form-group row">
                                         <label for="name" class="col-sm-3 col-form-label">Name</label>
                                         <div class="col-sm-7">
-                                            <input type="text" class="form-control" name="name" id="name">
+                                            <input type="text" class="form-control" name="name" id="name" value="{{old('name')}}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="category" class="col-sm-3 col-form-label">Category</label>
                                         <div class="col-sm-5">
                                             <select class="form-control" name="category_id">
-                                                @foreach(\App\Category::find(1)->get() as $category)
+                                                @foreach(\App\Category::all() as $category)
                                                     <option value="{{$category->id}}">{{$category->name}}</option>
                                                 @endforeach
                                             </select>
@@ -48,7 +48,7 @@
                                         <label for="brand" class="col-sm-3 col-form-label">Brand</label>
                                         <div class="col-sm-5">
                                             <select class="form-control" name="brand_id">
-                                                @foreach(\App\Brand::find(1)->get() as $brand)
+                                                @foreach(\App\Brand::all() as $brand)
                                                     <option value="{{$brand->id}}">{{$brand->name}}</option>
                                                 @endforeach
                                             </select>
@@ -63,22 +63,9 @@
                                     <div class="form-group row">
                                         <label for="description" class="col-sm-3 col-form-label">Description</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" id="description"></textarea>
+                                            <textarea class="form-control" name="description" form="store">{{old('description')}}</textarea>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <h4>Attributes</h4>
-                            <hr/>
-                            <div class="row">
-                                <div class="col-md-12">
-                                        <div class="form-group row">
-                                            <label for="attr_1" class="col-sm-2 col-form-label">Key</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="attr_1" value="Value"/>
-                                            </div>
-                                        </div>
                                 </div>
                             </div>
 
