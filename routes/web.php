@@ -49,9 +49,13 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('products/{product}/media/{id}', 'MediaController@destroy')->name('products.media.delete');
 
     //Users
-    Route::resource('users', 'UsersController')->only([
-        'index', 'create', 'store', 'edit', 'update', 'destroy'
-    ]);
+
+    Route::get('users', 'UsersController@index')->name('users.index');
+    Route::get('users/create', 'UsersController@create')->name('users.create');
+    Route::post('users', 'UsersController@store')->name('users.store');
+    Route::get('users/{user}/edit', 'UsersController@edit')->name('users.edit');
+    Route::put('users/{user}', 'UsersController@update')->name('users.update');
+    Route::delete('users/{user}', 'UsersController@destroy')->name('users.destroy');
 
     //Search statistics
     Route::resource('search-statistics', 'SearchStatisticsController')->only([
