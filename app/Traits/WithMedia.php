@@ -25,19 +25,7 @@ trait WithMedia
         if (is_array($url)) {
             $files = MediaUploader::getUrlUploader()->save($url, $this->getSaveToPath());
 
-            if (!empty($files)) {
-                $productMedia = [];
-
-                foreach ($files as $file) {
-                    if ($media = Media::create($file)) {
-                        $productMedia[] = $media->id;
-                    }
-                }
-
-                if (!empty($productMedia)) {
-                    $this->media()->syncWithoutDetaching($productMedia);
-                }
-            }
+            $this->createMedia($files);
 
             return true;
         }
@@ -48,10 +36,21 @@ trait WithMedia
     /**
      * @param Request $request
      * @param string $requestPropertyName
+     * @return bool
      */
     public function saveFilesFromRequest(Request $request, $requestPropertyName = 'files')
     {
+        $allFiles = $request->allFiles();
 
+        if (!empty($allFiles) && isset($allFiles[$requestPropertyName])) {
+            $files = MediaUploader::getFilesUploader()->save($allFiles[$requestPropertyName], $this->getSaveToPath());
+
+            $this->createMedia($files);
+
+            return true;
+        }
+
+        throw new \InvalidArgumentException("No files to save given.");
     }
 
     /**
@@ -105,5 +104,22 @@ trait WithMedia
     private function getModelName()
     {
         return strtolower(collect(explode('\\', static::class))->last());
+    }
+
+    private function createMedia(array $files)
+    {
+        if (!empty($files)) {
+            $productMedia = [];
+
+            foreach ($files as $file) {
+                if ($media = Media::create($file)) {
+                    $productMedia[] = $media->id;
+                }
+            }
+
+            if (!empty($productMedia)) {
+                $this->media()->syncWithoutDetaching($productMedia);
+            }
+        }
     }
 }

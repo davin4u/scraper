@@ -34,6 +34,9 @@ class ProductsController extends Controller
         $this->products = $products;
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $id = $this->request->get('id', null);
@@ -70,16 +73,22 @@ class ProductsController extends Controller
         ]);
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         return view('products.create');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \App\Exceptions\ProductNotFoundException
+     */
     public function store(Request $request)
     {
-        $repository = new ProductsRepository();
-
-        $repository->createOrUpdate([
+        (new ProductsRepository())->createOrUpdate([
             'name' => $request->name,
             'category_id' => $request->category_id,
             'brand_id' => $request->brand_id,
@@ -89,17 +98,26 @@ class ProductsController extends Controller
         return redirect(route('products.index'))->with(['status' => 'Product has been created']);
     }
 
+    /**
+     * @param Product $product
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(Product $product)
     {
         return view('products.edit', compact('product'));
     }
 
+    /**
+     * @param Product $product
+     * @param UpdateProductRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \App\Exceptions\ProductNotFoundException
+     */
     public function update(Product $product, UpdateProductRequest $request)
     {
         $attributes = $request->get('attributes');
-        $repository = new ProductsRepository();
 
-        $repository->createOrUpdate([
+        (new ProductsRepository())->createOrUpdate([
             'id' => $request->id,
             'name' => $request->name,
             'category_id' => $request->category_id,
@@ -111,6 +129,11 @@ class ProductsController extends Controller
         return redirect(route('products.index'))->with(['status' => 'Product has been changed']);
     }
 
+    /**
+     * @param Product $product
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
+     */
     public function destroy(Product $product)
     {
         $product->delete();

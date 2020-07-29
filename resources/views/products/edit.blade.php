@@ -10,7 +10,7 @@
                             <div class="align-self-center flex-grow-1">Edit product | #{{$product->id}} {{$product->name}}</div>
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.index')}}" class="btn btn-danger">Cancel</a>
-                                <a href="{{route('media.edit', [$product])}}" class="btn btn-primary"><i class="fa fa-image"></i> Manage media</a>
+                                <a href="{{route('products.media.index', [$product])}}" class="btn btn-primary"><i class="fa fa-image"></i> Manage media</a>
                                 <a href="" class="btn btn-primary"><i class="fa fa-comments"></i> Reviews</a>
                                 <button form="edit" type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
                             </div>

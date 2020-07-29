@@ -42,12 +42,13 @@ Route::middleware(['auth'])->group(function () {
         'index', 'create', 'store', 'edit', 'update'
     ]);
 
-    //Media
-    Route::resource('media', 'MediaController')->only([
-        'edit', 'update', 'destroy'
-    ]);
-    Route::get('media/upload/{product}', 'MediaController@upload')->name('media.upload');
+    //Products Media
+    Route::get('products/{product}/media', 'MediaController@index')->name('products.media.index');
+    Route::get('products/{product}/media/upload', 'MediaController@upload')->name('products.media.upload');
+    Route::post('products/{product}/media', 'MediaController@store')->name('products.media.store');
+    Route::delete('products/{product}/media/{id}', 'MediaController@destroy')->name('products.media.delete');
 
+    //Users
     Route::resource('users', 'UsersController')->only([
         'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
