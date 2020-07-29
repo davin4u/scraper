@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -44,7 +46,7 @@ class UsersController extends Controller
         return view('users.create');
     }
 
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
         User::create([
             'name' => $request->get('name'),
@@ -60,7 +62,7 @@ class UsersController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(User $user, Request $request)
+    public function update(User $user, UserUpdateRequest $request)
     {
         $user->update([
             'name' => $request->get('name'),

@@ -48,9 +48,13 @@ Route::middleware(['auth'])->group(function () {
     ]);
     Route::get('media/upload/{product}', 'MediaController@upload')->name('media.upload');
 
-    Route::resource('users', 'UsersController')->only([
-        'index', 'create', 'store', 'edit', 'update', 'destroy'
-    ]);
+    //Users
+    Route::get('/users', 'UsersController@index')->name('users.index');
+    Route::get('/users/create', 'UsersController@create')->name('users.create');
+    Route::post('/users', 'UsersController@store')->name('users.store');
+    Route::get('/users/{user}/edit', 'UsersController@edit')->name('users.edit');
+    Route::put('/users/{user}', 'UsersController@update')->name('users.update');
+    Route::delete('/users/{user}', 'UsersController@destroy')->name('users.destroy');
 
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {
