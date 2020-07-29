@@ -53,9 +53,15 @@ Route::middleware(['auth'])->group(function () {
         'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
 
+    //Search statistics
+    Route::resource('search-statistics', 'SearchStatisticsController')->only([
+        'index', 'create', 'store', 'edit','update'
+    ]);
+
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {
         Route::resource('categories', 'CategoriesController')->only(['destroy']);
         Route::resource('brands', 'BrandsController')->only(['destroy']);
+        Route::resource('search-statistics', 'SearchStatisticsController')->only(['destroy']);
     });
 });
