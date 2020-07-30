@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductReviewUpdateRequest;
 use App\Product;
 use App\ProductReview;
+use App\ReviewAuthor;
 use Carbon\Carbon;
 
 class ProductReviewsController extends Controller
@@ -35,7 +36,8 @@ class ProductReviewsController extends Controller
      */
     public function edit(Product $product, ProductReview $productReview)
     {
-        return view('reviews.edit', compact('product', 'productReview'));
+        $reviewAuthor = ReviewAuthor::where('id', $productReview->author_id)->first();
+        return view('reviews.edit', compact('product', 'productReview', 'reviewAuthor'));
     }
 
     /**

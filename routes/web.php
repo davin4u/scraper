@@ -55,6 +55,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('products/{product}/reviews/{productReview}', 'ProductReviewsController@update')->name('products.reviews.update');
     Route::delete('products/{product}/reviews/{productReview}', 'ProductReviewsController@destroy')->name('products.reviews.destroy');
 
+    //Authors
+    Route::get('authors', 'ReviewAuthorsController@index')->name('authors.index');
+    Route::get('authors/{reviewAuthor}/edit', 'ReviewAuthorsController@edit')->name('authors.edit');
+    Route::put('authors/{reviewAuthor}', 'ReviewAuthorsController@update')->name('authors.update');
+    Route::delete('authors/{reviewAuthor}', 'ReviewAuthorsController@destroy')->name('authors.destroy');
+
     //Users
     Route::get('users', 'UsersController@index')->name('users.index');
     Route::get('users/create', 'UsersController@create')->name('users.create');

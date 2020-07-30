@@ -23,7 +23,7 @@
                             <div class="form-group row">
                                 <label for="author" class="col-sm-3 col-form-label">Автор</label>
                                 <div class="col-sm-7">
-                                    <a href="" class="form-control btn btn-outline-secondary">Mr. John Doe</a>
+                                    <a href="{{route('authors.edit', [$reviewAuthor])}}" class="form-control btn btn-outline-secondary">{{$reviewAuthor->name}}</a>
                                 </div>
                             </div>
                             <div class="form-group row">
