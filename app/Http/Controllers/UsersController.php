@@ -9,13 +9,23 @@ use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+    /**
+     * @var Request
+     */
     protected $request;
 
+    /**
+     * UsersController constructor.
+     * @param Request $request
+     */
     public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $id = $this->request->get('id', null);
@@ -41,11 +51,18 @@ class UsersController extends Controller
         return view('users.index', compact('users'));
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         return view('users.create');
     }
 
+    /**
+     * @param UserStoreRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function store(UserStoreRequest $request)
     {
         User::create([
@@ -57,11 +74,20 @@ class UsersController extends Controller
         return redirect(route('users.index'))->with(['status' => 'User has been created']);
     }
 
+    /**
+     * @param User $user
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(User $user)
     {
         return view('users.edit', compact('user'));
     }
 
+    /**
+     * @param User $user
+     * @param UserUpdateRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function update(User $user, UserUpdateRequest $request)
     {
         $user->update([
@@ -72,6 +98,11 @@ class UsersController extends Controller
         return redirect(route('users.index'))->with(['status' => 'User has been changed']);
     }
 
+    /**
+     * @param User $user
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
+     */
     public function destroy(User $user)
     {
         $user->delete();

@@ -75,7 +75,7 @@
                                     <td class="text-right">
                                         <a href="{{route('products.edit', [$product])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
                                         <form method="POST"  action="{{route('products.destroy', [$product])}}">
-                                            @csrf()
+                                            @csrf
                                             @method('DELETE')
                                             <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>
                                         </form>

@@ -48,8 +48,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('products/{product}/media', 'MediaController@store')->name('products.media.store');
     Route::delete('products/{product}/media/{id}', 'MediaController@destroy')->name('products.media.delete');
 
-    //Users
+    //Products Reviews
+    Route::get('reviews', 'ProductReviewsController@index')->name('products.reviews.index');
+    Route::get('products/{product}/reviews', 'ProductReviewsController@show')->name('products.reviews.show');
+    Route::get('products/{product}/reviews/{productReview}/edit','ProductReviewsController@edit')->name('products.reviews.edit');
+    Route::put('products/{product}/reviews/{productReview}', 'ProductReviewsController@update')->name('products.reviews.update');
+    Route::delete('products/{product}/reviews/{productReview}', 'ProductReviewsController@destroy')->name('products.reviews.destroy');
 
+    //Users
     Route::get('users', 'UsersController@index')->name('users.index');
     Route::get('users/create', 'UsersController@create')->name('users.create');
     Route::post('users', 'UsersController@store')->name('users.store');
