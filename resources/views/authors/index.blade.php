@@ -26,13 +26,13 @@
 
                             <tr>
                                 <th scope="col">
-                                    <input type="text" name="id" form="filters" class="form-control"/>
+                                    <input type="text" value="{{request('id', old('id'))}}" name="id" form="filters" class="form-control"/>
                                 </th>
                                 <th scope="col">
-                                    <input type="text" name="name" form="filters" class="form-control"/>
+                                    <input type="text" value="{{request('name', old('name'))}}" name="name" form="filters" class="form-control"/>
                                 </th>
                                 <th scope="col">
-                                    <input type="text" name="platform" form="filters" class="form-control"/>
+                                    <input type="text" value="{{request('platform', old('platform'))}}" name="platform" form="filters" class="form-control"/>
                                 </th>
                                 <th scope="col">
                                     <button class="btn btn-primary" type="submit" form="filters"><i class="fa fa-search"></i></button>
@@ -62,6 +62,9 @@
                             @endforelse
                             </tbody>
                         </table>
+                        @if(!empty($reviewAuthors))
+                            {{$reviewAuthors->render()}}
+                        @endif
                     </div>
                 </div>
             </div>

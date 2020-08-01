@@ -7,6 +7,7 @@ use App\Product;
 use App\ProductReview;
 use App\ReviewAuthor;
 use Carbon\Carbon;
+use App\Repositories\ReviewsRepository;
 
 class ProductReviewsController extends Controller
 {
@@ -15,7 +16,9 @@ class ProductReviewsController extends Controller
      */
     public function index()
     {
-        return view('reviews.index', ['productReviews' => ProductReview::orderBy('created_at', 'desc')->paginate(30)]);
+        $productReviews = ProductReview::orderBy('created_at', 'desc')->paginate(30);
+
+        return view('reviews.index', compact('productReviews'));
     }
 
     /**
@@ -37,6 +40,7 @@ class ProductReviewsController extends Controller
     public function edit(Product $product, ProductReview $productReview)
     {
         $reviewAuthor = ReviewAuthor::where('id', $productReview->author_id)->first();
+
         return view('reviews.edit', compact('product', 'productReview', 'reviewAuthor'));
     }
 
@@ -48,7 +52,10 @@ class ProductReviewsController extends Controller
      */
     public function update(Product $product, ProductReview $productReview, ProductReviewUpdateRequest $request)
     {
-        $productReview->update([
+        (new ReviewsRepository())->createOrUpdate([
+            'id' => $productReview->id,
+            'author_id' => $productReview->author_id,
+            'published_at' => Carbon::parse($productReview->author_id)->toDate(),
             'title' => $request->get('title'),
             'url' => $request->get('url'),
             'pros' => $request->get('pros'),

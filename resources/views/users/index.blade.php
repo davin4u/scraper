@@ -30,13 +30,13 @@
 
                             <tr>
                                 <th scope="col">
-                                    <input type="text" name="id" form="filters" class="form-control"/>
+                                    <input type="text" value="{{request('id', old('id'))}}" name="id" form="filters" class="form-control"/>
                                 </th>
                                 <th scope="col">
-                                    <input type="text" name="name" form="filters" class="form-control"/>
+                                    <input type="text" value="{{request('name', old('name'))}}" name="name" form="filters" class="form-control"/>
                                 </th>
                                 <th scope="col">
-                                    <input type="text" name="email" form="filters" class="form-control"/>
+                                    <input type="text" value="{{request('email', old('email'))}}" name="email" form="filters" class="form-control"/>
                                 </th>
                                 <th scope="col">
                                     <button class="btn btn-primary" type="submit" form="filters"><i class="fa fa-search"></i></button>
@@ -53,7 +53,7 @@
                                     <td class="text-right">
                                         <a href="{{route('users.edit', [$user])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
                                         <form method="POST" action="{{route('users.destroy', [$user])}}">
-                                            @csrf()
+                                            @csrf
                                             @method('DELETE')
                                             <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>
                                         </form>
@@ -66,6 +66,9 @@
                             @endforelse
                             </tbody>
                         </table>
+                        @if(!empty($users))
+                            {{$users->render()}}
+                        @endif
                     </div>
                 </div>
             </div>

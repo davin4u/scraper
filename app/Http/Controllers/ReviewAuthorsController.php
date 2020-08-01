@@ -31,21 +31,28 @@ class ReviewAuthorsController extends Controller
         $name = $this->request->get('name', null);
         $platform = $this->request->get('platform', null);
 
-        $reviewAuthors = ReviewAuthor::all();
+        $reviewAuthors = ReviewAuthor::query()->orderBy('id');
 
         if (!is_null($id)) {
-            $reviewAuthors = $reviewAuthors->where('id', $id);
+            $reviewAuthors->where('id', $id);
         }
 
         if (!is_null($name)) {
-            $reviewAuthors = $reviewAuthors->where('name', 'like', "%{$name}%");
+            $reviewAuthors->where('name', 'like', "%{$name}%");
         }
 
         if (!is_null($platform)) {
-            $reviewAuthors = $reviewAuthors->where('platform', 'like', "%{$platform}%");
+            $reviewAuthors->where('platform', 'like', "%{$platform}%");
         };
 
-        return view('authors.index', compact('reviewAuthors'));
+        $reviewAuthors = $reviewAuthors->paginate(30);
+
+        return view('authors.index')->with([
+            'reviewAuthors' => $reviewAuthors->appends(\request()->except('page')),
+            'id' => $id,
+            'name' => $name,
+            'platform' => $platform
+        ]);
     }
 
     /**

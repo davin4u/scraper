@@ -32,23 +32,28 @@ class UsersController extends Controller
         $name = $this->request->get('name', null);
         $email = $this->request->get('email', null);
 
-        $users = User::find(1);
+        $users = User::query()->orderBy('id');
 
         if (!is_null($id)) {
-            $users = $users->where('id', $id);
+            $users->where('id', $id);
         }
 
         if (!is_null($name)) {
-            $users = $users->where('name', 'like', "%{$name}%");
+            $users->where('name', 'like', "%{$name}%");
         }
 
         if (!is_null($email)) {
-            $users = $users->where('email', 'like', "%{$email}%");
+            $users->where('email', 'like', "%{$email}%");
         }
 
-        $users = $users->get();
+        $users = $users->paginate(30);
 
-        return view('users.index', compact('users'));
+        return view('users.index')->with([
+            'users' => $users->appends(\request()->except('page')),
+            'id' => $id,
+            'name' => $name,
+            'email' => $email
+        ]);
     }
 
     /**
