@@ -8,12 +8,26 @@
                     <div class="card-header">
                         <div class="d-flex">
                             <div class="align-self-center flex-grow-1">Edit product | #{{$product->id}} {{$product->name}}</div>
+
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.index')}}" class="btn btn-danger">Cancel</a>
-                                <a href="{{route('products.media.index', [$product])}}" class="btn btn-primary"><i class="fa fa-image"></i> Manage media</a>
-                                <a href="" class="btn btn-primary"><i class="fa fa-comments"></i> Reviews</a>
-                                <button form="edit" type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
+                                <button form="edit" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
+
+                            <div class="dropdown show ml-1">
+                                <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Action
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+
+                                    <a href="{{route('products.media.index', [$product])}}" class="dropdown-item">Manage media</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="" class="dropdown-item"> Reviews</a>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                     <div class="card-body">

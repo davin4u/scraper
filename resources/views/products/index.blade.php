@@ -27,7 +27,7 @@
                                 <th scope="col">Category</th>
                                 <th scope="col">Brand</th>
                                 <th scope="col">Manufacturer ID</th>
-                                <th scope="col" style="width: 120px;"></th>
+                                <th scope="col" style="min-width:90px;"></th>
                             </tr>
 
                             <tr>
@@ -74,7 +74,7 @@
                                     <td>-</td>
                                     <td class="text-right">
                                         <a href="{{route('products.edit', [$product])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                        <form method="POST"  action="{{route('products.destroy', [$product])}}">
+                                        <form method="POST"  action="{{route('products.destroy', [$product])}}" class="d-inline">
                                             @csrf()
                                             @method('DELETE')
                                             <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>
