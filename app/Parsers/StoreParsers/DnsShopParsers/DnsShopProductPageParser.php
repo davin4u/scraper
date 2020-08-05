@@ -272,4 +272,100 @@ class DnsShopProductPageParser extends ProductExtractor implements ParserInterfa
     {
         // TODO: Implement getCurrency() method.
     }
+
+    /**
+     * @return int
+     */
+    public function getStoreId(): int
+    {
+        // TODO: Implement getStoreId() method.
+    }
+
+    /**
+     * @return float
+     */
+    public function getOldPrice(): float
+    {
+        // TODO: Implement getOldPrice() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getSku(): string
+    {
+        // TODO: Implement getSku() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsAvailable(): bool
+    {
+        // TODO: Implement getIsAvailable() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeliveryText(): string
+    {
+        // TODO: Implement getDeliveryText() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeliveryDays(): string
+    {
+        // TODO: Implement getDeliveryDays() method.
+    }
+
+    /**
+     * @return float
+     */
+    public function getDeliveryPrice(): float
+    {
+        // TODO: Implement getDeliveryPrice() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getBenefits(): string
+    {
+        // TODO: Implement getBenefits() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getMetaTitle(): string
+    {
+        // TODO: Implement getMetaTitle() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getMetaDescription(): string
+    {
+        // TODO: Implement getMetaDescription() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getMetaKeywords(): string
+    {
+        // TODO: Implement getMetaKeywords() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        // TODO: Implement getUrl() method.
+    }
 }

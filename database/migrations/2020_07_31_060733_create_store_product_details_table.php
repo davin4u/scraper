@@ -18,9 +18,11 @@ class CreateStoreProductDetailsTable extends Migration
             $table->bigInteger('store_product_id')->index();
 
             $table->string('name');
+            $table->string('url');
             $table->string('sku')->nullable();
             $table->float('price')->nullable();
             $table->float('old_price')->nullable();
+            $table->string('currency')->nullable();
             $table->tinyInteger('is_available')->default(0);
 
             $table->string('delivery_text')->nullable();

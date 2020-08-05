@@ -4,7 +4,12 @@ namespace App\Parsers\StoreParsers\NotikParsers;
 
 use App\Crawler\Extractors\ProductExtractor;
 use App\Crawler\Document;
+use App\Domain;
+use App\Exceptions\DomainNotFoundException;
+use App\Exceptions\StoreNotFoundException;
 use App\Parsers\ParserInterface;
+use App\Store;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class NotikProductPageParser
@@ -16,6 +21,11 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      * @var string
      */
     protected static $domain = 'www.notik.ru';
+
+    /**
+     * @var int
+     */
+    protected static $storeId;
 
     /**
      * @param Document $document
@@ -139,7 +149,13 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getPrice(): float
     {
-        // TODO: Implement getPrice() method.
+        $price = $this->content->filter('span.product-price')->first();
+
+        if ($price) {
+            return (float)preg_replace('/[^0-9]/', '', $this->clear($price->text()));
+        }
+
+        throw new \InvalidArgumentException("Can't recognize a price.");
     }
 
     /**
@@ -147,6 +163,146 @@ class NotikProductPageParser extends ProductExtractor implements ParserInterface
      */
     public function getCurrency(): string
     {
-        // TODO: Implement getCurrency() method.
+        return 'RUB';
+    }
+
+    /**
+     * @return int
+     * @throws DomainNotFoundException
+     * @throws StoreNotFoundException
+     */
+    public function getStoreId(): int
+    {
+        if (!static::$storeId) {
+            $domain = Domain::where('name', static::$domain)->first();
+
+            if (!$domain) {
+                throw new DomainNotFoundException("Domain {$domain} not found.");
+            }
+
+            $store = Store::where('domain_id', $domain->id)->first();
+
+            if (!$store) {
+                throw new StoreNotFoundException("Store not found.");
+            }
+
+            static::$storeId = $store->id;
+        }
+
+        return static::$storeId;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOldPrice(): float
+    {
+        return 0.0;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSku(): string
+    {
+        $sku = $this->content->filter('div.artBox')->first();
+
+        if ($sku) {
+            return preg_replace('/[^0-9]/', '', $this->clear($sku->text()));
+        }
+
+        throw new \InvalidArgumentException("Can't recognize SKU.");
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsAvailable(): bool
+    {
+        return $this->content->filter('div.inSight')->count() > 0;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeliveryText(): string
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeliveryDays(): string
+    {
+        return '';
+    }
+
+    /**
+     * @return float
+     */
+    public function getDeliveryPrice(): float
+    {
+        return 0.0;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBenefits(): string
+    {
+        $benefits = [];
+
+        if ($this->content->filter('div.priceCartBoxUnder > div')->count() > 0) {
+            $this->content->filter('div.priceCartBoxUnder > div')->each(function (Crawler $div) use (&$benefits) {
+                $divContent = $div->html();
+
+                if (strpos($divContent, "Получите") !== false) {
+                    $bonus = $div->filter('b')->first();
+
+                    if ($bonus) {
+                        $benefits['bonus'] = (int)$bonus->html();
+                    }
+                }
+
+                if (strpos($divContent, "delivery-today-icon-prodcard") !== false) {
+                    $benefits['delivery_today'] = true;
+                }
+            });
+        }
+
+        return json_encode($benefits);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMetaTitle(): string
+    {
+        return $this->content->filter('title')->first()->text();
+    }
+
+    /**
+     * @return string
+     */
+    public function getMetaDescription(): string
+    {
+        return $this->content->filter('meta[name="description"]')->first()->attr('content');
+    }
+
+    /**
+     * @return string
+     */
+    public function getMetaKeywords(): string
+    {
+        return $this->content->filter('meta[name="keywords"]')->first()->attr('content');
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->content->filter('link[rel="canonical"]')->first()->attr('href');
     }
 }

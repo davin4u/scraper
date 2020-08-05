@@ -13,7 +13,15 @@ class StoreLocation extends Model
     /**
      * @var array
      */
-    protected $fillable = ['store_id', 'latitude', 'longitude', 'location_name', 'location_description'];
+    protected $fillable = [
+        'store_id',
+        'latitude',
+        'longitude',
+        'location_name',
+        'address',
+        'phone',
+        'location_description'
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

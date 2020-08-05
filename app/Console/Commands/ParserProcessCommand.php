@@ -17,10 +17,21 @@ class ParserProcessCommand extends Command
 {
     /**
      * The name and signature of the console command.
+     * --domain - process only html documents of given domain
+     *
+     * --date - process only html documents for given date
+     *
+     * --collect-links - is used for category scraping,
+     *   if set it creates scraping jobs for category products,
+     *   if not, products data will be collected and products will be created
+     *
+     * --init - we use it to determine if that is "initial" parsing
+     *   if so, for processed documents we create entities in our products database
+     *   if it is not set, we create/update StoreProducts
      *
      * @var string
      */
-    protected $signature = 'parser:process {--domain=} {--date=} {--collect-links}';
+    protected $signature = 'parser:process {--domain=} {--date=} {--collect-links} {--init}';
 
     /**
      * The console command description.
@@ -82,8 +93,18 @@ class ParserProcessCommand extends Command
                 /** @var ParserInterface $parser */
                 $parser = (new ParserFactory)->get($document);
 
+                $options = [];
+
                 if ($this->option('collect-links')) {
-                    $parser->setOptions(['collect-links']);
+                    $options[] = 'collect-links';
+                }
+
+                if ($this->option('init')) {
+                    $options[] = 'init';
+                }
+
+                if (!empty($options)) {
+                    $parser->setOptions($options);
                 }
 
                 $parser->handle();

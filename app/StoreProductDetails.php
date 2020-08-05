@@ -16,9 +16,11 @@ class StoreProductDetails extends Model
     protected $fillable = [
         'store_product_id',
         'name',
+        'url',
         'sku',
         'price',
         'old_price',
+        'currency',
         'is_available',
 
         /* delivery information */

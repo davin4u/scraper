@@ -18,8 +18,6 @@ class CreateStoreProductsTable extends Migration
             $table->bigInteger('store_id')->index();
             $table->bigInteger('product_id')->index();
 
-            $table->unique(['store_id', 'product_id']);
-
             $table->timestamps();
         });
     }

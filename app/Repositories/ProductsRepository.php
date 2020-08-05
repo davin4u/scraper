@@ -65,8 +65,12 @@ class ProductsRepository
      */
     private function validate(array $data)
     {
-        if (empty($data['name']) || empty($data['category_id'])) {
-            return false;
+        if (empty($data['name'])) {
+            throw new \InvalidArgumentException("Property name is required.");
+        }
+
+        if (empty($data['category_id'])) {
+            throw new \InvalidArgumentException("Property category_id is required.");
         }
 
         return [

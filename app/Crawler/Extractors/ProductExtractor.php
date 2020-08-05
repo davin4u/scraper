@@ -10,6 +10,7 @@ use App\Crawler\Matchers\SimpleAttributeMatcher;
 use App\Crawler\Matchers\SimpleBrandMatcher;
 use App\Crawler\Matchers\SimpleCategoryMatcher;
 use App\Repositories\ProductsRepository;
+use App\Repositories\StoreProductsRepository;
 
 /**
  * Class ProductExtractor
@@ -38,6 +39,11 @@ abstract class ProductExtractor extends Extractor
     private $products;
 
     /**
+     * @var StoreProductsRepository
+     */
+    private $storeProducts;
+
+    /**
      * ProductExtractor constructor.
      * @param string $content
      */
@@ -52,6 +58,8 @@ abstract class ProductExtractor extends Extractor
         $this->attributeMatcher = $this->getAttributeMatcher();
 
         $this->products = new ProductsRepository();
+
+        $this->storeProducts = new StoreProductsRepository();
     }
 
     /**
@@ -122,6 +130,11 @@ abstract class ProductExtractor extends Extractor
     /**
      * @return string
      */
+    abstract public function getUrl(): string;
+
+    /**
+     * @return string
+     */
     abstract public function getName(): string;
 
     /**
@@ -150,9 +163,19 @@ abstract class ProductExtractor extends Extractor
     abstract public function getAttributes(): array;
 
     /**
+     * @return int
+     */
+    abstract public function getStoreId(): int;
+
+    /**
      * @return float
      */
     abstract public function getPrice(): float;
+
+    /**
+     * @return float
+     */
+    abstract public function getOldPrice(): float;
 
     /**
      * @return string
@@ -160,23 +183,62 @@ abstract class ProductExtractor extends Extractor
     abstract public function getCurrency(): string;
 
     /**
+     * @return string
+     */
+    abstract public function getSku(): string;
+
+    /**
+     * @return bool
+     */
+    abstract public function getIsAvailable(): bool;
+
+    /**
+     * @return string
+     */
+    abstract public function getDeliveryText(): string;
+
+    /**
+     * @return string
+     */
+    abstract public function getDeliveryDays(): string;
+
+    /**
+     * @return float
+     */
+    abstract public function getDeliveryPrice(): float;
+
+    /**
+     * @return string
+     */
+    abstract public function getBenefits(): string;
+
+    /**
+     * @return string
+     */
+    abstract public function getMetaTitle(): string;
+
+    /**
+     * @return string
+     */
+    abstract public function getMetaDescription(): string;
+
+    /**
+     * @return string
+     */
+    abstract public function getMetaKeywords(): string;
+
+    /**
      * @throws CrawlerValidationException
      * @throws \App\Exceptions\ProductNotFoundException
      */
     public function handle()
     {
-        $categoryId = (int)$this->matchCategory($this->clear($this->getCategoryName()));
-
-        $this->products->createOrUpdate($this->validate([
-            'name' => $this->clear($this->getName()),
-            'brand_id' => $this->matchBrand($this->clear($this->getBrandName())),
-            'category_id' => $categoryId,
-            'description' => $this->clear($this->getDescription()),
-            'photos' => $this->getPhotos(),
-            //'price' => $this->getPrice(),
-            //'currency' => $this->clear($this->getCurrency()),
-            'attributes' => $this->matchAttributes($this->getAttributes(), $categoryId)
-        ]));
+        if ($this->withOption('init')) {
+            $this->handleInitialParsing();
+        }
+        else {
+            $this->handleRegularParsing();
+        }
     }
 
     /**
@@ -209,5 +271,77 @@ abstract class ProductExtractor extends Extractor
         }
 
         return $data;
+    }
+
+    /**
+     * @throws CrawlerValidationException
+     * @throws \App\Exceptions\ProductNotFoundException
+     */
+    private function handleInitialParsing()
+    {
+        $this->products->createOrUpdate(
+            $this->validate(
+                $this->getProductInitialData()
+            )
+        );
+    }
+
+    /**
+     * @throws CrawlerValidationException
+     * @throws \App\Exceptions\ProductNotFoundException
+     */
+    private function handleRegularParsing()
+    {
+        $this->storeProducts->createOrUpdate(
+            $this->validate(
+                $this->getProductRegularData()
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getProductInitialData()
+    {
+        $categoryId = (int)$this->matchCategory($this->clear($this->getCategoryName()));
+
+        return [
+            'name' => $this->clear($this->getName()),
+            'brand_id' => $this->matchBrand($this->clear($this->getBrandName())),
+            'category_id' => $categoryId,
+            'description' => $this->clear($this->getDescription()),
+            'photos' => $this->getPhotos(),
+            'attributes' => $this->matchAttributes($this->getAttributes(), $categoryId)
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getProductRegularData()
+    {
+        $categoryId = (int)$this->matchCategory($this->clear($this->getCategoryName()));
+
+        return [
+            'store_id' => $this->getStoreId(),
+            'url' => $this->getUrl(),
+            'sku' => $this->clear($this->getSku()),
+            'name' => $this->clear($this->getName()),
+            'brand_id' => $this->matchBrand($this->clear($this->getBrandName())),
+            'category_id' => $categoryId,
+            'description' => $this->clear($this->getDescription()),
+            'price' => $this->getPrice(),
+            'old_price' => $this->getOldPrice(),
+            'currency' => $this->clear($this->getCurrency()),
+            'is_available' => $this->getIsAvailable(),
+            'delivery_text' => $this->clear($this->getDeliveryText()),
+            'delivery_days' => $this->clear($this->getDeliveryDays()),
+            'delivery_price' => $this->getDeliveryPrice(),
+            'benefits' => $this->clear($this->getBenefits()),
+            'meta_title' => $this->clear($this->getMetaTitle()),
+            'meta_description' => $this->clear($this->getMetaDescription()),
+            'meta_keywords' => $this->clear($this->getMetaKeywords())
+        ];
     }
 }

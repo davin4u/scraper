@@ -30,4 +30,30 @@ class StoreProduct extends Model
     {
         return $this->hasMany(StoreProductDetails::class);
     }
+
+    /**
+     * @param array $data
+     */
+    public function updateDetails(array $data): void
+    {
+        $details = $this->details()->orderByDesc('created_at')->first();
+
+        if (is_null($details)) {
+            $this->details()->create($data);
+
+            return;
+        }
+
+        foreach ($data as $prop => $value) {
+            if ($prop === 'description') {
+                continue;
+            }
+
+            if ($details->{$prop} !== $value) {
+                $this->details()->create($data);
+
+                return;
+            }
+        }
+    }
 }

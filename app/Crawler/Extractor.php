@@ -14,9 +14,9 @@ class Extractor
     protected $content;
 
     /**
-     * @var
+     * @var array
      */
-    protected $options;
+    protected $options = [];
 
     /**
      * Extractor constructor.
@@ -44,7 +44,7 @@ class Extractor
      */
     protected function withOption($option): bool
     {
-        return in_array($this->options, $option);
+        return in_array($option, $this->options);
     }
 
     /**
@@ -57,6 +57,6 @@ class Extractor
             return $value;
         }
 
-        return trim(strip_tags($value));
+        return trim(strip_tags(html_entity_decode($value)));
     }
 }
