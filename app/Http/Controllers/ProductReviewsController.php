@@ -37,11 +37,11 @@ class ProductReviewsController extends Controller
      * @param ProductReview $productReview
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Product $product, ProductReview $productReview)
+    public function edit(ProductReview $productReview)
     {
         $reviewAuthor = ReviewAuthor::where('id', $productReview->author_id)->first();
 
-        return view('reviews.edit', compact('product', 'productReview', 'reviewAuthor'));
+        return view('reviews.edit', compact('productReview', 'reviewAuthor'));
     }
 
     /**
@@ -50,7 +50,7 @@ class ProductReviewsController extends Controller
      * @param ProductReviewUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update(Product $product, ProductReview $productReview, ProductReviewUpdateRequest $request)
+    public function update(ProductReview $productReview, ProductReviewUpdateRequest $request)
     {
         (new ReviewsRepository())->createOrUpdate([
             'id' => $productReview->id,
@@ -76,7 +76,7 @@ class ProductReviewsController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Exception
      */
-    public function destroy(Product $product, ProductReview $productReview)
+    public function destroy(ProductReview $productReview)
     {
         $productReview->delete();
 

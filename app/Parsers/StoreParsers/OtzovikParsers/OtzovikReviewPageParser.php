@@ -53,7 +53,7 @@ class OtzovikReviewPageParser extends ReviewExtractor implements ParserInterface
      */
     public function getTitle(): string
     {
-        return $this->content->filter('h1')->first()->text();
+        return $this->clear(explode(':', $this->content->filter('h1')->first()->text())[1]);
     }
 
     /**
@@ -165,7 +165,7 @@ class OtzovikReviewPageParser extends ReviewExtractor implements ParserInterface
      */
     public function getReviewAuthorProfileUrl(): string
     {
-        return static::$domain . $this->content->filter('a.user-login')->extract(['href'])[0];
+        return 'https://' . static::$domain . $this->content->filter('a.user-login')->extract(['href'])[0];
     }
 
     /**
@@ -184,5 +184,26 @@ class OtzovikReviewPageParser extends ReviewExtractor implements ParserInterface
         }
 
         return $ratings;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReviewAuthorData(): array
+    {
+        $location = $this->content->filter('div.user-location')->text();
+        $country = explode(',', $location)[0];
+        $city = $this->clear(explode(',', $location)[1]);
+        $name = $this->getReviewAuthorName();
+        $rating = $this->content->filter('div.karma.karma1')->text();
+        $total_reviews = $this->content->filter('a.reviews-counter')->text();
+
+        return [
+            'country' => $country,
+            'city' => $city,
+            'name' => $name,
+            'rating' => $rating,
+            'total_reviews' => $total_reviews
+        ];
     }
 }

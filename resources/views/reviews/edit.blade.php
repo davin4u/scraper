@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Edit review #{{$productReview->id}} | {{$product->name}}</div>
+                            <div class="align-self-center flex-grow-1">Edit review #{{$productReview->id}} | {{$productReview->title}}</div>
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.reviews.index')}}" class="btn btn-danger ">Cancel</a>
                                 <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
@@ -17,7 +17,7 @@
                     <div class="card-body">
                         @include('partials.notifications.success')
                         @include('partials.notifications.errors')
-                        <form method="POST" action="{{route('products.reviews.update', [$product, $productReview])}}" id="store">
+                        <form method="POST" action="{{route('products.reviews.update', [$productReview])}}" id="store">
                             @csrf
                             @method('PUT')
                             <div class="form-group row">

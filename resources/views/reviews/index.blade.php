@@ -22,8 +22,8 @@
                                             [{{$review->rating}}] {{$review->title}}
                                         </div>
                                         <div class="align-self-center text-right">
-                                            <a href="{{route('products.reviews.edit', [$review->product_id, $review])}}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                            <form method="POST"  action="{{route('products.reviews.destroy', [$review->product_id, $review])}}">
+                                            <a href="{{route('products.reviews.edit', [$review])}}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                                            <form method="POST"  action="{{route('products.reviews.destroy', [$review])}}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>

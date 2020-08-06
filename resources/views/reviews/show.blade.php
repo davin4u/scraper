@@ -22,7 +22,7 @@
                                                 [{{$review->rating}}] {{$review->title}}
                                             </div>
                                             <div class="align-self-center text-right">
-                                                <a href="{{route('products.reviews.edit', [$product, $review])}}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                                                <a href="{{route('products.reviews.edit', [$review])}}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
                                                 <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                             </div>
                                         </div>

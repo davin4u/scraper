@@ -39,6 +39,12 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="total_reviews" class="col-sm-3 col-form-label">Всего обзоров</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" id="total_reviews" name="total_reviews" value="{{old('total_reviews', $reviewAuthor->total_reviews)}}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="profile_url" class="col-sm-3 col-form-label">Ссылка на профиль</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control" id="profile_url" name="profile_url" value="{{old('profile_url', $reviewAuthor->profile_url)}}">

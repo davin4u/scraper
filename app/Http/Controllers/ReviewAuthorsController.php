@@ -75,6 +75,7 @@ class ReviewAuthorsController extends Controller
             'name' => $request->get('name'),
             'platform' => $request->get('platform'),
             'rating' => $request->get('rating'),
+            'total_reviews' => $request->get('total_reviews'),
             'profile_url' => $request->get('profile_url'),
         ]);
 
