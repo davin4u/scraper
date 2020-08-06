@@ -6,6 +6,7 @@ use App\Crawler\Document;
 use App\Crawler\Extractors\ReviewExtractor;
 use App\Parsers\ParserInterface;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class OtzovikReviewPageParser
@@ -21,11 +22,22 @@ class OtzovikReviewPageParser extends ReviewExtractor implements ParserInterface
     /**
      * @param Document $document
      * @return bool
+     * @throws \App\Exceptions\DocumentNotReadableException
      */
     public static function canHandle(Document $document): bool
     {
+        $content = $document->getContent();
+
+        preg_match('/class=.permalink.+href=[\'"](.+)[\'"]/', $content, $matches);
+
+        if (empty($matches) || !isset($matches[1])) {
+            return false;
+        }
+
+        $url = $matches[1];
+
         return strpos(static::$domain, $document->getDocumentDomain()) !== false
-            && strpos($document->getContent(), 'class="produkts-content hreview"') !== false;
+            && strpos($url, 'review_') !== false;
     }
 
     /**
