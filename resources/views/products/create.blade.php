@@ -11,9 +11,7 @@
 
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.index')}}" class="btn btn-danger">Cancel</a>
-                                <a href="" class="btn btn-primary"><i class="fa fa-image"></i> Manage media</a>
-                                <a href="" class="btn btn-primary"><i class="fa fa-comments"></i> Reviews</a>
-                                <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
+                                <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
                         </div>
                     </div>

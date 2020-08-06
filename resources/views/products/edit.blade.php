@@ -8,20 +8,34 @@
                     <div class="card-header">
                         <div class="d-flex">
                             <div class="align-self-center flex-grow-1">Edit product | #{{$product->id}} {{$product->name}}</div>
+
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.index')}}" class="btn btn-danger">Cancel</a>
-                                <a href="{{route('products.media.index', [$product])}}" class="btn btn-primary"><i class="fa fa-image"></i> Manage media</a>
-                                <a href="{{route('products.reviews.show', [$product])}}" class="btn btn-primary"><i class="fa fa-comments"></i> Reviews</a>
-                                <button form="edit" type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
+                                <button form="edit" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                            </div>
+
+                            <div class="dropdown show ml-1">
+                                <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Action
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+
+                                    <a href="{{route('products.media.index', [$product])}}" class="dropdown-item">Manage media</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="{{route('products.reviews.show', [$product])}}" class="dropdown-item"> Reviews</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         @include('partials.notifications.success')
                         @include('partials.notifications.errors')
+
                         <form method="POST" action="{{route('products.update', [$product])}}" id="edit">
                             @csrf
                             @method('PUT')
+
                             <div class="row">
                                 <div class="col-md-4">
                                     <img src="{{$product->media->first()->url ?? 'https://via.placeholder.com/250'}}" class="img-thumbnail img-fluid">
