@@ -6,16 +6,16 @@
             <div class="col-md-12 px-0 px-md-4">
                 <div class="card">
                     <div class="card-header clearfix">
-                        <span>Scraping jobs | Total: {{$totalCount}} | Not executed: {{$notExecutedCount}}</span>
-                        <div class="form-group">
-                            <div class="custom-control custom-switch">
+                        <div class="d-flex">
+                            <div class="align-self-center flex-grow-1">Scraping jobs | Total: {{$totalCount}} | Not executed: {{$notExecutedCount}}</div>
+                            <div class="custom-control custom-switch align-self-center">
                                 <input type="checkbox" class="custom-control-input" id="executed" name="executed" form="filter" />
-                                <label class="custom-control-label float-right" for="executed">Not executed jobs only</label>
+                                <label class="custom-control-label" for="executed">Not executed jobs only</label>
                             </div>
-                        </div>
-                        <div class="btn-group float-right" role="group">
-                            <button type="submit" form="filter" class="btn btn-secondary">Show jobs</button>
-                            <a class="btn btn-primary float-right" href="{{ route('scraper-jobs.create') }}">Create</a>
+                            <div class="text-right align-self-center flex-grow-1">
+                                <button type="submit" form="filter" class="btn btn-secondary">Show jobs</button>
+                                <a class="btn btn-primary" href="{{ route('scraper-jobs.create') }}">Create</a>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -25,7 +25,7 @@
                         <table class="table">
                             <thead>
                             <th>url</th>
-                            <th>Completed at</th>
+                            <th style="width: 120px;">Completed at</th>
                             <th></th>
                             </thead>
                             <tbody>

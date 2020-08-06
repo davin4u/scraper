@@ -8,7 +8,7 @@
 
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Categories</div>
+                            <div class="align-self-center flex-grow-1">Categories | Total: {{$total}}</div>
                             <div class="align-self-center text-right">
                                 <a href="{{ route('categories.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add category</a>
                             </div>
@@ -54,7 +54,6 @@
                                                 <form method="POST" action="{{ route('categories.destroy', [$category]) }}" class="d-inline">
                                                     @csrf
                                                     <input type="hidden" name="_method" value="DELETE" />
-
                                                     <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                                 </form>
                                             @endif

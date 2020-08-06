@@ -13,10 +13,13 @@ use Illuminate\Http\Request;
 class BrandsController extends Controller
 {
     /**
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
+        $total = Brand::query()->count();
+
         if (!empty($request->get('id')) || !empty($request->get('name'))){
 
             $brands = Brand::query();
@@ -36,7 +39,7 @@ class BrandsController extends Controller
             $brands = Brand::all();
         }
 
-        return view('brands.index', compact('brands','request'));
+        return view('brands.index', compact('brands','request', 'total'));
     }
 
     /**

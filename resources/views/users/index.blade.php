@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Users</div>
+                            <div class="align-self-center flex-grow-1">Users | Total: {{$total}}</div>
 
                             <div class="align-self-center text-right">
                                 <a href="{{route('users.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add user</a>
@@ -52,7 +52,7 @@
                                     <td>{{$user->email}}</td>
                                     <td class="text-right">
                                         <a href="{{route('users.edit', [$user])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                        <form method="POST" action="{{route('users.destroy', [$user])}}">
+                                        <form method="POST" action="{{route('users.destroy', [$user])}}" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>

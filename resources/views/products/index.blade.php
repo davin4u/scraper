@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Products</div>
+                            <div class="align-self-center flex-grow-1">Products | Total: {{$total}}</div>
 
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add product</a>
@@ -23,8 +23,8 @@
                         <table class="table">
                             <thead class="thead-light">
                             <tr>
-                                <th scope="col" style="width: 100px;">ID</th>
-                                <th scope="col">Name</th>
+                                <th scope="col" style="width: 70px;">ID</th>
+                                <th scope="col" style="width: 200px;">Name</th>
                                 <th scope="col">Category</th>
                                 <th scope="col">Brand</th>
                                 <th scope="col">Manufacturer ID</th>
@@ -75,11 +75,9 @@
                                     <td>-</td>
                                     <td class="text-right">
                                         <a href="{{route('products.edit', [$product])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-
                                         <form method="POST"  action="{{route('products.destroy', [$product])}}" class="d-inline">
-                                            @csrf()
+                                            @csrf
                                             @method('DELETE')
-
                                             <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>
                                         </form>
 

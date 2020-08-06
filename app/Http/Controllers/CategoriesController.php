@@ -13,10 +13,12 @@ use Illuminate\Http\Request;
 class CategoriesController extends Controller
 {
     /**
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
+        $total = Category::query()->count();
 
         if (!empty($request->get('id')) || !empty($request->get('name'))){
 
@@ -37,7 +39,7 @@ class CategoriesController extends Controller
             $categories = Category::all();
         }
 
-        return view('categories.index', compact('categories','request'));
+        return view('categories.index', compact('categories','request', 'total'));
     }
 
     /**
@@ -65,7 +67,7 @@ class CategoriesController extends Controller
             'name' => $name,
             'map'  => $map
         ]);
-        
+
         return redirect(route('categories.index'))->with(['status' => 'Category has been created.']);
     }
 

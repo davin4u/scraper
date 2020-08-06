@@ -8,7 +8,7 @@
 
                 <div class="card-header">
                     <div class="d-flex">
-                        <div class="align-self-center flex-grow-1">Search Statistics</div>
+                        <div class="align-self-center flex-grow-1">Search Statistics | Total: {{$total}}</div>
                         <div class="align-self-center text-right">
                             <a href="{{ route('search-statistics.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
                         </div>

@@ -14,6 +14,8 @@ class SearchStatisticsController extends Controller
      */
     public function index(Request $request)
     {
+        $total = SearchStatistic::query()->count();
+
         if (!empty($request->get('phrase'))) {
             $statistics = SearchStatistic::query();
 
@@ -27,7 +29,7 @@ class SearchStatisticsController extends Controller
             $statistics = SearchStatistic::all();
         }
 
-        return view('search_statistics.index', compact('statistics','request'));
+        return view('search_statistics.index', compact('statistics','request', 'total'));
     }
 
     /**

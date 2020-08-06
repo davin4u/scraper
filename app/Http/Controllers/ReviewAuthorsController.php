@@ -32,6 +32,7 @@ class ReviewAuthorsController extends Controller
         $platform = $this->request->get('platform', null);
 
         $reviewAuthors = ReviewAuthor::query()->orderBy('id');
+        $total = ReviewAuthor::query()->count();
 
         if (!is_null($id)) {
             $reviewAuthors->where('id', $id);
@@ -51,7 +52,8 @@ class ReviewAuthorsController extends Controller
             'reviewAuthors' => $reviewAuthors->appends(\request()->except('page')),
             'id' => $id,
             'name' => $name,
-            'platform' => $platform
+            'platform' => $platform,
+            'total' => $total
         ]);
     }
 

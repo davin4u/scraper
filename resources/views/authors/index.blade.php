@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Authors</div>
+                            <div class="align-self-center flex-grow-1">Authors | Total: {{$total}}</div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -48,8 +48,8 @@
                                     <td>{{$author->platform}}</td>
                                     <td class="text-right">
                                         <a href="{{route('authors.edit', [$author])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                        <form method="POST" action="{{route('authors.destroy', [$author])}}">
-                                            @csrf()
+                                        <form method="POST" action="{{route('authors.destroy', [$author])}}" class="d-inline">
+                                            @csrf
                                             @method('DELETE')
                                             <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>
                                         </form>

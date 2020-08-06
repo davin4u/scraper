@@ -7,8 +7,8 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Edit review #{{$productReview->id}} | {{$productReview->title}}</div>
-                            <div class="align-self-center text-right">
+                            <div class="align-self-center flex-grow-1">Edit review #{{$productReview->id}} </div>
+                            <div class="text-right align-self-center">
                                 <a href="{{route('products.reviews.index')}}" class="btn btn-danger ">Cancel</a>
                                 <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
                             </div>
