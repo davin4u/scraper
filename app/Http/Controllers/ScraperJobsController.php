@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ScraperJobStoreUpdateRequest;
 use App\ScraperJob;
-use Illuminate\Http\Request;
 
 class ScraperJobsController extends Controller
 {
@@ -15,9 +14,23 @@ class ScraperJobsController extends Controller
      */
     public function index()
     {
-        $scraperJobs = ScraperJob::paginate(30);
+        $executed = \request()->get('executed');
+        $scraperJobs = ScraperJob::query()->orderBy('id');
 
-        return view('scraper_jobs.index', compact('scraperJobs'));
+        $totalCount = ScraperJob::query()->count();
+        $notExecutedCount = ScraperJob::query()->whereNull('completed_at')->count();
+
+        if (!is_null($executed)) {
+            $scraperJobs->whereNull('completed_at');
+        }
+
+        $scraperJobs = $scraperJobs->paginate(30);
+
+        return view('scraper_jobs.index')->with([
+            'scraperJobs' => $scraperJobs->appends(\request()->except('page')),
+            'totalCount' => $totalCount,
+            'notExecutedCount' => $notExecutedCount
+        ]);
     }
 
     /**

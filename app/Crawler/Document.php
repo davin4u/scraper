@@ -80,7 +80,7 @@ class Document
      */
     public function getDocumentDomain()
     {
-        $path = explode('/', $this->file->getPath());
+        $path = explode(DIRECTORY_SEPARATOR, $this->file->getPath());
 
         return $path[count($path) - 1];
     }
