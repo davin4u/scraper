@@ -24,7 +24,7 @@ class ReviewAuthorUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:8',
+            'name' => 'required',
             'platform' => 'required',
             'rating' => 'required|numeric',
             'profile_url' => 'url'
