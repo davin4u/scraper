@@ -42,7 +42,7 @@ class FromRequestUploader implements UploaderInterface
 
             $filename = $this->getFileName($uploadedFile->getClientOriginalName());
 
-            $path = $folder . DIRECTORY_SEPARATOR . $filename;
+            $path = $this->buildPath($folder, $filename);
 
             if ($fileContent = $uploadedFile->get()) {
                 if ($this->storage->put($path, $fileContent)) {
@@ -85,5 +85,18 @@ class FromRequestUploader implements UploaderInterface
         $path = implode('/', explode(DIRECTORY_SEPARATOR, $path));
 
         return config('media.app_url') . '/media/' . $path;
+    }
+
+    /**
+     * @param $folder
+     * @param $filename
+     * @return string
+     */
+    protected function buildPath($folder, $filename): string
+    {
+        $dir1 = substr($filename, 0, 2);
+        $dir2 = substr($filename, 2, 2);
+
+        return $folder . DIRECTORY_SEPARATOR . $dir1 . DIRECTORY_SEPARATOR . $dir2 . DIRECTORY_SEPARATOR . $filename;
     }
 }

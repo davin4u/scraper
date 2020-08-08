@@ -4,6 +4,7 @@ namespace App;
 
 use App\Traits\WithMedia;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -26,7 +27,7 @@ class Product extends Model
      */
     protected function getMediaFolder(): string
     {
-        return (string)$this->category_id;
+        return Str::slug($this->category->name, '_');
     }
 
     /**

@@ -38,7 +38,7 @@ class FromUrlUploader implements UploaderInterface
         foreach ($fileOrUrls as $url) {
             $filename = $this->getFileName($url);
 
-            $path = $folder . DIRECTORY_SEPARATOR . $filename;
+            $path = $this->buildPath($folder, $filename);
 
             if ($this->storage->put($path, file_get_contents($url))) {
                 $file = new \SplFileObject(public_path('media/' . $path));
@@ -79,5 +79,18 @@ class FromUrlUploader implements UploaderInterface
         $path = implode('/', explode(DIRECTORY_SEPARATOR, $path));
 
         return config('media.app_url') . '/media/' . $path;
+    }
+
+    /**
+     * @param $folder
+     * @param $filename
+     * @return string
+     */
+    protected function buildPath($folder, $filename): string
+    {
+        $dir1 = substr($filename, 0, 2);
+        $dir2 = substr($filename, 2, 2);
+
+        return $folder . DIRECTORY_SEPARATOR . $dir1 . DIRECTORY_SEPARATOR . $dir2 . DIRECTORY_SEPARATOR . $filename;
     }
 }
