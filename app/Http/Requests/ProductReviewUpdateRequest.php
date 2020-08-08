@@ -30,14 +30,16 @@ class ProductReviewUpdateRequest extends FormRequest
             'cons' => 'required|min:8',
             'body' => 'required|min:8',
             'summary' => 'required|min:8',
-            'bought_at' => 'date'
+            'bought_at' => 'date',
+            'product_id' => 'numeric|exists:products,id'
         ];
     }
 
     public function messages()
     {
         return [
-            'bought_at.date' => 'The year of bought must be in format YYYY-MM-DD.'
+            'bought_at.date' => 'The year of bought must be in format YYYY-MM-DD.',
+            'product_id.numeric' => 'The ID must be a number'
         ];
     }
 }

@@ -64,6 +64,7 @@ class ProductReviewsController extends Controller
             'body' => $request->get('body'),
             'summary' => $request->get('summary'),
             'bought_at' => Carbon::parse($request->get('bought_at'))->toDate(),
+            'product_id' => $request->get('product_id'),
             'rating' => $request->get('rating'),
             'i_recommend' => $request->has('i_recommend') ? 1 : 0
         ]);

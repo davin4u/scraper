@@ -33,7 +33,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="url" class="col-sm-3 col-form-label">Ссылка на продукт</label>
+                                <label for="url" class="col-sm-3 col-form-label">Ссылка на отзыв</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control" id="url" name="url" value="{{old('url', $productReview->url)}}">
                                 </div>
@@ -66,6 +66,12 @@
                                 <label for="bought_at" class="col-sm-3 col-form-label">Год покупки</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control" id="bought_at" name="bought_at" value="{{old('bought_at', $productReview->bought_at)}}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="product_id" class="col-sm-3 col-form-label">Привязать по ID</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" id="product_id" name="product_id" value="{{old('product_id', $productReview->product_id)}}">
                                 </div>
                             </div>
                             <div class="form-group row">

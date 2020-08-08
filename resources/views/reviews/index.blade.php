@@ -21,9 +21,9 @@
                                         <div class="align-self-center flex-grow-1">
                                             [{{$review->rating}}] {{$review->title}}
                                         </div>
-                                        <div class="align-self-center text-right">
+                                        <div class="align-self-center text-right" style="width: 100px;">
                                             <a href="{{route('products.reviews.edit', [$review])}}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                            <form method="POST"  action="{{route('products.reviews.destroy', [$review])}}" class="d-inline">
+                                            <form method="POST" action="{{route('products.reviews.destroy', [$review])}}" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>
@@ -32,7 +32,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <p class="card-text">{{$review->body}}</p>
+                                    <p class="card-text">{{\Illuminate\Support\Str::limit($review->body, 150, '...')}}</p>
                                 </div>
                             </div>
                             @empty

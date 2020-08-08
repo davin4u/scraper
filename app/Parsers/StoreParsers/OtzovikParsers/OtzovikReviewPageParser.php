@@ -96,10 +96,12 @@ class OtzovikReviewPageParser extends ReviewExtractor implements ParserInterface
      */
     public function getBody(): string
     {
-        $tagsAndAdsPattern = '/<[^>]*>|\(ads.+?\);|\n+|\s{2,}/u';
+        $tagsAndAdsPattern = '/<[^>]*>|\(ads.+?\);/u';
         $html = $this->content->filter('div.review-body.description')->html();
+        $body = preg_replace($tagsAndAdsPattern, ' ', $html);
+        $body = preg_replace('/\s{2,}/u', ' ', $body);
 
-        return preg_replace($tagsAndAdsPattern, '', $html);
+        return $body;
     }
 
     /**
