@@ -32,7 +32,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <p class="card-text">{{\Illuminate\Support\Str::limit($review->body, 150, '...')}}</p>
+                                    <p class="card-text">{{ $review->shortBody }}</p>
                                 </div>
                             </div>
                             @empty

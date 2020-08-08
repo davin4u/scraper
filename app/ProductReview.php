@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 /**
  * Class ProductReview
@@ -28,4 +29,12 @@ class ProductReview extends Model
         'rating',
         'i_recommend'
     ];
+
+    /**
+     * @return string
+     */
+    public function getShortBodyAttribute()
+    {
+        return Str::limit($this->body, 150, '...');
+    }
 }
