@@ -7,17 +7,20 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Reviews | {{$product->name}}</div>
+                            <div class="align-self-center flex-grow-1">Overviews | {{$product->name}} </div>
+                            <div class="align-self-center text-right">
+                                <a href="{{route('products.overviews.create', ['id' => $product->id])}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add overview</a>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
                         @include('partials.notifications.success')
                         @include('partials.notifications.errors')
                         <div>
-                            @include('partials.reviews')
+                            @include('partials.overviews')
                         </div>
-                        @if(!empty($productReviews))
-                            {{$productReviews->render()}}
+                        @if(!empty($productOverviews))
+                            {{$productOverviews->render()}}
                         @endif
                     </div>
                 </div>
