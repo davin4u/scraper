@@ -135,10 +135,6 @@ abstract class ProductsCategoryExtractor extends Extractor
             if (empty($product['category_id'])) {
                 throw new CrawlerValidationException("Product category was not recognized.");
             }
-
-            if (empty($product['brand_id'])) {
-                throw new CrawlerValidationException("Product brand was not recognized.");
-            }
         }
 
         return $products;
