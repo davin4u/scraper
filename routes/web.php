@@ -55,6 +55,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('reviews/{productReview}', 'ProductReviewsController@update')->name('products.reviews.update');
     Route::delete('reviews/{productReview}', 'ProductReviewsController@destroy')->name('products.reviews.destroy');
 
+    //Product Overviews
+    Route::get('overviews', 'ProductOverviewsController@index')->name('products.overviews.index');
+    Route::get('overviews/create', 'ProductOverviewsController@create')->name('products.overviews.create');
+    Route::post('overviews', 'ProductOverviewsController@store')->name('products.overviews.store');
+    Route::get('products/{product}/overviews', 'ProductOverviewsController@show')->name('products.overviews.show');
+    Route::get('overviews/{productOverview}/edit','ProductOverviewsController@edit')->name('products.overviews.edit');
+    Route::put('overviews/{productOverview}', 'ProductOverviewsController@update')->name('products.overviews.update');
+    Route::delete('overviews/{productOverview}', 'ProductOverviewsController@destroy')->name('products.overviews.destroy');
+
+
     //Authors
     Route::get('authors', 'ReviewAuthorsController@index')->name('authors.index');
     Route::get('authors/{reviewAuthor}/edit', 'ReviewAuthorsController@edit')->name('authors.edit');
