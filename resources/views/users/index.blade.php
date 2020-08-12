@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Users | Total: {{$total}}</div>
+                            <div class="align-self-center flex-grow-1">Users | Total: {{$users->total()}}</div>
 
                             <div class="align-self-center text-right">
                                 <a href="{{route('users.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add user</a>

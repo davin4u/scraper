@@ -41,6 +41,9 @@
                 <li class="nav-item">
                     <a class="{{ Request::is('authors') ? 'active' : '' }} nav-link" href="{{ route('authors.index') }}">Authors</a>
                 </li>
+                <li class="nav-item">
+                    <a class="{{ Request::is('domains') ? 'active' : '' }} nav-link" href="{{ route('domains.index') }}">Domains</a>
+                </li>
             </ul>
         </div>
     </nav>

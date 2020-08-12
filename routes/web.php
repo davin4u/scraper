@@ -64,7 +64,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('overviews/{productOverview}', 'ProductOverviewsController@update')->name('products.overviews.update');
     Route::delete('overviews/{productOverview}', 'ProductOverviewsController@destroy')->name('products.overviews.destroy');
 
-
     //Authors
     Route::get('authors', 'ReviewAuthorsController@index')->name('authors.index');
     Route::get('authors/{reviewAuthor}/edit', 'ReviewAuthorsController@edit')->name('authors.edit');
@@ -78,6 +77,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/{user}/edit', 'UsersController@edit')->name('users.edit');
     Route::put('users/{user}', 'UsersController@update')->name('users.update');
     Route::delete('users/{user}', 'UsersController@destroy')->name('users.destroy');
+
+    //Domains
+    Route::get('domains', 'DomainsController@domainsIndex')->name('domains.index');
+    Route::get('domains/create', 'DomainsController@domainsCreate')->name('domains.create');
+    Route::post('domains', 'DomainsController@domainsStore')->name('domains.store');
+    Route::get('domains/{domain}/edit', 'DomainsController@domainsEdit')->name('domains.edit');
+    Route::put('domains/{domain}', 'DomainsController@domainsUpdate')->name('domains.update');
+    Route::delete('domains/{domain}', 'DomainsController@domainsDestroy')->name('domains.destroy');
+    //Domains Stores
+    Route::get('domains/{domain}/stores/create', 'DomainsController@storesCreate')->name('stores.create');
 
     //Search statistics
     Route::resource('search-statistics', 'SearchStatisticsController')->only([

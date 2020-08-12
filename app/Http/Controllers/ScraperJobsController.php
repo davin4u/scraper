@@ -16,8 +16,6 @@ class ScraperJobsController extends Controller
     {
         $executed = \request()->get('executed');
         $scraperJobs = ScraperJob::query()->orderBy('id');
-
-        $totalCount = ScraperJob::query()->count();
         $notExecutedCount = ScraperJob::query()->whereNull('completed_at')->count();
 
         if (!is_null($executed)) {
@@ -28,7 +26,6 @@ class ScraperJobsController extends Controller
 
         return view('scraper_jobs.index')->with([
             'scraperJobs' => $scraperJobs->appends(\request()->except('page')),
-            'totalCount' => $totalCount,
             'notExecutedCount' => $notExecutedCount
         ]);
     }

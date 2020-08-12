@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Products | Total: {{$total}}</div>
+                            <div class="align-self-center flex-grow-1">Products | Total: {{$products->total()}}</div>
 
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add product</a>

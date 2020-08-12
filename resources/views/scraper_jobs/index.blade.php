@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header clearfix">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Scraping jobs | Total: {{$totalCount}} | Not executed: {{$notExecutedCount}}</div>
+                            <div class="align-self-center flex-grow-1">Scraping jobs | Total: {{$scraperJobs->total()}} | Not executed: {{$notExecutedCount}}</div>
                             <div class="custom-control custom-switch align-self-center">
                                 <input type="checkbox" class="custom-control-input" id="executed" name="executed" form="filter" />
                                 <label class="custom-control-label" for="executed">Not executed jobs only</label>
