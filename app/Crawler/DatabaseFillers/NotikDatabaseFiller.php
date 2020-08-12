@@ -17,11 +17,11 @@ final class NotikDatabaseFiller
      * @var array
      */
     private $categories = [
-        'https://www.notik.ru/search_catalog/filter/brand.htm',
-        'https://www.notik.ru/search_catalog/filter/monoblocks.htm',
-        'https://www.notik.ru/search_catalog/filter/allmonitors.htm',
+        //'https://www.notik.ru/search_catalog/filter/brand.htm',
+        //'https://www.notik.ru/search_catalog/filter/monoblocks.htm',
+        //'https://www.notik.ru/search_catalog/filter/allmonitors.htm',
         'https://www.notik.ru/search_catalog/filter/allpads.htm',
-        'https://www.notik.ru/search_catalog/filter/allsmarts.htm'
+        //'https://www.notik.ru/search_catalog/filter/allsmarts.htm'
     ];
 
     /**
@@ -98,7 +98,7 @@ final class NotikDatabaseFiller
 
     private function wait()
     {
-        sleep(rand(4, 10));
+        sleep(rand(1, 3));
     }
 
     /**
