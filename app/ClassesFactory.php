@@ -27,9 +27,11 @@ class ClassesFactory
      */
     public function __construct()
     {
-        if (empty(static::$classes)) {
-            static::loadClasses();
-        }
+        /**
+         * @TODO find the way how to keep previously loaded classes without need to load them on each execution
+         * @TODO issue when both ParserFactory and ScrapersFactory are called on single request
+         */
+        static::loadClasses();
     }
 
     protected static function loadClasses($directory = null)

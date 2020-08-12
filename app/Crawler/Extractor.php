@@ -57,6 +57,6 @@ class Extractor
             return $value;
         }
 
-        return trim(strip_tags(html_entity_decode($value)));
+        return trim(strip_tags($value));
     }
 }

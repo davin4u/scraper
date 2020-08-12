@@ -89,7 +89,7 @@ final class NotikDatabaseFiller
 
             Artisan::call('parser:process', [
                 '--date' => date('d.m.Y'),
-                '--init'
+                '--init' => true
             ]);
 
             $this->output->success("Products have been processed.");

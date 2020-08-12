@@ -144,7 +144,7 @@ class Elmall61ProductPageParser extends ProductExtractor implements ParserInterf
      */
     public function getPrice(): float
     {
-        return (float)$this->clear($this->content->filter('#product_price_rub')->text());
+        return (float)$this->clear(html_entity_decode($this->content->filter('#product_price_rub')->text()));
     }
 
     /**
