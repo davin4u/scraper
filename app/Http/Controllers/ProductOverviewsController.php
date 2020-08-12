@@ -18,9 +18,8 @@ class ProductOverviewsController extends Controller
     public function index()
     {
         $productOverviews = ProductOverview::orderBy('created_at', 'desc')->paginate(30);
-        $total = ProductOverview::query()->count();
 
-        return view('overviews.index', compact('productOverviews', 'total'));
+        return view('overviews.index', compact('productOverviews'));
     }
 
     /**
@@ -52,7 +51,7 @@ class ProductOverviewsController extends Controller
      */
     public function show(Product $product)
     {
-        $productOverviews = ProductOverview::where('product_id', $product->id)->orderBy('created_at', 'desc')->paginate(30);
+        $productOverviews = $product->overviews()->paginate(30);
 
         return view('overviews.show', compact('product', 'productOverviews'));
     }

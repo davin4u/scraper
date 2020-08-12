@@ -45,7 +45,6 @@ class ProductsController extends Controller
         $name = $this->request->get('name', null);
 
         $products = Product::with('category');
-        $total = Product::query()->count();
 
         if (!is_null($id)) {
             $products->where('id', $id);
@@ -71,7 +70,6 @@ class ProductsController extends Controller
             'category' => $category,
             'brand' => $brand,
             'name' => $name,
-            'total' => $total
         ]);
     }
 

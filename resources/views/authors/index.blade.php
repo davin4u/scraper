@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Authors | Total: {{$total}}</div>
+                            <div class="align-self-center flex-grow-1">Authors | Total: {{$reviewAuthors->total()}}</div>
                         </div>
                     </div>
                     <div class="card-body">

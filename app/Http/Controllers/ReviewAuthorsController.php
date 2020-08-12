@@ -52,8 +52,7 @@ class ReviewAuthorsController extends Controller
             'reviewAuthors' => $reviewAuthors->appends(\request()->except('page')),
             'id' => $id,
             'name' => $name,
-            'platform' => $platform,
-            'total' => $total
+            'platform' => $platform
         ]);
     }
 

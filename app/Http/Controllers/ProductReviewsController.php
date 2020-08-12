@@ -17,9 +17,8 @@ class ProductReviewsController extends Controller
     public function index()
     {
         $productReviews = ProductReview::orderBy('created_at', 'desc')->paginate(30);
-        $total = ProductReview::query()->count();
 
-        return view('reviews.index', compact('productReviews', 'total'));
+        return view('reviews.index', compact('productReviews'));
     }
 
     /**

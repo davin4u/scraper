@@ -33,7 +33,6 @@ class UsersController extends Controller
         $email = $this->request->get('email', null);
 
         $users = User::query()->orderBy('id');
-        $total = User::query()->count();
 
         if (!is_null($id)) {
             $users->where('id', $id);
@@ -53,8 +52,7 @@ class UsersController extends Controller
             'users' => $users->appends(\request()->except('page')),
             'id' => $id,
             'name' => $name,
-            'email' => $email,
-            'total' => $total
+            'email' => $email
         ]);
     }
 
