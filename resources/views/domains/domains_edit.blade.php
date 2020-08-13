@@ -8,11 +8,10 @@
                     <div class="card-header">
                         <div class="d-flex">
                             <div class="align-self-center flex-grow-1">Edit Domain | {{$domain->name}}</div>
-
                             <div class="align-self-center text-right">
                                 <a href="{{route('stores.create', [$domain])}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Store</a>
                                 <a href="{{route('domains.index')}}" class="btn btn-danger">Cancel</a>
-                                <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                                <button form="edit" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
                         </div>
                     </div>
@@ -20,7 +19,7 @@
                     <div class="card-body">
                         @include('partials.notifications.success')
                         @include('partials.notifications.errors')
-                        <form method="POST" action="{{route('domains.update', [$domain])}}" id="store">
+                        <form method="POST" action="{{route('domains.update', [$domain])}}" id="edit">
                             @csrf
                             @method('PUT')
                             <div class="form-group row">
@@ -52,15 +51,25 @@
                             </thead>
 
                             <tbody>
+                            @forelse($domain->stores as $store)
                             <tr>
-                                <td>1</td>
-                                <td>Россия</td>
-                                <td>Москва</td>
+                                <td>{{$store->id}}</td>
+                                <td>{{\App\Country::query()->select('name')->where('id', $store->country_id)->first()->name}}</td>
+                                <td>{{\App\City::query()->select('name')->where('id', $store->city_id)->first()->name}}</td>
                                 <td class="text-right">
-                                    <a href="" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                    <a href="" class="inline btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+                                    <a href="{{route('stores.edit', [$domain, $store])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                                    <form method="POST" action="{{route('stores.destroy', [$domain, $store])}}" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>
+                                    </form>
                                 </td>
                             </tr>
+                            @empty
+                                <div class="alert alert-secondary" role="alert">
+                                    No stores found.
+                                </div>
+                            @endforelse
                             </tbody>
                         </table>
                     </div>

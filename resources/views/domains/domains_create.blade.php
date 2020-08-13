@@ -8,9 +8,7 @@
                     <div class="card-header">
                         <div class="d-flex">
                             <div class="align-self-center flex-grow-1">Create Domain</div>
-
                             <div class="align-self-center text-right">
-                                <a href="" class="btn btn-primary"><i class="fa fa-plus"></i> Add Store</a>
                                 <a href="{{route('domains.index')}}" class="btn btn-danger">Cancel</a>
                                 <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
