@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Country;
 use App\Domain;
+use App\Http\Requests\DomainStoreUpdateRequest;
+use App\Http\Requests\StoreLocationStoreUpdateRequest;
 use App\Store;
 use App\StoreLocation;
 use Illuminate\Http\Request;
@@ -52,13 +53,14 @@ class DomainsController extends Controller
     }
 
     /**
+     * @param DomainStoreUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function domainsStore()
+    public function domainsStore(DomainStoreUpdateRequest $request)
     {
         Domain::create([
-            'name' => $this->request->get('name'),
-            'url' => $this->request->get('url')
+            'name' => $request->get('name'),
+            'url' => $request->get('url')
         ]);
 
         return redirect(route('domains.index'))->with(['status' => 'Domain has been created']);
@@ -75,13 +77,14 @@ class DomainsController extends Controller
 
     /**
      * @param Domain $domain
+     * @param DomainStoreUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function domainsUpdate(Domain $domain)
+    public function domainsUpdate(Domain $domain, DomainStoreUpdateRequest $request)
     {
         $domain->update([
-            'name' => $this->request->get('name'),
-            'url' => $this->request->get('url')
+            'name' => $request->get('name'),
+            'url' => $request->get('url')
         ]);
 
         return redirect(route('domains.index'))->with(['status' => 'Domain has been updated']);
@@ -178,18 +181,19 @@ class DomainsController extends Controller
     /**
      * @param Domain $domain
      * @param Store $store
+     * @param StoreLocationStoreUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function storeLocationsStore(Domain $domain, Store $store)
+    public function storeLocationsStore(Domain $domain, Store $store, StoreLocationStoreUpdateRequest $request)
     {
         StoreLocation::create([
             'store_id' => $store->id,
-            'location_name' => $this->request->get('location_name'),
-            'address' => $this->request->get('address'),
-            'latitude' => $this->request->get('latitude'),
-            'longitude' => $this->request->get('longitude'),
-            'phone' => $this->request->get('phone'),
-            'location_description' => $this->request->get('location_description')
+            'location_name' => $request->get('location_name'),
+            'address' => $request->get('address'),
+            'latitude' => $request->get('latitude'),
+            'longitude' => $request->get('longitude'),
+            'phone' => $request->get('phone'),
+            'location_description' => $request->get('location_description')
         ]);
 
         return redirect(route('domains.index'))->with(['status' => 'Store Location has been created']);
@@ -210,17 +214,18 @@ class DomainsController extends Controller
      * @param Domain $domain
      * @param Store $store
      * @param StoreLocation $storeLocation
+     * @param StoreLocationStoreUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function storeLocationsUpdate(Domain $domain, Store $store, StoreLocation $storeLocation)
+    public function storeLocationsUpdate(Domain $domain, Store $store, StoreLocation $storeLocation, StoreLocationStoreUpdateRequest $request)
     {
         $storeLocation->update([
-            'location_name' => $this->request->get('location_name'),
-            'address' => $this->request->get('address'),
-            'latitude' => $this->request->get('latitude'),
-            'longitude' => $this->request->get('longitude'),
-            'phone' => $this->request->get('phone'),
-            'location_description' => $this->request->get('location_description')
+            'location_name' => $request->get('location_name'),
+            'address' => $request->get('address'),
+            'latitude' => $request->get('latitude'),
+            'longitude' => $request->get('longitude'),
+            'phone' => $request->get('phone'),
+            'location_description' => $request->get('location_description')
         ]);
 
         return redirect(route('domains.index'))->with(['status' => 'Store Location has been updated']);

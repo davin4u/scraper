@@ -10,7 +10,6 @@
                             <div class="align-self-center flex-grow-1">Create Store | {{$domain->name}}</div>
 
                             <div class="align-self-center text-right">
-                                <a href="" class="btn btn-primary"><i class="fa fa-plus"></i> Add Location</a>
                                 <a href="{{route('domains.index')}}" class="btn btn-danger">Cancel</a>
                                 <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
