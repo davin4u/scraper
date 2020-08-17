@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
-                            <div class="align-self-center flex-grow-1">Overviews | Total: {{$total}}</div>
+                            <div class="align-self-center flex-grow-1">Overviews | Total: {{$productOverviews->total()}}</div>
                             <div class="align-self-center text-right">
                                 <a href="{{route('products.overviews.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add overview</a>
                             </div>

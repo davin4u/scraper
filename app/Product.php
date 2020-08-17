@@ -74,4 +74,12 @@ class Product extends Model
 
         $this->attributes()->sync($syncData);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function overviews()
+    {
+        return $this->hasMany(ProductOverview::class);
+    }
 }

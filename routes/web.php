@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
     //Products Reviews
     Route::get('reviews', 'ProductReviewsController@index')->name('products.reviews.index');
     Route::get('products/{product}/reviews', 'ProductReviewsController@show')->name('products.reviews.show');
-    Route::get('reviews/{productReview}/edit','ProductReviewsController@edit')->name('products.reviews.edit');
+    Route::get('reviews/{productReview}/edit', 'ProductReviewsController@edit')->name('products.reviews.edit');
     Route::put('reviews/{productReview}', 'ProductReviewsController@update')->name('products.reviews.update');
     Route::delete('reviews/{productReview}', 'ProductReviewsController@destroy')->name('products.reviews.destroy');
 
@@ -60,10 +60,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('overviews/create', 'ProductOverviewsController@create')->name('products.overviews.create');
     Route::post('overviews', 'ProductOverviewsController@store')->name('products.overviews.store');
     Route::get('products/{product}/overviews', 'ProductOverviewsController@show')->name('products.overviews.show');
-    Route::get('overviews/{productOverview}/edit','ProductOverviewsController@edit')->name('products.overviews.edit');
+    Route::get('overviews/{productOverview}/edit', 'ProductOverviewsController@edit')->name('products.overviews.edit');
     Route::put('overviews/{productOverview}', 'ProductOverviewsController@update')->name('products.overviews.update');
     Route::delete('overviews/{productOverview}', 'ProductOverviewsController@destroy')->name('products.overviews.destroy');
-
 
     //Authors
     Route::get('authors', 'ReviewAuthorsController@index')->name('authors.index');
@@ -79,9 +78,29 @@ Route::middleware(['auth'])->group(function () {
     Route::put('users/{user}', 'UsersController@update')->name('users.update');
     Route::delete('users/{user}', 'UsersController@destroy')->name('users.destroy');
 
+    //Domains
+    Route::get('domains', 'DomainsController@domainsIndex')->name('domains.index');
+    Route::get('domains/create', 'DomainsController@domainsCreate')->name('domains.create');
+    Route::post('domains', 'DomainsController@domainsStore')->name('domains.store');
+    Route::get('domains/{domain}/edit', 'DomainsController@domainsEdit')->name('domains.edit');
+    Route::put('domains/{domain}', 'DomainsController@domainsUpdate')->name('domains.update');
+    Route::delete('domains/{domain}', 'DomainsController@domainsDestroy')->name('domains.destroy');
+    //Stores
+    Route::get('domains/{domain}/stores/create', 'DomainsController@storesCreate')->name('stores.create');
+    Route::post('domains/{domain}/stores', 'DomainsController@storesStore')->name('stores.store');
+    Route::get('domains/{domain}/stores/{store}/edit', 'DomainsController@storesEdit')->name('stores.edit');
+    Route::put('domains/{domain}/stores/{store}', 'DomainsController@storesUpdate')->name('stores.update');
+    Route::delete('domains/{domain}/stores/{store}', 'DomainsController@storesDestroy')->name('stores.destroy');
+    //StoreLocations
+    Route::get('domains/{domain}/stores/{store}/store-locations/create', 'DomainsController@storeLocationsCreate')->name('store-locations.create');
+    Route::post('domains/{domain}/stores/{store}/store-locations', 'DomainsController@storeLocationsStore')->name('store-locations.store');
+    Route::get('domains/{domain}/stores/{store}/store-locations/{storeLocation}/edit', 'DomainsController@storeLocationsEdit')->name('store-locations.edit');
+    Route::put('domains/{domain}/stores/{store}/store-locations/{storeLocation}', 'DomainsController@storeLocationsUpdate')->name('store-locations.update');
+    Route::delete('domains/{domain}/stores/{store}/store-locations/{storeLocation}', 'DomainsController@storeLocationsDestroy')->name('store-locations.destroy');
+
     //Search statistics
     Route::resource('search-statistics', 'SearchStatisticsController')->only([
-        'index', 'create', 'store', 'edit','update'
+        'index', 'create', 'store', 'edit', 'update'
     ]);
 
     // Routes with admin permissions
