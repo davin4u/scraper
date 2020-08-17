@@ -11,7 +11,7 @@
 
                             <div class="align-self-center text-right">
                                 <a href="{{route('store-locations.create', [$domain, $store])}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Location</a>
-                                <a href="{{route('domains.index')}}" class="btn btn-danger">Cancel</a>
+                                <a href="{{route('domains.edit', [$domain])}}" class="btn btn-danger">Cancel</a>
                                 <button form="update" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                                 <label for="country" class="col-sm-3 col-form-label">Country</label>
                                 <div class="col-sm-5">
                                     <select class="form-control" name="country_id">
-                                        @foreach(\App\Country::all() as $country)
+                                        @foreach($countries as $country)
                                             <option value="{{$country->id}}" @if($store->country_id == $country->id) selected @endif>{{$country->name}}</option>
                                         @endforeach
                                     </select>
@@ -37,7 +37,7 @@
                                 <label for="city" class="col-sm-3 col-form-label">City</label>
                                 <div class="col-sm-5">
                                     <select class="form-control" name="city_id">
-                                        @foreach(\App\City::all() as $city)
+                                        @foreach($cities as $city)
                                             <option value="{{$city->id}}" @if($store->city_id == $city->id) selected @endif>{{$city->name}}</option>
                                         @endforeach
                                     </select>
@@ -67,7 +67,7 @@
                                 <td>{{$storeLocation->address}}</td>
                                 <td class="text-right">
                                     <a href="{{route('store-locations.edit', [$domain, $store, $storeLocation])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                    <form method="POST" action="{{route('store-locations.destroy', [$domain, $store, $storeLocation])}}" class="d-inline">
+                                    <form method="POST" action="{{route('store-locations.destroy', [$storeLocation])}}" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button class="inline btn btn-sm btn-danger" type="submit" ><i class="fa fa-trash"></i></button>

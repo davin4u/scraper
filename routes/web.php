@@ -89,14 +89,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('domains/{domain}/stores/create', 'DomainsController@storesCreate')->name('stores.create');
     Route::post('domains/{domain}/stores', 'DomainsController@storesStore')->name('stores.store');
     Route::get('domains/{domain}/stores/{store}/edit', 'DomainsController@storesEdit')->name('stores.edit');
-    Route::put('domains/{domain}/stores/{store}', 'DomainsController@storesUpdate')->name('stores.update');
-    Route::delete('domains/{domain}/stores/{store}', 'DomainsController@storesDestroy')->name('stores.destroy');
+    Route::put('domains/stores/{store}', 'DomainsController@storesUpdate')->name('stores.update');
+    Route::delete('domains/stores/{store}', 'DomainsController@storesDestroy')->name('stores.destroy');
     //StoreLocations
     Route::get('domains/{domain}/stores/{store}/store-locations/create', 'DomainsController@storeLocationsCreate')->name('store-locations.create');
-    Route::post('domains/{domain}/stores/{store}/store-locations', 'DomainsController@storeLocationsStore')->name('store-locations.store');
+    Route::post('domains/stores/{store}/store-locations', 'DomainsController@storeLocationsStore')->name('store-locations.store');
     Route::get('domains/{domain}/stores/{store}/store-locations/{storeLocation}/edit', 'DomainsController@storeLocationsEdit')->name('store-locations.edit');
-    Route::put('domains/{domain}/stores/{store}/store-locations/{storeLocation}', 'DomainsController@storeLocationsUpdate')->name('store-locations.update');
-    Route::delete('domains/{domain}/stores/{store}/store-locations/{storeLocation}', 'DomainsController@storeLocationsDestroy')->name('store-locations.destroy');
+    Route::put('domains/store-locations/{storeLocation}', 'DomainsController@storeLocationsUpdate')->name('store-locations.update');
+    Route::delete('domains/store-locations/{storeLocation}', 'DomainsController@storeLocationsDestroy')->name('store-locations.destroy');
 
     //Search statistics
     Route::resource('search-statistics', 'SearchStatisticsController')->only([

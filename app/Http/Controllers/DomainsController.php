@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\City;
+use App\Country;
 use App\Domain;
 use App\Http\Requests\DomainStoreUpdateRequest;
 use App\Http\Requests\StoreLocationStoreUpdateRequest;
+use App\Http\Requests\StoreStoreUpdateRequest;
 use App\Store;
 use App\StoreLocation;
 use Illuminate\Http\Request;
@@ -72,7 +75,9 @@ class DomainsController extends Controller
      */
     public function domainsEdit(Domain $domain)
     {
-        return view('domains.domains_edit', compact('domain'));
+        $stores = $domain->stores()->get();
+
+        return view('domains.domains_edit', compact('domain', 'stores'));
     }
 
     /**
@@ -110,18 +115,22 @@ class DomainsController extends Controller
      */
     public function storesCreate(Domain $domain)
     {
-        return view('domains.stores_create', compact('domain'));
+        $countries = Country::all();
+        $cities = City::all();
+
+        return view('domains.stores_create', compact('domain', 'countries', 'cities'));
     }
 
     /**
      * @param Domain $domain
+     * @param StoreStoreUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function storesStore(Domain $domain)
+    public function storesStore(Domain $domain, StoreStoreUpdateRequest $request)
     {
         Store::create([
-            'country_id' => $this->request->get('country_id'),
-            'city_id' => $this->request->get('city_id'),
+            'country_id' => $request->get('country_id'),
+            'city_id' => $request->get('city_id'),
             'domain_id' => $domain->id
         ]);
 
@@ -135,19 +144,23 @@ class DomainsController extends Controller
      */
     public function storesEdit(Domain $domain, Store $store)
     {
-        return view('domains.stores_edit', compact('domain', 'store'));
+        $countries = Country::all();
+        $cities = City::all();
+
+        return view('domains.stores_edit', compact('domain', 'store', 'countries', 'cities'));
     }
 
     /**
      * @param Domain $domain
      * @param Store $store
+     * @param StoreStoreUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function storesUpdate(Domain $domain, Store $store)
+    public function storesUpdate(Store $store, StoreStoreUpdateRequest $request)
     {
         $store->update([
-            'country_id' => $this->request->get('country_id'),
-            'city_id' => $this->request->get('city_id')
+            'country_id' => $request->get('country_id'),
+            'city_id' => $request->get('city_id')
         ]);
 
         return redirect(route('domains.index'))->with(['status' => 'Store has been updated']);
@@ -159,7 +172,7 @@ class DomainsController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Exception
      */
-    public function storesDestroy(Domain $domain, Store $store)
+    public function storesDestroy(Store $store)
     {
         $store->delete();
 
@@ -184,7 +197,7 @@ class DomainsController extends Controller
      * @param StoreLocationStoreUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function storeLocationsStore(Domain $domain, Store $store, StoreLocationStoreUpdateRequest $request)
+    public function storeLocationsStore(Store $store, StoreLocationStoreUpdateRequest $request)
     {
         StoreLocation::create([
             'store_id' => $store->id,
@@ -217,7 +230,7 @@ class DomainsController extends Controller
      * @param StoreLocationStoreUpdateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function storeLocationsUpdate(Domain $domain, Store $store, StoreLocation $storeLocation, StoreLocationStoreUpdateRequest $request)
+    public function storeLocationsUpdate(StoreLocation $storeLocation, StoreLocationStoreUpdateRequest $request)
     {
         $storeLocation->update([
             'location_name' => $request->get('location_name'),
@@ -238,7 +251,7 @@ class DomainsController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Exception
      */
-    public function storeLocationsDestroy(Domain $domain, Store $store, StoreLocation $storeLocation)
+    public function storeLocationsDestroy(StoreLocation $storeLocation)
     {
         $storeLocation->delete();
 
