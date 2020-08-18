@@ -10,7 +10,7 @@
                             <div class="align-self-center flex-grow-1">Create Store | {{$domain->name}}</div>
 
                             <div class="align-self-center text-right">
-                                <a href="{{route('domains.index')}}" class="btn btn-danger">Cancel</a>
+                                <a href="{{route('domains.edit', [$domain])}}" class="btn btn-danger">Cancel</a>
                                 <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
                         </div>
@@ -25,7 +25,7 @@
                                 <label for="country" class="col-sm-3 col-form-label">Country</label>
                                 <div class="col-sm-5">
                                     <select class="form-control" name="country_id">
-                                        @foreach(\App\Country::all() as $country)
+                                        @foreach($countries as $country)
                                         <option value="{{$country->id}}">{{$country->name}}</option>
                                         @endforeach
                                     </select>
@@ -35,7 +35,7 @@
                                 <label for="city" class="col-sm-3 col-form-label">City</label>
                                 <div class="col-sm-5">
                                     <select class="form-control" name="city_id">
-                                        @foreach(\App\City::all() as $city)
+                                        @foreach($cities as $city)
                                             <option value="{{$city->id}}">{{$city->name}}</option>
                                         @endforeach
                                     </select>

@@ -51,11 +51,11 @@
                             </thead>
 
                             <tbody>
-                            @forelse($domain->stores as $store)
+                            @forelse($stores as $store)
                             <tr>
                                 <td>{{$store->id}}</td>
-                                <td>{{\App\Country::query()->select('name')->where('id', $store->country_id)->first()->name}}</td>
-                                <td>{{\App\City::query()->select('name')->where('id', $store->city_id)->first()->name}}</td>
+                                <td>{{$store->country->name}}</td>
+                                <td>{{$store->city->name}}</td>
                                 <td class="text-right">
                                     <a href="{{route('stores.edit', [$domain, $store])}}" class="inline btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
                                     <form method="POST" action="{{route('stores.destroy', [$domain, $store])}}" class="d-inline">

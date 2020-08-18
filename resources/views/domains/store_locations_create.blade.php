@@ -9,7 +9,7 @@
                         <div class="d-flex">
                             <div class="align-self-center flex-grow-1">Create Location | {{$domain->name}}</div>
                             <div class="align-self-center text-right">
-                                <a href="{{route('domains.index')}}" class="btn btn-danger">Cancel</a>
+                                <a href="{{route('stores.edit', [$domain, $store])}}" class="btn btn-danger">Cancel</a>
                                 <button form="store" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
                         </div>
@@ -18,7 +18,7 @@
                     <div class="card-body">
                         @include('partials.notifications.success')
                         @include('partials.notifications.errors')
-                        <form method="POST" action="{{route('store-locations.store', [$domain, $store])}}" id="store">
+                        <form method="POST" action="{{route('store-locations.store', [$store])}}" id="store">
                             @csrf
                             <div class="form-group row">
                                 <label for="location_name" class="col-sm-3 col-form-label">Name</label>
