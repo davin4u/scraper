@@ -38,4 +38,9 @@ class Store extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    public function domain()
+    {
+        return $this->hasOne(Domain::class, 'id', 'domain_id');
+    }
 }

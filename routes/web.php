@@ -103,6 +103,10 @@ Route::middleware(['auth'])->group(function () {
         'index', 'create', 'store', 'edit', 'update'
     ]);
 
+    //Matching tool
+    Route::get('matching-tool', 'MatchingController@index')->name('matching.index');
+    Route::post('matching-tool/search','MatchingController@search')->name('matching.search');
+
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {
         Route::resource('categories', 'CategoriesController')->only(['destroy']);
