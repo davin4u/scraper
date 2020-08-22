@@ -36,7 +36,7 @@ class Elmall61ProductPageParser extends ProductExtractor implements ParserInterf
     public static function canHandle(Document $document): bool
     {
         return strpos(static::$domain, $document->getDocumentDomain()) !== false
-            && strpos($document->getContent(), 'id="event_price_reduction"') !== false;
+            && (strpos($document->getContent(), 'id="tabs"') !== false || strpos($document->getContent(), 'id="list_carousel_img') !== false);
     }
 
     /**
@@ -144,7 +144,18 @@ class Elmall61ProductPageParser extends ProductExtractor implements ParserInterf
      */
     public function getPrice(): float
     {
-        return (float)$this->clear(html_entity_decode($this->content->filter('#product_price_rub')->text()));
+        try {
+            $price = $this->content->filter('#product_price_rub');
+
+            if ($price->count()) {
+                return (float)$this->clear(html_entity_decode($price->text()));
+            }
+        }
+        catch (\Exception $e) {
+            return 0.0;
+        }
+
+        return 0.0;
     }
 
     /**
