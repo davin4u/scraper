@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Media;
 use App\Observers\AttributeObserver;
 use App\Attribute;
+use App\Observers\MediaObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Attribute::observe(AttributeObserver::class);
+        Media::observe(MediaObserver::class);
     }
 }
