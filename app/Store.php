@@ -39,8 +39,11 @@ class Store extends Model
         return $this->belongsTo(City::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function domain()
     {
-        return $this->hasOne(Domain::class, 'id', 'domain_id');
+        return $this->belongsTo(Domain::class);
     }
 }

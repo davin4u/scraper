@@ -2,22 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain;
+use App\Http\Resources\StoreProducts;
 use App\Product;
 use App\StoreProduct;
+use Illuminate\Http\Request;
 
 class MatchingController extends Controller
 {
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * MatchingController constructor.
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @return StoreProducts|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
-        $query = StoreProduct::query();
-        $products = $query->where('product_id', 0)->paginate(30);
-        $domains = Domain::all();
+        if ($this->request->expectsJson()) {
+            $storeProducts = StoreProduct::with([
+                'store.domain',
+                'details'
+            ])->where('product_id', 0)->get();
 
-        return view('matching_tool.index')->with([
-            'domains' => $domains,
-            'products' => $products,
-        ]);
+            return new StoreProducts($storeProducts);
+        }
+
+        return view('matching_tool.index');
     }
 
     public function search()

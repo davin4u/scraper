@@ -1,12 +1,14 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-12 px-0 px-md-4">
                 <div class="card">
-                    <div class="card-header">Example Component</div>
+                    <div class="card-header">
+                        <slot name="header"></slot>
+                    </div>
 
                     <div class="card-body">
-                        I'm an example component.
+                        <slot name="body"></slot>
                     </div>
                 </div>
             </div>
@@ -16,8 +18,6 @@
 
 <script>
     export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
+        name: "Page"
     }
 </script>
