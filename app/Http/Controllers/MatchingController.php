@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductsCollection;
 use App\Http\Resources\StoreProducts;
 use App\Product;
 use App\StoreProduct;
@@ -40,15 +41,28 @@ class MatchingController extends Controller
         return view('matching_tool.index');
     }
 
+    /**
+     * @return ProductsCollection
+     */
     public function search()
     {
-        $id = request('id', null);
-        $name = request('name', null);
-        $domain = request('domain', null);
-        $products = Product::query();
+        $id       = $this->request->get('id');
+        $name     = $this->request->get('name');
+        $category = $this->request->get('category_id');
+        $brand    = $this->request->get('brand_id');
 
-        if (!is_null($id)) {
+        $products = Product::query()->with(['category', 'brand']);
+
+        if (!is_null($id) && $id) {
             $products->where('id', $id);
+        }
+
+        if (!is_null($category) && $category) {
+            $products->where('category_id', $category);
+        }
+
+        if (!is_null($brand) && $brand) {
+            $products->where('brand_id', $brand);
         }
 
         if (!is_null($name)) {
@@ -57,6 +71,6 @@ class MatchingController extends Controller
 
         $products = $products->get();
 
-        return $products->toJson();
+        return new ProductsCollection($products);
     }
 }

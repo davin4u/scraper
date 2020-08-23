@@ -98,7 +98,7 @@
         mounted() {
             this.loading = true;
 
-            this.http().get('http://scraper.loc/matching-tool')
+            this.http().get(this.route('matching_tool.index'))
                 .then((response) => {
                     this.products = _.get(response, ['data'], []);
 

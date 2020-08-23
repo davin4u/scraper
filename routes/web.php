@@ -105,7 +105,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Matching tool
     Route::get('matching-tool', 'MatchingController@index')->name('matching.index');
-    Route::post('matching-tool/search','MatchingController@search')->name('matching.search');
+    Route::get('matching-tool/search','MatchingController@search')->name('matching.search');
 
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {
