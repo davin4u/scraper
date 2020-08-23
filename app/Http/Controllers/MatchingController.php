@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductsCollection;
 use App\Http\Resources\StoreProducts;
-use App\Product;
+use App\Repositories\ProductsRepository;
 use App\StoreProduct;
 use Illuminate\Http\Request;
 
@@ -46,30 +46,14 @@ class MatchingController extends Controller
      */
     public function search()
     {
-        $id       = $this->request->get('id');
-        $name     = $this->request->get('name');
-        $category = $this->request->get('category_id');
-        $brand    = $this->request->get('brand_id');
-
-        $products = Product::query()->with(['category', 'brand']);
-
-        if (!is_null($id) && $id) {
-            $products->where('id', $id);
-        }
-
-        if (!is_null($category) && $category) {
-            $products->where('category_id', $category);
-        }
-
-        if (!is_null($brand) && $brand) {
-            $products->where('brand_id', $brand);
-        }
-
-        if (!is_null($name)) {
-            $products->where('name', 'like', "%{$name}%");
-        }
-
-        $products = $products->get();
+        $products = (new ProductsRepository())->search([
+            'id'          => $this->request->get('id'),
+            'name'        => $this->request->get('name'),
+            'category_id' => $this->request->get('category_id'),
+            'brand_id'    => $this->request->get('brand_id'),
+            'page'        => $this->request->get('page', 1),
+            'per_page'    => $this->request->get('per_page', 30)
+        ], ['category', 'brand']);
 
         return new ProductsCollection($products);
     }

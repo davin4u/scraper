@@ -81,4 +81,43 @@ class ProductsRepository
             'description' => Arr::get($data, 'description', null)
         ];
     }
+
+    /**
+     * @param array $filters
+     * @param array $with
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function search($filters = [], $with = [])
+    {
+        $id       = Arr::get($filters, 'id');
+        $category = Arr::get($filters, 'category_id');
+        $brand    = Arr::get($filters, 'brand_id');
+        $name     = Arr::get($filters, 'name');
+
+        $perPage  = Arr::get($filters, 'per_page', 30);
+
+        $query = Product::query()->orderBy('id');
+
+        if (!empty($with)) {
+            $query->with($with);
+        }
+
+        if (!is_null($id) && $id) {
+            $query->where('id', $id);
+        }
+
+        if (!is_null($category) && $category) {
+            $query->where('category_id', $category);
+        }
+
+        if (!is_null($brand) && $brand) {
+            $query->where('brand_id', $brand);
+        }
+
+        if (!is_null($name)) {
+            $query->where('name', 'like', "%{$name}%");
+        }
+
+        return $query->paginate($perPage);
+    }
 }
