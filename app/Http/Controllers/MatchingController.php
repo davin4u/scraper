@@ -57,4 +57,14 @@ class MatchingController extends Controller
 
         return new ProductsCollection($products);
     }
+
+    public function match()
+    {
+        $product_id = $this->request->get('product_id');
+        $store_product_id = $this->request->get('store_product_id');
+
+        StoreProduct::query()->where('id', $store_product_id)->update(['product_id' => $product_id]);
+
+        return ['success' => true];
+    }
 }

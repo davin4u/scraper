@@ -75,13 +75,16 @@
 
                 products: [],
 
-                matching: null
+                matching: null,
             }
         },
 
         methods: {
             onMatch(payload) {
-                console.log(payload);
+                this.http().post('http://scraper.test/matching-tool/match', {
+                    product_id: payload.id,
+                    store_product_id : this.matching.id,
+                });
 
                 this.onModalClose();
             },
