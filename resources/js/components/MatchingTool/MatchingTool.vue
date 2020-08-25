@@ -20,7 +20,12 @@
                             <tr>
                                 <th scope="col" style="width: 50px;">ID</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Domain</th>
+                                <th scope="col">
+                                    <select class="form-control" v-model="selected" @change="changeDomain($event)">
+                                        <option :value="null"></option>
+                                        <option v-for="domain in domains" :value="domain.id" :key="domain.id">{{ domain.name }}</option>
+                                    </select>
+                                </th>
                                 <th scope="col" style="width: 120px;"></th>
                             </tr>
                         </thead>
@@ -76,15 +81,25 @@
                 products: [],
 
                 matching: null,
+
+                domains: [],
+
+                selected: null,
+
+                domain_id: null
             }
         },
 
         methods: {
             onMatch(payload) {
-                this.http().post('http://scraper.test/matching-tool/match', {
+                this.http().post('matching-tool/match', {
                     product_id: payload.id,
                     store_product_id : this.matching.id,
                 });
+
+                if (this.selected !== null){
+                    this.getRequestByDomain(this.domain_id);
+                } else this.refresh();
 
                 this.onModalClose();
             },
@@ -95,7 +110,31 @@
 
             findMatch(product) {
                 this.matching = product;
-            }
+            },
+
+            refresh() {
+                this.http().get(this.route('matching_tool.index'))
+                    .then((response) => {
+                        this.products = _.get(response, ['data'], []);
+                    });
+            },
+
+            getRequestByDomain(domain) {
+                domain = this.domain_id;
+
+                this.http().get('matching-tool?domain=' + domain)
+                    .then(response => {
+                        this.products = _.get(response, ['data'], []);
+                    });
+            },
+
+            changeDomain(event) {
+                this.domain_id = event.target.value;
+
+                if (this.selected !== null){
+                   this.getRequestByDomain(this.domain_id);
+                } else this.refresh();
+            },
         },
 
         mounted() {
@@ -110,6 +149,10 @@
                 .catch(() => {
                     this.loading = false;
                 });
+        },
+
+        created() {
+            this.domains = _.get(window, ['domains'], []);
         }
     }
 </script>

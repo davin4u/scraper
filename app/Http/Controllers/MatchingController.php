@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain;
 use App\Http\Resources\ProductsCollection;
 use App\Http\Resources\StoreProducts;
 use App\Repositories\ProductsRepository;
@@ -29,6 +30,16 @@ class MatchingController extends Controller
      */
     public function index()
     {
+        if ($this->request->has('domain')){
+            $domainId = $this->request->get('domain');
+            $storeProducts = StoreProduct::query()->where('product_id', 0)
+                ->whereHas('store', function ($query) use ($domainId) {
+                    $query->where('domain_id', $domainId);
+                })->get();
+
+            return new StoreProducts($storeProducts);
+        }
+
         if ($this->request->expectsJson()) {
             $storeProducts = StoreProduct::with([
                 'store.domain',
@@ -37,6 +48,8 @@ class MatchingController extends Controller
 
             return new StoreProducts($storeProducts);
         }
+
+
 
         return view('matching_tool.index');
     }
