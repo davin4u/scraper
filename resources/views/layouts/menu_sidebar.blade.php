@@ -44,6 +44,9 @@
                 <li class="nav-item">
                     <a class="{{ Request::is('domains') ? 'active' : '' }} nav-link" href="{{ route('domains.index') }}">Domains</a>
                 </li>
+                <li class="nav-item">
+                    <a class="{{ Request::is('matching-tool') ? 'active' : '' }} nav-link" href="{{ route('matching.index') }}">Matching Tool</a>
+                </li>
             </ul>
         </div>
     </nav>

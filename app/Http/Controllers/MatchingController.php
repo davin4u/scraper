@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain;
 use App\Http\Resources\ProductsCollection;
 use App\Http\Resources\StoreProducts;
 use App\Repositories\ProductsRepository;
@@ -49,8 +48,6 @@ class MatchingController extends Controller
             return new StoreProducts($storeProducts);
         }
 
-
-
         return view('matching_tool.index');
     }
 
@@ -71,6 +68,9 @@ class MatchingController extends Controller
         return new ProductsCollection($products);
     }
 
+    /**
+     * @return bool[]
+     */
     public function match()
     {
         $product_id = $this->request->get('product_id');
