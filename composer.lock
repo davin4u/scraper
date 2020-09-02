@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "98de519703605646d34a2a0faa1777b1",
+    "content-hash": "53290b6eb5d7e23151a641a33afb8881",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1939,6 +1939,39 @@
             "time": "2020-02-21T04:36:14+00:00"
         },
         {
+            "name": "sirian/yandex-market-language-parser",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sirian/php-yml-parser.git",
+                "reference": "0051b9f44b8dc2c573c130cabd29f6a9d5b39c8b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sirian/php-yml-parser/zipball/0051b9f44b8dc2c573c130cabd29f6a9d5b39c8b",
+                "reference": "0051b9f44b8dc2c573c130cabd29f6a9d5b39c8b",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sirian\\YMLParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Vasily Khayrulin",
+                    "email": "sirianru@gmail.com"
+                }
+            ],
+            "description": "Yandex Market Language parser",
+            "time": "2016-07-15T07:46:15+00:00"
+        },
+        {
             "name": "swiftmailer/swiftmailer",
             "version": "v6.2.3",
             "source": {
@@ -2698,7 +2731,7 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.18.0",
+            "version": "v1.18.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -4973,6 +5006,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2019-09-17T06:23:10+00:00"
         },
         {

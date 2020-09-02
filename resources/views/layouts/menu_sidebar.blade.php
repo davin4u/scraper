@@ -47,6 +47,9 @@
                 <li class="nav-item">
                     <a class="{{ Request::is('matching-tool') ? 'active' : '' }} nav-link" href="{{ route('matching.index') }}">Matching Tool</a>
                 </li>
+                <li class="nav-item">
+                    <a class="{{ Request::is('yml-import') ? 'active' : '' }} nav-link" href="{{ route('yml-import.index') }}">Yml import</a>
+                </li>
             </ul>
         </div>
     </nav>

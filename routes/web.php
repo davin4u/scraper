@@ -105,8 +105,13 @@ Route::middleware(['auth'])->group(function () {
 
     //Matching tool
     Route::get('matching-tool', 'MatchingController@index')->name('matching.index');
-    Route::get('matching-tool/search','MatchingController@search')->name('matching.search');
+    Route::get('matching-tool/search', 'MatchingController@search')->name('matching.search');
     Route::post('matching-tool/match', 'MatchingController@match')->name('matching.match');
+
+    //Yml import
+    Route::get('yml-import', 'YmlDataImportController@index')->name('yml-import.index');
+    Route::post('yml-import/upload', 'YmlDataImportController@upload')->name('yml-import.upload');
+    Route::post('yml-import/import', 'YmlDataImportController@import')->name('yml-import.import');
 
     // Routes with admin permissions
     Route::middleware(['isAdmin'])->group(function () {

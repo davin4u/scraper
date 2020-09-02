@@ -13,7 +13,7 @@ class StoreProduct extends Model
     /**
      * @var array
      */
-    protected $fillable = ['store_id', 'product_id'];
+    protected $fillable = ['store_id', 'product_id', 'yml_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

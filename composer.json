@@ -15,6 +15,7 @@
         "guzzlehttp/guzzle": "~6.0",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^1.0",
+        "sirian/yandex-market-language-parser": "^3.0",
         "symfony/dom-crawler": "^5.0",
         "symfony/translation": "4.3.8"
     },
