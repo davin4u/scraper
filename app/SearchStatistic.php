@@ -13,5 +13,5 @@ class SearchStatistic extends Model
     /**
      * @var array
      */
-    protected $fillable = ['source', 'phrase', 'last_update_date'];
+    protected $fillable = ['source', 'phrase', 'amount', 'last_update_date'];
 }

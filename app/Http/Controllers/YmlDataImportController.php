@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Crawler\Matchers\SimpleCategoryMatcher;
 use App\Domain;
 use App\Http\Requests\YmlDataExtractUploadRequest;
 use App\Http\Requests\YmlDataImportUploadRequest;
+use App\Repositories\StoreProductsRepository;
 use App\Store;
 use App\StoreProduct;
-use App\StoreProductDetails;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -79,7 +80,6 @@ class YmlDataImportController extends Controller
         $ymlFilePath = Storage::path('import_files/import_yml.xml');
         $parser = new Parser();
         $data = $parser->parse($ymlFilePath);
-        $categoriesFromDB = Category::query()->pluck('name')->toArray();
         $selectedCategories = $this->request->get('selectedCategories');
         $categories = [];
         $isDomainExists = Domain::query()->where('name', $data->getShop()->getName())->first();
@@ -89,7 +89,6 @@ class YmlDataImportController extends Controller
                 'name' => $data->getShop()->getName(),
                 'url' => $data->getShop()->getUrl()
             ]);
-
             Store::create([
                 'country_id' => 0,
                 'city_id' => 0,
@@ -115,45 +114,20 @@ class YmlDataImportController extends Controller
 
         foreach ($data->getOffers() as $offer) {
             if (in_array($offer->getCategory()->getName(), $categories)) {
-
                 if (!in_array($offer->getId(), $uniqueOfferIds)) {
+                    $storeProductId = StoreProduct::query()->where('yml_id', $offer->getId())->value('id');
 
-                    $getOfferById = StoreProduct::query()->where('yml_id', $offer->getId())->value('yml_id');
-
-                    if (is_null($getOfferById)) {
-
-                        StoreProduct::create([
-                            'store_id' => $storeId,
-                            'product_id' => 0,
-                            'yml_id' => $offer->getId()
-                        ]);
-
-                        $storeProductId = StoreProduct::query()->where('yml_id', $offer->getId())->value('id');
-
-                        StoreProductDetails::create([
-                            'store_product_id' => $storeProductId,
-                            'name' => $offer->getName(),
-                            'url' => trim(explode('?', $offer->getUrl())[0]),
-                            'price' => $offer->getPrice(),
-                            'old_price' => $offer->getOldPrice(),
-                            'currency' => $offer->getCurrency()->getId(),
-                            'is_available' => $offer->isAvailable()
-                        ]);
-
-                    } else {
-                        $storeProductDetailsId = StoreProductDetails::query()->whereHas('storeProduct', function ($query) use ($getOfferById) {
-                            $query->where('yml_id', $getOfferById);
-                        })->value('id');
-
-                        StoreProductDetails::query()->where('id', $storeProductDetailsId)->update([
-                            'name' => $offer->getName(),
-                            'url' => trim(explode('?', $offer->getUrl())[0]),
-                            'price' => $offer->getPrice(),
-                            'old_price' => $offer->getOldPrice(),
-                            'currency' => $offer->getCurrency()->getId(),
-                            'is_available' => $offer->isAvailable()
-                        ]);
-                    }
+                    (new StoreProductsRepository())->createOrUpdate([
+                        'store_id' => $storeId,
+                        'yml_id' => $offer->getId(),
+                        'store_product_id' => $storeProductId,
+                        'name' => $offer->getName(),
+                        'url' => trim(explode('?', $offer->getUrl())[0]),
+                        'price' => $offer->getPrice(),
+                        'old_price' => $offer->getOldPrice(),
+                        'currency' => $offer->getCurrency()->getId(),
+                        'is_available' => $offer->isAvailable()
+                    ]);
                 }
 
                 if (in_array($offer->getId(), $uniqueOfferIds)) {
@@ -165,18 +139,11 @@ class YmlDataImportController extends Controller
                 }
 
                 $uniqueOfferIds[] = $offer->getId();
-
             }
         }
 
         foreach ($categories as $category) {
-            if (!in_array($category, $categoriesFromDB)) {
-                $map = explode(',', $category) ?? [];
-                Category::create([
-                    'name' => $category,
-                    'map' => $map
-                ]);
-            }
+            (new SimpleCategoryMatcher())->match($category);
         }
 
         Storage::delete('import_files/import_yml.xml');

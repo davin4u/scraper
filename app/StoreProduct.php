@@ -49,8 +49,18 @@ class StoreProduct extends Model
                 continue;
             }
 
+            if ($prop === 'yml_id') {
+                continue;
+            }
+
             if ($details->{$prop} !== $value) {
-                $this->details()->create($data);
+                if ($prop == 'old_price') {
+                    $this->details()->update([
+                        'old_price' => $value,
+                    ]);
+                } else {
+                    $this->details()->create($data);
+                }
 
                 return;
             }

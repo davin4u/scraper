@@ -6,7 +6,6 @@ use App\Crawler\Document;
 use App\Crawler\Extractors\ReviewExtractor;
 use App\Parsers\ParserInterface;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class OtzovikReviewPageParser

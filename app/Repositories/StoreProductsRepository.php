@@ -45,6 +45,15 @@ class StoreProductsRepository
                     return $storeProduct;
                 }
             }
+            else if (!empty($validated['yml_id'])){
+                $storeProduct = $this->findByYmlId($validated['yml_id']);
+
+                if (!is_null($storeProduct)) {
+                    $storeProduct->updateDetails($validated);
+
+                    return $storeProduct;
+                }
+            }
 
             /*
              * We create StoreProduct with product_id = 0 to indicate that
@@ -53,7 +62,8 @@ class StoreProductsRepository
              */
             $storeProduct = StoreProduct::create([
                 'store_id' => $data['store_id'],
-                'product_id' => 0
+                'product_id' => 0,
+                'yml_id' => $data['yml_id']
             ]);
 
             $storeProduct->updateDetails($validated);
@@ -104,6 +114,23 @@ class StoreProductsRepository
     }
 
     /**
+     * @param int $ymlId
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function findByYmlId(int $ymlId)
+    {
+        if ($details = StoreProductDetails::query()->whereHas('storeProduct', function ($query) use ($ymlId) {
+            $query->where('yml_id', $ymlId);
+        })->first()){
+            /** @var StoreProductDetails $details */
+
+            return $details->storeProduct()->first();
+        }
+
+        return null;
+    }
+
+    /**
      * @param array $data
      * @return array
      * @throws \InvalidArgumentException
@@ -122,15 +149,12 @@ class StoreProductsRepository
             throw new \InvalidArgumentException("Property name is required.");
         }
 
-        if (empty($data['category_id'])) {
-            throw new \InvalidArgumentException("Property category_id is required.");
-        }
-
         return [
             //'store_id' => (int)Arr::get($data, 'store_id'),
             'sku' => Arr::get($data, 'sku', null),
             'url' => Arr::get($data, 'url', null),
             'name' => Arr::get($data, 'name', null),
+            'yml_id' => (int)Arr::get($data, 'yml_id', null),
             //'brand_id' => Arr::get($data, 'brand_id', null),
             //'category_id' => (int)Arr::get($data, 'category_id'),
             'description' => Arr::get($data, 'description', null),
